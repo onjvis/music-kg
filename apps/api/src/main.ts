@@ -1,21 +1,30 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
+import cors from 'cors';
+import express, { Express } from 'express';
+import dotenv from 'dotenv';
 
-import express from 'express';
-import * as path from 'path';
+import { connectToDatabase } from './database/database.service';
+import { setRoutes } from './routes';
 
-const app = express();
+dotenv.config();
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
-
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to api!' });
-});
-
+const app: Express = express();
 const port = process.env.PORT || 3333;
-const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
-});
-server.on('error', console.error);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+
+connectToDatabase()
+  .then(() => {
+    setRoutes(app);
+
+    const server = app.listen(port, () => {
+      console.log(`main: Listening at http://localhost:${port}/api`);
+    });
+
+    server.on('error', console.error);
+  })
+  .catch((error: Error) => {
+    console.error('main: Database connection failed.', error);
+    process.exit();
+  });
