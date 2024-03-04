@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@music-kg/data": ["libs/data/src/index.ts"]
+      "@music-kg/data": ["libs/data/src/index.ts"],
+      "@music-kg/sparql-data": ["libs/sparql-data/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -38,6 +38,9 @@ dependencies:
   react-router-dom:
     specifier: ^6.22.1
     version: 6.22.2(react-dom@18.2.0)(react@18.2.0)
+  sparqljs:
+    specifier: ^3.7.1
+    version: 3.7.1
   tslib:
     specifier: ^2.3.0
     version: 2.6.2
@@ -118,6 +121,9 @@ devDependencies:
   '@types/react-dom':
     specifier: 18.2.14
     version: 18.2.14
+  '@types/sparqljs':
+    specifier: ^3.1.10
+    version: 3.1.10
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.13.2
     version: 6.21.0(@typescript-eslint/parser@6.21.0)(eslint@8.48.0)(typescript@5.3.3)
@@ -3151,6 +3157,12 @@ packages:
       { integrity: sha512-2LuNTFBIO0m7kKIQvvPHN6UE63VjpmL9rnEEaOOaiSPbZK+zUOYIzBAWcED+3XYzhYsd/0mD57VdxAEqqV52CQ== }
     dev: true
 
+  /@rdfjs/types@1.1.0:
+    resolution:
+      { integrity: sha512-5zm8bN2/CC634dTcn/0AhTRLaQRjXDZs3QfcAsQKNturHT7XVWcKy/8p3P5gXl+YkZTAmy7T5M/LyiT/jbkENw== }
+    dependencies:
+      '@types/node': 18.16.9
+
   /@remix-run/router@1.15.2:
     resolution:
       { integrity: sha512-+Rnav+CaoTE5QJc4Jcwh5toUpnVLKYbpU6Ys0zqbakqbaLQHeglLVHPfxOiQqdNmUy5C2lXz5dwC6tQNX2JW2Q== }
@@ -3972,7 +3984,6 @@ packages:
   /@types/node@18.16.9:
     resolution:
       { integrity: sha512-IeB32oIV4oGArLrd7znD2rkHQ6EDCM+2Sr76dJnrHwv9OHBTTM6nuDLK9bmikXzPa0ZlWMWtRGo/Uw4mrzQedA== }
-    dev: true
 
   /@types/parse-json@4.0.2:
     resolution:
@@ -4061,6 +4072,13 @@ packages:
       { integrity: sha512-MK9V6NzAS1+Ud7JV9lJLFqW85VbC9dq3LmwZCuBe4wBDgKC0Kj/jd8Xl+nSviU+Qc3+m7umHHyHg//2KSa0a0Q== }
     dependencies:
       '@types/node': 18.16.9
+    dev: true
+
+  /@types/sparqljs@3.1.10:
+    resolution:
+      { integrity: sha512-rqMpUhl/d8B+vaACa6ZVdwPQ1JXw+KxiCc0cndgn/V6moRG3WjUAgoBnhSwfKtXD98wgMThDsc6R1+yRUuMsAg== }
+    dependencies:
+      '@rdfjs/types': 1.1.0
     dev: true
 
   /@types/stack-utils@2.0.3:
@@ -10831,6 +10849,13 @@ packages:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
+  /rdf-data-factory@1.1.2:
+    resolution:
+      { integrity: sha512-TfQD63Lokabd09ES1jAtKK8AA6rkr9rwyUBGo6olOt1CE0Um36CUQIqytyf0am2ouBPR0l7SaHxCiMcPGHkt1A== }
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
+
   /react-dom@18.2.0(react@18.2.0):
     resolution:
       { integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g== }
@@ -11625,6 +11650,15 @@ packages:
       { integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA== }
     engines: { node: '>= 8' }
     dev: true
+
+  /sparqljs@3.7.1:
+    resolution:
+      { integrity: sha512-I1jYMtcwDkgCEqQ4eQuQIhB8hFAlRAJ6YDXDcV54XztaJaYRFqJlidHt77S3j8Mfh6kY6GK04dXPEIopxbEeuQ== }
+    engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
+    hasBin: true
+    dependencies:
+      rdf-data-factory: 1.1.2
+    dev: false
 
   /sparse-bitfield@3.0.3:
     resolution:
