@@ -9,6 +9,7 @@ import httpClient from '../services/http-client';
 type CurrentUser = {
   id: string;
   email: string;
+  hasProfile?: boolean;
 };
 
 type CurrentUserContextType = {
@@ -50,7 +51,7 @@ export const CurrentUserProvider = ({ children }: CurrentUserProviderProps) => {
 
   const changeCurrentUser = (newUser: CurrentUser): void => setCurrentUser(newUser);
 
-  const removeCurrentUser = (): void => changeCurrentUser({ id: '', email: '' });
+  const removeCurrentUser = (): void => changeCurrentUser({ id: '', email: '', hasProfile: false });
 
   return (
     <CurrentUserContext.Provider value={{ currentUser, changeCurrentUser, removeCurrentUser }}>

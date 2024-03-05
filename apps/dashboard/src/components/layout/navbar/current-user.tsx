@@ -4,18 +4,15 @@ import { FaUserPen } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 
 import { useCurrentUser } from '../../../contexts/current-user.context';
-import { useToken } from '../../../hooks/use-token';
 import { AppRoute } from '../../../models/enums/app-route.enum';
 
 export const CurrentUser = () => {
-  const { changeCurrentUser, currentUser } = useCurrentUser();
+  const { currentUser } = useCurrentUser();
   const navigate = useNavigate();
-  const { removeToken } = useToken();
 
   const userIconClickHandler = () => {
     if (currentUser?.email) {
-      changeCurrentUser({ id: '', email: '' });
-      removeToken();
+      navigate(AppRoute.USER);
     } else {
       navigate(AppRoute.AUTH);
     }

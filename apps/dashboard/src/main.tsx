@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { AppRoute } from './models/enums/app-route.enum';
 import Auth from './pages/auth/auth';
+import User from './pages/user/user';
 import Home from './pages/home';
 import './styles.css';
 
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       {
         path: AppRoute.AUTH,
         element: <Auth />,
+      },
+      {
+        path: AppRoute.USER,
+        element: <User />,
       },
     ],
   },
