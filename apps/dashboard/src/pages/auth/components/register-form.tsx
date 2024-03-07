@@ -57,7 +57,9 @@ export const RegisterForm = ({ handleAfterRegister }: RegisterFormProps) => {
           {errors.password && <FormErrorAlert message="Password is required." />}
         </div>
 
-        <button className="btn-primary w-1/2 capitalize" type="submit">Register</button>
+        <button className="btn-primary w-1/2 capitalize" type="submit">
+          Register
+        </button>
       </form>
     </div>
   );

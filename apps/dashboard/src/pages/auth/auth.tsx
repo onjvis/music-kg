@@ -26,10 +26,7 @@ export const Auth = () => {
         />
       </AuthModeToggle>
 
-      {authMode === 'register'
-        ? <RegisterForm handleAfterRegister={() => setAuthMode('login')} />
-        : <LoginForm />
-      }
+      {authMode === 'register' ? <RegisterForm handleAfterRegister={() => setAuthMode('login')} /> : <LoginForm />}
     </div>
   );
 };

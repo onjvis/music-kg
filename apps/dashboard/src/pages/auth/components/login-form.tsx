@@ -62,7 +62,9 @@ export const LoginForm = () => {
           {errors.password && <FormErrorAlert message="Password is required." />}
         </div>
 
-        <button className="btn-primary w-1/2 capitalize" type="submit">Login</button>
+        <button className="btn-primary w-1/2 capitalize" type="submit">
+          Login
+        </button>
       </form>
     </div>
   );
