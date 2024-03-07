@@ -20,7 +20,7 @@ export const CurrentUser = () => {
 
   return (
     <div className="flex flex-row items-center gap-2">
-      <IconContext.Provider value={{ color: 'blue', size: '2em' }}>
+      <IconContext.Provider value={{ size: '2em', className: 'fill-blue-500' }}>
         <div
           className="hover:cursor-pointer"
           title={currentUser?.email ? 'User profile' : 'Register or login'}
