@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ApiUrl } from '../../models/api-url.model';
 import httpClient from '../../services/http-client';
 import SpotifyTrackDetail from './components/spotify-track-detail';
-import SpotifyTrack from './components/spotify-track';
+import SpotifyTrackItem from './components/spotify-track-item';
 
 export const SpotifyLatest = () => {
   const [latestTracks, setLatestTracks] = useState([]);
@@ -44,7 +44,7 @@ export const SpotifyLatest = () => {
       </div>
       <div className="flex flex-col gap-4">
         {latestTracks.map((item: PlayHistory) => (
-          <SpotifyTrack
+          <SpotifyTrackItem
             key={`${item?.track?.id}${item?.played_at}`}
             track={item?.track}
             handleSelect={handleSelect}

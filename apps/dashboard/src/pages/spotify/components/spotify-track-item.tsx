@@ -2,24 +2,21 @@ import { Track } from '@spotify/web-api-ts-sdk';
 
 import { ms2timeStr } from '../../../utils/ms2timeStr';
 
-type SpotifyTrackProps = {
+type SpotifyTrackItemProps = {
   track: Track;
   handleSelect: (track: Track) => void;
   selected: boolean;
 };
 
-const SpotifyTrack = ({ track, handleSelect, selected }: SpotifyTrackProps) => {
-  const onTrackClicked = () => {
-    console.log(`SpotifyTrack.onTrackClicked: ${track?.name} (${track?.id})`);
-    handleSelect(track);
-  };
+const SpotifyTrackItem = ({ track, handleSelect, selected }: SpotifyTrackItemProps) => {
+  const handleTrackClicked = (): void => handleSelect(track);
 
   return (
     <div
       className={`flex flex-auto flex-row items-center justify-between gap-4 rounded-lg border-2 p-4 hover:bg-teal-200 hover:cursor-pointer${
         selected ? ' bg-teal-200' : ''
       }`}
-      onClick={onTrackClicked}
+      onClick={handleTrackClicked}
     >
       <div className="flex flex-row items-center gap-4">
         <img className="rounded-lg" src={track?.album?.images?.[2]?.url} alt="album cover" height="64px" width="64px" />
@@ -39,4 +36,4 @@ const SpotifyTrack = ({ track, handleSelect, selected }: SpotifyTrackProps) => {
   );
 };
 
-export default SpotifyTrack;
+export default SpotifyTrackItem;
