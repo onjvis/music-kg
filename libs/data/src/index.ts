@@ -10,3 +10,4 @@ export * from './lib/sparql/create-user.request';
 export * from './lib/sparql/get-user.response';
 
 export * from './lib/error.response';
+export * from './lib/http-header.constants';
