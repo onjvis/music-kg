@@ -1,11 +1,14 @@
 import { IconContext } from 'react-icons';
-import { FaHeadphones, FaHouse, FaUser } from 'react-icons/fa6';
+import { FaHeadphones, FaHouse, FaSpotify, FaUser } from 'react-icons/fa6';
 
+import { useCurrentUser } from '../../../contexts/current-user.context';
 import { AppRoute } from '../../../models/enums/app-route.enum';
 import CurrentUser from './current-user';
 import NavbarLink from './navbar-link';
 
 export const Navbar = () => {
+  const { currentUser } = useCurrentUser();
+
   return (
     <div className="flex flex-row items-center justify-between gap-8 bg-white p-4 text-2xl">
       <div className="flex flex-row gap-8">
@@ -24,6 +27,11 @@ export const Navbar = () => {
           <NavbarLink to={AppRoute.AUTH}>
             <FaUser />
           </NavbarLink>
+          {currentUser?.id && currentUser?.email && (
+            <NavbarLink to={AppRoute.SPOTIFY}>
+              <FaSpotify />
+            </NavbarLink>
+          )}
         </nav>
       </div>
       <CurrentUser />
