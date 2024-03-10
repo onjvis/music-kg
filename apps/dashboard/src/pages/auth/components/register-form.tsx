@@ -8,7 +8,7 @@ import { AlertData } from '../../../components/alert/models/alert-data.model';
 import ErrorAlert from '../../../components/alert/error-alert';
 import FormErrorAlert from '../../../components/alert/form-error-alert';
 import SuccessAlert from '../../../components/alert/success-alert';
-import { ApiUrl } from '../../../models/api-route.model';
+import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
 
 type RegisterFormProps = {

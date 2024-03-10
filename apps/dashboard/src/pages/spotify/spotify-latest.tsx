@@ -1,7 +1,7 @@
 import { PlayHistory, Track } from '@spotify/web-api-ts-sdk';
 import { useState } from 'react';
 
-import { ApiUrl } from '../../models/api-route.model';
+import { ApiUrl } from '../../models/api-url.model';
 import httpClient from '../../services/http-client';
 import SpotifyTrackDetail from './components/spotify-track-detail';
 import SpotifyTrack from './components/spotify-track';

@@ -3,7 +3,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useState 
 import { CurrentUserResponse } from '@music-kg/data';
 
 import { useToken } from '../hooks/use-token';
-import { ApiUrl } from '../models/api-route.model';
+import { ApiUrl } from '../models/api-url.model';
 import httpClient from '../services/http-client';
 
 type CurrentUser = {

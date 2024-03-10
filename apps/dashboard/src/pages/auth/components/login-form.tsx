@@ -11,7 +11,7 @@ import FormErrorAlert from '../../../components/alert/form-error-alert';
 import { useCurrentUser } from '../../../contexts/current-user.context';
 import { useToken } from '../../../hooks/use-token';
 import { AppRoute } from '../../../models/enums/app-route.enum';
-import { ApiUrl } from '../../../models/api-route.model';
+import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
 
 export const LoginForm = () => {
