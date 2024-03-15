@@ -1,5 +1,4 @@
 import { Track } from '@spotify/web-api-ts-sdk';
-import { Fragment } from 'react';
 
 import FlexTextRow from '../../../components/flex-text-row';
 import { ms2timeStr } from '../../../utils/ms2timeStr';
@@ -10,15 +9,9 @@ type SpotifyTrackDetailProps = {
 
 const SpotifyTrackDetail = ({ track }: SpotifyTrackDetailProps) => {
   return (
-    <Fragment>
-      <div className="flex flex-col gap-4">
-        <img
-          className="size-16 rounded-lg"
-          src={track?.album?.images?.[0]?.url}
-          alt="album cover"
-          height="512px"
-          width="512px"
-        />
+    <div className="flex flex-row gap-2 p-4">
+      <div className="flex w-1/4 flex-col gap-4">
+        <img className="rounded-lg" src={track?.album?.images?.[0]?.url} alt="album cover" />
         {track?.preview_url && <audio className="w-full rounded-lg" controls src={track?.preview_url}></audio>}
       </div>
       <div className="flex flex-1 flex-col justify-between border-l-2 pl-4">
@@ -48,7 +41,7 @@ const SpotifyTrackDetail = ({ track }: SpotifyTrackDetailProps) => {
           <FlexTextRow label="URI" value={track?.album?.uri} />
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 };
 
