@@ -10,9 +10,7 @@ export const ErrorAlert = ({ className, message }: SharedAlertProps) => {
       className={`alert--error ${className}`}
       icon={
         <IconContext.Provider value={{ color: 'red', size: '1.5em' }}>
-          <div>
-            <IoClose />
-          </div>
+          <IoClose />
         </IconContext.Provider>
       }
       message={message}

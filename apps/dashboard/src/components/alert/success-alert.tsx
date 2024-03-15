@@ -10,9 +10,7 @@ export const SuccessAlert = ({ message }: SharedAlertProps) => {
       className="alert--success"
       icon={
         <IconContext.Provider value={{ color: 'green', size: '1.5em' }}>
-          <div>
-            <IoCheckmark />
-          </div>
+          <IoCheckmark />
         </IconContext.Provider>
       }
       message={message}
