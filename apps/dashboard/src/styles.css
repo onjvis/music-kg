@@ -37,6 +37,10 @@
     @apply border-green-400 bg-green-200;
   }
 
+  .alert--warning {
+    @apply border-yellow-400 bg-yellow-200;
+  }
+
   .btn-primary {
     @apply rounded-full bg-blue-500 py-2 px-5 font-semibold text-white shadow-md hover:bg-blue-700;
   }
