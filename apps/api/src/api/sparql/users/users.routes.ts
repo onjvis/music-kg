@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { createUser, getUser } from './users.handlers';
 import { authenticateToken } from '../../auth/auth.middleware';
+import { createUser, getUser } from './users.handlers';
 
 const usersRoutes: Router = Router();
 usersRoutes.post('/', authenticateToken, createUser);

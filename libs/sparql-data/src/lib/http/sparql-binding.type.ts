@@ -1,7 +1,7 @@
-import { IriTerm, LiteralTerm } from 'sparqljs';
+import { SparqlObject } from './sparql-object.type';
+import { SparqlPredicate } from './sparql-predicate.type';
 
 export type SparqlBinding = {
-  subject?: IriTerm;
-  predicate?: IriTerm;
-  object?: IriTerm | LiteralTerm;
+  predicate: SparqlPredicate;
+  object: SparqlObject;
 };

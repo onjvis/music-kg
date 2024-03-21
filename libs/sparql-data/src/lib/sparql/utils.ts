@@ -1,5 +1,7 @@
 import { BlankTerm, IriTerm, LiteralTerm, VariableTerm } from 'sparqljs';
 
+import { SparqlIri } from './sparql-iri.type';
+
 export const iri = (prefix: string, resourceId?: string): IriTerm => {
   return {
     termType: 'NamedNode',
@@ -7,11 +9,11 @@ export const iri = (prefix: string, resourceId?: string): IriTerm => {
   } as IriTerm;
 };
 
-export const literal = (value: string, datatype?: IriTerm): LiteralTerm => {
+export const literal = (value: string, datatype: SparqlIri): LiteralTerm => {
   return {
     termType: 'Literal',
     value,
-    datatype: datatype,
+    datatype: datatype.iri,
   } as LiteralTerm;
 };
 

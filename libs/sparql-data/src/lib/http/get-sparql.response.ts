@@ -1,5 +1,5 @@
 import { SparqlResults } from './sparql-results.type';
 
-export type GetSparqlUserResponse = {
+export type GetSparqlResponse = {
   results: SparqlResults;
 };
