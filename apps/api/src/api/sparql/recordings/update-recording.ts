@@ -6,8 +6,6 @@ import {
   COMPLEX_PREDICATES,
   iri,
   literal,
-  MUSIC_KG_ALBUMS_PREFIX,
-  MUSIC_KG_ARTISTS_PREFIX,
   MUSIC_KG_RECORDINGS_PREFIX,
   prefix2graph,
   SCHEMA_PREDICATE,
@@ -15,8 +13,9 @@ import {
   SparqlIri,
 } from '@music-kg/sparql-data';
 
-import { createUpdateQuery } from '../create-update-query';
-import { replaceBaseUri } from '../sparql.helpers';
+import { createUpdateQuery } from '../_helpers/queries/create-update-query';
+import { getTriplesForComplexPredicate } from '../_helpers/get-triples-for-complex-predicate';
+import { replaceBaseUri } from '../_helpers/replace-base-uri';
 
 export const updateRecording = async (id: string, request: UpdateRecordingRequest): Promise<void> => {
   const recordingsPrefix: string = replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX);
@@ -52,22 +51,4 @@ export const updateRecording = async (id: string, request: UpdateRecordingReques
   return axios.post(process.env.MUSIC_KG_SPARQL_ENDPOINT, query, {
     headers: { 'Content-Type': 'application/sparql-update' },
   });
-};
-
-const getTriplesForComplexPredicate = (subject: IriTerm, predicate: SparqlIri, value: string | string[]): Triple[] => {
-  const albumsPrefix: string = replaceBaseUri(MUSIC_KG_ALBUMS_PREFIX);
-  const artistsPrefix: string = replaceBaseUri(MUSIC_KG_ARTISTS_PREFIX);
-
-  switch (predicate) {
-    case SCHEMA_PREDICATE.byArtist:
-      if (Array.isArray(value)) {
-        return value.map(
-          (entry: string): Triple => ({ subject, predicate: predicate.iri, object: iri(artistsPrefix, entry) })
-        );
-      } else {
-        return [{ subject, predicate: predicate.iri, object: iri(artistsPrefix, value) }];
-      }
-    case SCHEMA_PREDICATE.inAlbum:
-      return [{ subject, predicate: SCHEMA_PREDICATE.inAlbum.iri, object: iri(albumsPrefix, value as string) }];
-  }
 };

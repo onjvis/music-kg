@@ -3,9 +3,9 @@ import { IriTerm } from 'sparqljs';
 
 import { GetSparqlResponse, MUSIC_KG_RECORDINGS_PREFIX, prefix2graph, SCHEMA_TYPE } from '@music-kg/sparql-data';
 
-import { createGetAllQuery } from '../create-get-all-query';
-import { getEntityIdsFromBindings } from '../get-entity-ids-from-bindings';
-import { replaceBaseUri } from '../sparql.helpers';
+import { createGetAllQuery } from '../_helpers/queries/create-get-all-query';
+import { getEntityIdsFromBindings } from '../_helpers/get-entity-ids-from-bindings';
+import { replaceBaseUri } from '../_helpers/replace-base-uri';
 
 export const getAllRecordings = async (): Promise<string[]> => {
   const recordingsPrefix: string = replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX);

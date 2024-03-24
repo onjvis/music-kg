@@ -2,8 +2,8 @@ import { SelectQuery, VariableTerm } from 'sparqljs';
 
 import { RDF_PREDICATE, variable } from '@music-kg/sparql-data';
 
-import { sparqlGenerator } from './sparql.helpers';
-import { GetAllQueryParams } from './sparql.models';
+import { GetAllQueryParams } from '../../_models/get-all-query-params.model';
+import { sparqlGenerator } from '../sparql-generator';
 
 export const createGetAllQuery = ({ graph, object }: GetAllQueryParams): string => {
   const subjectVariable: VariableTerm = variable('subject');

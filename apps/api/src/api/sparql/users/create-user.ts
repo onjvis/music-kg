@@ -13,8 +13,8 @@ import {
   XSD_DATATYPE,
 } from '@music-kg/sparql-data';
 
-import { createInsertQuery } from '../create-insert-query';
-import { replaceBaseUri } from '../sparql.helpers';
+import { createInsertQuery } from '../_helpers/queries/create-insert-query';
+import { replaceBaseUri } from '../_helpers/replace-base-uri';
 
 export const createUser = async (request: CreateUserRequest): Promise<string> => {
   const usersPrefix: string = replaceBaseUri(MUSIC_KG_USERS_PREFIX);

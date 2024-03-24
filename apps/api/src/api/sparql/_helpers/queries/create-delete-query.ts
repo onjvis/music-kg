@@ -2,8 +2,8 @@ import { Update, VariableTerm } from 'sparqljs';
 
 import { variable } from '@music-kg/sparql-data';
 
-import { sparqlGenerator } from './sparql.helpers';
-import { DeleteQueryParams } from './sparql.models';
+import { DeleteQueryParams } from '../../_models/delete-query-params.model';
+import { sparqlGenerator } from '../sparql-generator';
 
 export const createDeleteQuery = ({ graph, subject }: DeleteQueryParams): string => {
   const predicateVariable: VariableTerm = variable('predicate');

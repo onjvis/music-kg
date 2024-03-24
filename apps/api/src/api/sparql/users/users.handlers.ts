@@ -13,11 +13,9 @@ export const handleCreateUser = async (req: Request, res: Response<void | ErrorR
   const body: CreateUserRequest = req.body as CreateUserRequest;
 
   if (!body?.id || !body?.email || !body?.name) {
-    res
-      .status(400)
-      .send({
-        message: 'The request body is missing one or more of the following required properties: id, email, name.',
-      });
+    res.status(400).send({
+      message: 'The request body is missing one or more of the following required properties: id, email, name.',
+    });
     return;
   }
 
@@ -79,12 +77,10 @@ export const handleUpdateUser = async (req: Request, res: Response<void | ErrorR
 
     if (!user) {
       if (!body?.email || !body?.name) {
-        res
-          .status(400)
-          .send({
-            message:
-              'The user does not exist in the RDF database yet, however the request body is missing one or more of the following required properties: email, name.',
-          });
+        res.status(400).send({
+          message:
+            'The user does not exist in the RDF database yet, however the request body is missing one or more of the following required properties: email, name.',
+        });
         return;
       }
 

@@ -2,8 +2,8 @@ import { Expression, IriTerm, OperationExpression, Update, VariableTerm } from '
 
 import { variable } from '@music-kg/sparql-data';
 
-import { sparqlGenerator } from './sparql.helpers';
-import { UpdateQueryParams } from './sparql.models';
+import { UpdateQueryParams } from '../../_models/update-query-params.model';
+import { sparqlGenerator } from '../sparql-generator';
 
 export const createUpdateQuery = ({
   graph,

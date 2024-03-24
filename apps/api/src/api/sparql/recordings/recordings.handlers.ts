@@ -22,12 +22,10 @@ export const handleCreateRecording = async (req: Request, res: Response<void | E
     !body?.name ||
     !body?.sameAs
   ) {
-    res
-      .status(400)
-      .send({
-        message:
-          'The request body is missing one or more of the following required properties: id, byArtist, datePublished, duration, inAlbum, isrcCode, name, sameAs.',
-      });
+    res.status(400).send({
+      message:
+        'The request body is missing one or more of the following required properties: id, byArtist, datePublished, duration, inAlbum, isrcCode, name, sameAs.',
+    });
     return;
   }
 
@@ -100,12 +98,10 @@ export const handleUpdateRecording = async (req: Request, res: Response<void | E
         !body?.name ||
         !body?.sameAs
       ) {
-        res
-          .status(400)
-          .send({
-            message:
-              'The recording does not exist in the RDF database yet, however the request body is missing one or more of the following required properties: album, artists, datePublished, duration, isrcCode, name, sameAs.',
-          });
+        res.status(400).send({
+          message:
+            'The recording does not exist in the RDF database yet, however the request body is missing one or more of the following required properties: album, artists, datePublished, duration, isrcCode, name, sameAs.',
+        });
         return;
       }
 

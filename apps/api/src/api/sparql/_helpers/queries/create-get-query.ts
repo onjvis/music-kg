@@ -2,8 +2,8 @@ import { SelectQuery, VariableTerm } from 'sparqljs';
 
 import { variable } from '@music-kg/sparql-data';
 
-import { sparqlGenerator } from './sparql.helpers';
-import { GetQueryParams } from './sparql.models';
+import { GetQueryParams } from '../../_models/get-query-params.model';
+import { sparqlGenerator } from '../sparql-generator';
 
 export const createGetQuery = ({ graph, subject }: GetQueryParams): string => {
   const predicateVariable: VariableTerm = variable('predicate');
