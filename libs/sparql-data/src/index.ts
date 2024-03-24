@@ -4,6 +4,7 @@ export * from './lib/http/sparql-binding.type';
 export * from './lib/http/sparql-object.type';
 export * from './lib/http/sparql-predicate.type';
 export * from './lib/http/sparql-results.type';
+export * from './lib/http/sparql-subject.type';
 
 // SPARQL predicates
 export * from './lib/sparql/predicates/rdf-predicate.model';

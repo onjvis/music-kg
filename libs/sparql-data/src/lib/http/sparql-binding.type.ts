@@ -1,7 +1,9 @@
 import { SparqlObject } from './sparql-object.type';
 import { SparqlPredicate } from './sparql-predicate.type';
+import { SparqlSubject } from './sparql-subject.type';
 
 export type SparqlBinding = {
-  predicate: SparqlPredicate;
-  object: SparqlObject;
+  subject?: SparqlSubject;
+  predicate?: SparqlPredicate;
+  object?: SparqlObject;
 };
