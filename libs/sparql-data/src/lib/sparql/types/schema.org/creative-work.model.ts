@@ -8,5 +8,6 @@ export type CreativeWork = Thing & {
   creator?: EntityId; // entity of type Person
   dateCreated?: string;
   dateModified?: string;
+  datePublished?: string;
   description?: string;
 };

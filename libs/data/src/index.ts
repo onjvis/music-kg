@@ -6,7 +6,9 @@ export * from './lib/auth/register.request';
 export * from './lib/auth/register.response';
 
 // Sparql types
+export * from './lib/sparql/create-recording.request';
 export * from './lib/sparql/create-user.request';
+export * from './lib/sparql/update-recording.request';
 export * from './lib/sparql/update-user.request';
 
 export * from './lib/error.response';

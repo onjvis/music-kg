@@ -29,6 +29,7 @@ export * from './lib/sparql/types/schema.org/thing.model';
 
 // SPARQL
 export * from './lib/sparql/music-kg-prefix.model';
+export * from './lib/sparql/sparql-datatype-mapper.model';
 export * from './lib/sparql/sparql-iri.type';
 export * from './lib/sparql/sparql-prefix.model';
 export * from './lib/sparql/utils';
