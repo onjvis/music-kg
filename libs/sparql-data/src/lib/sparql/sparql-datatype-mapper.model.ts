@@ -8,7 +8,14 @@ export const SPARQL_DATATYPE_MAPPER: Map<SparqlIri, SparqlIri> = new Map<SparqlI
   [SCHEMA_PREDICATE.duration, XSD_DATATYPE.duration],
   [SCHEMA_PREDICATE.isrcCode, XSD_DATATYPE.string],
   [SCHEMA_PREDICATE.name, XSD_DATATYPE.string],
+  [SCHEMA_PREDICATE.numTracks, XSD_DATATYPE.integer],
   [SCHEMA_PREDICATE.sameAs, XSD_DATATYPE.anyURI],
 ]);
 
-export const COMPLEX_PREDICATES: SparqlIri[] = [SCHEMA_PREDICATE.byArtist, SCHEMA_PREDICATE.inAlbum];
+export const COMPLEX_PREDICATES: SparqlIri[] = [
+  SCHEMA_PREDICATE.albumProductionType,
+  SCHEMA_PREDICATE.albumReleaseType,
+  SCHEMA_PREDICATE.byArtist,
+  SCHEMA_PREDICATE.inAlbum,
+  SCHEMA_PREDICATE.track,
+];

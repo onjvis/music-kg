@@ -6,6 +6,7 @@ import {
   MUSIC_KG_ARTISTS_PREFIX,
   MUSIC_KG_RECORDINGS_PREFIX,
   SCHEMA_PREDICATE,
+  SCHEMA_TYPE,
   SparqlIri,
 } from '@music-kg/sparql-data';
 
@@ -21,6 +22,9 @@ export const getTriplesForComplexPredicate = (
   const recordingsPrefix: string = replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX);
 
   switch (predicate) {
+    case SCHEMA_PREDICATE.albumProductionType:
+    case SCHEMA_PREDICATE.albumReleaseType:
+      return [{ subject, predicate: predicate.iri, object: SCHEMA_TYPE[value as string].iri }];
     case SCHEMA_PREDICATE.byArtist:
       if (Array.isArray(value)) {
         return value.map(
