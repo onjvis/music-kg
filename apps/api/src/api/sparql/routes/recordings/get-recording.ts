@@ -9,9 +9,9 @@ import {
   prefix2graph,
 } from '@music-kg/sparql-data';
 
-import { createGetQuery } from '../_helpers/queries/create-get-query';
-import { getPropertiesFromBindings } from '../_helpers/get-properties-from-bindings';
-import { replaceBaseUri } from '../_helpers/replace-base-uri';
+import { createGetQuery } from '../../helpers/queries/create-get-query';
+import { getPropertiesFromBindings } from '../../helpers/get-properties-from-bindings';
+import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const getRecording = async (id: string): Promise<MusicRecording> => {
   const recordingsPrefix: string = replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX);

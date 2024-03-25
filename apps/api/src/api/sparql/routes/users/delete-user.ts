@@ -3,8 +3,8 @@ import { IriTerm } from 'sparqljs';
 
 import { iri, MUSIC_KG_USERS_PREFIX, prefix2graph } from '@music-kg/sparql-data';
 
-import { createDeleteQuery } from '../_helpers/queries/create-delete-query';
-import { replaceBaseUri } from '../_helpers/replace-base-uri';
+import { createDeleteQuery } from '../../helpers/queries/create-delete-query';
+import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const deleteUser = async (id: string): Promise<void> => {
   const usersPrefix: string = replaceBaseUri(MUSIC_KG_USERS_PREFIX);

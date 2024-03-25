@@ -1,6 +1,6 @@
 import { Update } from 'sparqljs';
 
-import { InsertQueryParams } from '../../_models/insert-query-params.model';
+import { InsertQueryParams } from '../../models/insert-query-params.model';
 import { sparqlGenerator } from '../sparql-generator';
 
 export const createInsertQuery = ({ graph, triples }: InsertQueryParams): string => {

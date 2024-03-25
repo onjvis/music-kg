@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { authenticateToken } from '../../auth/auth.middleware';
+import { authenticateToken } from '../../../auth/auth.middleware';
 import {
   handleCreateUser,
   handleDeleteUser,

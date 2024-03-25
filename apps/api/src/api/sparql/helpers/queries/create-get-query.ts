@@ -2,7 +2,7 @@ import { SelectQuery, VariableTerm } from 'sparqljs';
 
 import { variable } from '@music-kg/sparql-data';
 
-import { GetQueryParams } from '../../_models/get-query-params.model';
+import { GetQueryParams } from '../../models/get-query-params.model';
 import { sparqlGenerator } from '../sparql-generator';
 
 export const createGetQuery = ({ graph, subject }: GetQueryParams): string => {

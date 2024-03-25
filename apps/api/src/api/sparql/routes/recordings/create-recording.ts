@@ -15,8 +15,8 @@ import {
   XSD_DATATYPE,
 } from '@music-kg/sparql-data';
 
-import { createInsertQuery } from '../_helpers/queries/create-insert-query';
-import { replaceBaseUri } from '../_helpers/replace-base-uri';
+import { createInsertQuery } from '../../helpers/queries/create-insert-query';
+import { replaceBaseUri } from '../../helpers/replace-base-uri';
 import { ms2Duration } from './recordings.helpers';
 
 export const createRecording = async (request: CreateRecordingRequest): Promise<string> => {

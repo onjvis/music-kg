@@ -2,7 +2,7 @@ import { Update, VariableTerm } from 'sparqljs';
 
 import { variable } from '@music-kg/sparql-data';
 
-import { DeleteQueryParams } from '../../_models/delete-query-params.model';
+import { DeleteQueryParams } from '../../models/delete-query-params.model';
 import { sparqlGenerator } from '../sparql-generator';
 
 export const createDeleteQuery = ({ graph, subject }: DeleteQueryParams): string => {

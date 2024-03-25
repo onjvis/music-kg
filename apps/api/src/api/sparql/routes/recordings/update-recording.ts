@@ -13,9 +13,9 @@ import {
   SparqlIri,
 } from '@music-kg/sparql-data';
 
-import { createUpdateQuery } from '../_helpers/queries/create-update-query';
-import { getTriplesForComplexPredicate } from '../_helpers/get-triples-for-complex-predicate';
-import { replaceBaseUri } from '../_helpers/replace-base-uri';
+import { createUpdateQuery } from '../../helpers/queries/create-update-query';
+import { getTriplesForComplexPredicate } from '../../helpers/get-triples-for-complex-predicate';
+import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const updateRecording = async (id: string, request: UpdateRecordingRequest): Promise<void> => {
   const recordingsPrefix: string = replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX);
