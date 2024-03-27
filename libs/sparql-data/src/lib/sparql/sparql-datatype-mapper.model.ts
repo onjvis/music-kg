@@ -3,6 +3,8 @@ import { XSD_DATATYPE } from './types/xsd-datatype.model';
 import { SparqlIri } from './sparql-iri.type';
 
 export const SPARQL_DATATYPE_MAPPER: Map<SparqlIri, SparqlIri> = new Map<SparqlIri, SparqlIri>([
+  [SCHEMA_PREDICATE.dateCreated, XSD_DATATYPE.dateTime],
+  [SCHEMA_PREDICATE.dateModified, XSD_DATATYPE.dateTime],
   [SCHEMA_PREDICATE.datePublished, XSD_DATATYPE.date],
   [SCHEMA_PREDICATE.email, XSD_DATATYPE.string],
   [SCHEMA_PREDICATE.duration, XSD_DATATYPE.duration],
@@ -16,6 +18,7 @@ export const COMPLEX_PREDICATES: SparqlIri[] = [
   SCHEMA_PREDICATE.albumProductionType,
   SCHEMA_PREDICATE.albumReleaseType,
   SCHEMA_PREDICATE.byArtist,
+  SCHEMA_PREDICATE.creator,
   SCHEMA_PREDICATE.inAlbum,
   SCHEMA_PREDICATE.track,
 ];
