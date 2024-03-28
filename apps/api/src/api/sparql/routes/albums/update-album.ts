@@ -1,5 +1,7 @@
-import { UpdateAlbumRequest } from '@music-kg/data';
+import axios from 'axios';
 import { IriTerm, Triple } from 'sparqljs';
+
+import { UpdateAlbumRequest } from '@music-kg/data';
 import {
   COMPLEX_PREDICATES,
   iri,
@@ -10,9 +12,9 @@ import {
   SPARQL_DATATYPE_MAPPER,
   SparqlIri,
 } from '@music-kg/sparql-data';
+
 import { createUpdateQuery } from '../../helpers/queries/create-update-query';
 import { getTriplesForComplexPredicate } from '../../helpers/get-triples-for-complex-predicate';
-import axios from 'axios';
 import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const updateAlbum = async (id: string, request: UpdateAlbumRequest): Promise<void> => {
@@ -27,11 +29,22 @@ export const updateAlbum = async (id: string, request: UpdateAlbumRequest): Prom
       triplesToInsert.push(...getTriplesForComplexPredicate(albumSubject, predicate, request[propertyName]));
     } else {
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
-      triplesToInsert.push({
-        subject: albumSubject,
-        predicate: SCHEMA_PREDICATE[propertyName].iri as IriTerm,
-        object: literal(request[propertyName], objectDatatype),
-      });
+
+      const newTriples: Triple[] = Array.isArray(request[propertyName])
+        ? request[propertyName].map((value) => ({
+            subject: albumSubject,
+            predicate: predicate.iri,
+            object: literal(value, objectDatatype),
+          }))
+        : [
+            {
+              subject: albumSubject,
+              predicate: SCHEMA_PREDICATE[propertyName].iri as IriTerm,
+              object: literal(request[propertyName], objectDatatype),
+            },
+          ];
+
+      triplesToInsert.push(...newTriples);
     }
   });
 

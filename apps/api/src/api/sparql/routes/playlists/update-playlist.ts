@@ -31,11 +31,21 @@ export const updatePlaylist = async (id: string, request: UpdatePlaylistRequest)
     } else {
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
 
-      triplesToInsert.push({
-        subject: playlistSubject,
-        predicate: SCHEMA_PREDICATE[propertyName].iri as IriTerm,
-        object: literal(request[propertyName], objectDatatype),
-      });
+      const newTriples: Triple[] = Array.isArray(request[propertyName])
+        ? request[propertyName].map((value) => ({
+            subject: playlistSubject,
+            predicate: predicate.iri,
+            object: literal(value, objectDatatype),
+          }))
+        : [
+            {
+              subject: playlistSubject,
+              predicate: SCHEMA_PREDICATE[propertyName].iri as IriTerm,
+              object: literal(request[propertyName], objectDatatype),
+            },
+          ];
+
+      triplesToInsert.push(...newTriples);
     }
   });
 

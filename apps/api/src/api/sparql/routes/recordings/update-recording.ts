@@ -29,11 +29,22 @@ export const updateRecording = async (id: string, request: UpdateRecordingReques
       triplesToInsert.push(...getTriplesForComplexPredicate(recordingSubject, predicate, request[propertyName]));
     } else {
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
-      triplesToInsert.push({
-        subject: recordingSubject,
-        predicate: SCHEMA_PREDICATE[propertyName].iri as IriTerm,
-        object: literal(request[propertyName], objectDatatype),
-      });
+
+      const newTriples: Triple[] = Array.isArray(request[propertyName])
+        ? request[propertyName].map((value) => ({
+            subject: recordingSubject,
+            predicate: predicate.iri,
+            object: literal(value, objectDatatype),
+          }))
+        : [
+            {
+              subject: recordingSubject,
+              predicate: SCHEMA_PREDICATE[propertyName].iri as IriTerm,
+              object: literal(request[propertyName], objectDatatype),
+            },
+          ];
+
+      triplesToInsert.push(...newTriples);
     }
   });
 
