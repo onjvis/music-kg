@@ -8,6 +8,8 @@ export const SPARQL_DATATYPE_MAPPER: Map<SparqlIri, SparqlIri> = new Map<SparqlI
   [SCHEMA_PREDICATE.datePublished, XSD_DATATYPE.date],
   [SCHEMA_PREDICATE.email, XSD_DATATYPE.string],
   [SCHEMA_PREDICATE.duration, XSD_DATATYPE.duration],
+  [SCHEMA_PREDICATE.genre, XSD_DATATYPE.string],
+  [SCHEMA_PREDICATE.image, XSD_DATATYPE.anyURI],
   [SCHEMA_PREDICATE.isrcCode, XSD_DATATYPE.string],
   [SCHEMA_PREDICATE.name, XSD_DATATYPE.string],
   [SCHEMA_PREDICATE.numTracks, XSD_DATATYPE.integer],
@@ -15,6 +17,7 @@ export const SPARQL_DATATYPE_MAPPER: Map<SparqlIri, SparqlIri> = new Map<SparqlI
 ]);
 
 export const COMPLEX_PREDICATES: SparqlIri[] = [
+  SCHEMA_PREDICATE.album,
   SCHEMA_PREDICATE.albumProductionType,
   SCHEMA_PREDICATE.albumReleaseType,
   SCHEMA_PREDICATE.byArtist,

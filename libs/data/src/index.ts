@@ -7,10 +7,12 @@ export * from './lib/auth/register.response';
 
 // Sparql types
 export * from './lib/sparql/create-album.request';
+export * from './lib/sparql/create-artist.request';
 export * from './lib/sparql/create-playlist.request';
 export * from './lib/sparql/create-recording.request';
 export * from './lib/sparql/create-user.request';
 export * from './lib/sparql/update-album.request';
+export * from './lib/sparql/update-artist.request';
 export * from './lib/sparql/update-recording.request';
 export * from './lib/sparql/update-playlist.request';
 export * from './lib/sparql/update-user.request';
