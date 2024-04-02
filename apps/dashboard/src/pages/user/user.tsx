@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { GetUserResponse } from '@music-kg/data';
+import { Person } from '@music-kg/sparql-data';
 
 import { AlertData } from '../../components/alert/models/alert-data.model';
 import ErrorAlert from '../../components/alert/error-alert';
@@ -15,7 +15,7 @@ import CreateProfile from './components/create-profile';
 import UserProfile from './components/user-profile';
 
 export const User = () => {
-  const [userProfile, setUserProfile] = useState<GetUserResponse>({ email: '', id: '', name: '' });
+  const [userProfile, setUserProfile] = useState<Person>({ email: '', id: '', name: '' });
   const [alertData, setAlertData] = useState<AlertData>();
   const { currentUser, removeCurrentUser } = useCurrentUser();
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export const User = () => {
     const url = `${ApiUrl.SPARQL_USERS}/${currentUser?.id}`;
 
     httpClient
-      .get<GetUserResponse>(url)
+      .get<Person>(url)
       .then((response) => {
         setUserProfile(response?.data);
       })
