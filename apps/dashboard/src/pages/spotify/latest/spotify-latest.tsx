@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
-import { SpotifyTrackDetail } from '../components/spotify-track-detail';
+import { SpotifyTrackDetailCard } from '../components/spotify-track-detail-card';
 import { SpotifyTrackItem } from '../components/spotify-track-item';
 
 export const SpotifyLatest = () => {
@@ -24,16 +24,7 @@ export const SpotifyLatest = () => {
 
   return (
     <div className="flex flex-grow flex-col gap-8">
-      {selectedTrack && (
-        <div className="flex flex-1 flex-col rounded border-2 bg-white">
-          <SpotifyTrackDetail track={selectedTrack} />
-          <div className="flex flex-row justify-end gap-4 border-t-2 p-4">
-            <button className="btn-primary" onClick={handleDetailClose}>
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {selectedTrack && <SpotifyTrackDetailCard handleDetailClose={handleDetailClose} track={selectedTrack} />}
       <div className="flex flex-row items-center justify-between gap-4">
         <h1>Your latest played tracks</h1>
         <button className="btn-primary" onClick={handleGetRecentlyPlayed}>

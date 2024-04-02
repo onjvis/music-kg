@@ -44,4 +44,8 @@
   .btn-primary {
     @apply rounded-full bg-blue-500 py-2 px-5 font-semibold text-white shadow-md hover:bg-blue-700;
   }
+
+  .btn-secondary {
+    @apply rounded-full bg-white py-2 px-5 font-semibold text-blue-500 shadow-md hover:text-blue-700;
+  }
 }
