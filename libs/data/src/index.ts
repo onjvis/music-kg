@@ -20,6 +20,7 @@ export * from './lib/sparql/update-user.request';
 // Spotify types
 export * from './lib/spotify/spotify-album.model';
 export * from './lib/spotify/spotify-artist.model';
+export * from './lib/spotify/spotify-playlist.model';
 
 export * from './lib/error.response';
 export * from './lib/http-header.constants';
