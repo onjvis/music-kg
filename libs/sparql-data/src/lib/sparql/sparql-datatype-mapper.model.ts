@@ -9,11 +9,9 @@ export const SPARQL_DATATYPE_MAPPER: Map<SparqlIri, SparqlIri> = new Map<SparqlI
   [SCHEMA_PREDICATE.email, XSD_DATATYPE.string],
   [SCHEMA_PREDICATE.duration, XSD_DATATYPE.duration],
   [SCHEMA_PREDICATE.genre, XSD_DATATYPE.string],
-  [SCHEMA_PREDICATE.image, XSD_DATATYPE.anyURI],
   [SCHEMA_PREDICATE.isrcCode, XSD_DATATYPE.string],
   [SCHEMA_PREDICATE.name, XSD_DATATYPE.string],
   [SCHEMA_PREDICATE.numTracks, XSD_DATATYPE.integer],
-  [SCHEMA_PREDICATE.sameAs, XSD_DATATYPE.anyURI],
 ]);
 
 export const COMPLEX_PREDICATES: SparqlIri[] = [
@@ -23,5 +21,7 @@ export const COMPLEX_PREDICATES: SparqlIri[] = [
   SCHEMA_PREDICATE.byArtist,
   SCHEMA_PREDICATE.creator,
   SCHEMA_PREDICATE.inAlbum,
+  SCHEMA_PREDICATE.image,
+  SCHEMA_PREDICATE.sameAs,
   SCHEMA_PREDICATE.track,
 ];

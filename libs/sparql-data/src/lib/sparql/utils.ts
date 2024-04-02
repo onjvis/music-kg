@@ -2,6 +2,13 @@ import { BlankTerm, IriTerm, LiteralTerm, VariableTerm } from 'sparqljs';
 
 import { SparqlIri } from './sparql-iri.type';
 
+export const externalIri = (resourceId: string): IriTerm => {
+  return {
+    termType: 'NamedNode',
+    value: resourceId,
+  } as IriTerm;
+};
+
 export const iri = (prefix: string, resourceId?: string): IriTerm => {
   return {
     termType: 'NamedNode',

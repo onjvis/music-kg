@@ -1,6 +1,7 @@
 import { IriTerm, Triple } from 'sparqljs';
 
 import {
+  externalIri,
   iri,
   MUSIC_KG_ALBUMS_PREFIX,
   MUSIC_KG_ARTISTS_PREFIX,
@@ -40,6 +41,9 @@ export const getTriplesForComplexPredicate = (
     case SCHEMA_PREDICATE.creator:
     case SCHEMA_PREDICATE.inAlbum:
       return [{ subject, predicate: predicate.iri, object: iri(objectPrefix, value as string) }];
+    case SCHEMA_PREDICATE.image:
+    case SCHEMA_PREDICATE.sameAs:
+      return [{ subject, predicate: predicate.iri, object: externalIri(value as string) }];
   }
 };
 

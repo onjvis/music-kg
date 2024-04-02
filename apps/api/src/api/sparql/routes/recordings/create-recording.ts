@@ -3,6 +3,7 @@ import { IriTerm, Triple } from 'sparqljs';
 
 import { CreateRecordingRequest } from '@music-kg/data';
 import {
+  externalIri,
   iri,
   literal,
   MUSIC_KG_ALBUMS_PREFIX,
@@ -60,7 +61,7 @@ export const createRecording = async (request: CreateRecordingRequest): Promise<
     {
       subject: recordingSubject,
       predicate: SCHEMA_PREDICATE.sameAs.iri,
-      object: literal(request.sameAs, XSD_DATATYPE.anyURI),
+      object: externalIri(request.sameAs),
     },
   ];
 

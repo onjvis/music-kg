@@ -3,6 +3,7 @@ import { IriTerm, Triple } from 'sparqljs';
 
 import { CreatePlaylistRequest } from '@music-kg/data';
 import {
+  externalIri,
   iri,
   literal,
   MUSIC_KG_PLAYLISTS_PREFIX,
@@ -42,7 +43,7 @@ export const createPlaylist = async (request: CreatePlaylistRequest): Promise<st
     {
       subject: playlistSubject,
       predicate: SCHEMA_PREDICATE.image.iri,
-      object: literal(request.image, XSD_DATATYPE.anyURI),
+      object: externalIri(request.image),
     },
     {
       subject: playlistSubject,
@@ -52,7 +53,7 @@ export const createPlaylist = async (request: CreatePlaylistRequest): Promise<st
     {
       subject: playlistSubject,
       predicate: SCHEMA_PREDICATE.sameAs.iri,
-      object: literal(request.sameAs, XSD_DATATYPE.anyURI),
+      object: externalIri(request.sameAs),
     },
     {
       subject: playlistSubject,
