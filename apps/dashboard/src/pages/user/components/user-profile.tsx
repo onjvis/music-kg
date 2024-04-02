@@ -1,6 +1,6 @@
 import { Person } from '@music-kg/sparql-data';
 
-import FlexTextRow from '../../../components/flex-text-row';
+import { FlexTextRow } from '../../../components/flex-text-row';
 
 type UserProfileProps = {
   userProfile: Person;
@@ -14,5 +14,3 @@ export const UserProfile = ({ userProfile }: UserProfileProps) => {
     </div>
   );
 };
-
-export default UserProfile;

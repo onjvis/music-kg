@@ -1,13 +1,13 @@
 import { Track } from '@spotify/web-api-ts-sdk';
 
-import FlexTextRow from '../../../components/flex-text-row';
+import { FlexTextRow } from '../../../components/flex-text-row';
 import { ms2timeStr } from '../../../utils/ms2timeStr';
 
 type SpotifyTrackDetailProps = {
   track: Track;
 };
 
-const SpotifyTrackDetail = ({ track }: SpotifyTrackDetailProps) => {
+export const SpotifyTrackDetail = ({ track }: SpotifyTrackDetailProps) => {
   return (
     <div className="flex flex-row gap-2 p-4">
       <div className="flex w-1/4 flex-col gap-4">
@@ -44,5 +44,3 @@ const SpotifyTrackDetail = ({ track }: SpotifyTrackDetailProps) => {
     </div>
   );
 };
-
-export default SpotifyTrackDetail;

@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { Person } from '@music-kg/sparql-data';
 
 import { AlertData } from '../../components/alert/models/alert-data.model';
-import ErrorAlert from '../../components/alert/error-alert';
+import { ErrorAlert } from '../../components/alert/error-alert';
 import { useCurrentUser } from '../../contexts/current-user.context';
 import { useToken } from '../../hooks/use-token';
 import { AppRoute } from '../../models/enums/app-route.enum';
 import { ApiUrl } from '../../models/api-url.model';
 import httpClient from '../../services/http-client';
-import CreateProfile from './components/create-profile';
-import UserProfile from './components/user-profile';
+import { CreateProfile } from './components/create-profile';
+import { UserProfile } from './components/user-profile';
 
 export const User = () => {
   const [userProfile, setUserProfile] = useState<Person>({ email: '', id: '', name: '' });

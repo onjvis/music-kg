@@ -3,7 +3,7 @@ type FlexTextRowProps = {
   value: string;
 };
 
-const FlexTextRow = ({ label, value }: FlexTextRowProps) => {
+export const FlexTextRow = ({ label, value }: FlexTextRowProps) => {
   return (
     <div className="flex flex-row justify-between">
       <strong>{label}</strong>
@@ -11,5 +11,3 @@ const FlexTextRow = ({ label, value }: FlexTextRowProps) => {
     </div>
   );
 };
-
-export default FlexTextRow;

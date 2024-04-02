@@ -6,9 +6,10 @@ import { IconContext } from 'react-icons';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
 import FlexTextRow from '../../../../components/flex-text-row';
+import { FlexTextRow } from '../../../../components/flex-text-row';
 import { ms2timeStr } from '../../../../utils/ms2timeStr';
-import SpotifyTrackDetail from '../../components/spotify-track-detail';
-import SpotifyTrackItem from '../../components/spotify-track-item';
+import { SpotifyTrackDetail } from '../../components/spotify-track-detail';
+import { SpotifyTrackItem } from '../../components/spotify-track-item';
 
 export const SpotifyPlaylistDetail = () => {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
@@ -79,5 +80,3 @@ export const SpotifyPlaylistDetail = () => {
     </div>
   );
 };
-
-export default SpotifyPlaylistDetail;

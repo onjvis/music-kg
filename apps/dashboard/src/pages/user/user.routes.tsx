@@ -7,5 +7,3 @@ export const UserRoutes: RouteObject = {
   path: AppRoute.USER,
   element: <User />,
 };
-
-export default UserRoutes;

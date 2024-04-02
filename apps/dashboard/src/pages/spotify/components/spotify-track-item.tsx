@@ -8,7 +8,7 @@ type SpotifyTrackItemProps = {
   selected: boolean;
 };
 
-const SpotifyTrackItem = ({ track, handleSelect, selected }: SpotifyTrackItemProps) => {
+export const SpotifyTrackItem = ({ track, handleSelect, selected }: SpotifyTrackItemProps) => {
   const handleTrackClicked = (): void => handleSelect(track);
 
   return (
@@ -35,5 +35,3 @@ const SpotifyTrackItem = ({ track, handleSelect, selected }: SpotifyTrackItemPro
     </div>
   );
 };
-
-export default SpotifyTrackItem;

@@ -3,8 +3,8 @@ import { FaHeadphones, FaHouse, FaSpotify, FaUser } from 'react-icons/fa6';
 
 import { useCurrentUser } from '../../../contexts/current-user.context';
 import { AppRoute } from '../../../models/enums/app-route.enum';
-import CurrentUser from './current-user';
-import NavbarLink from './navbar-link';
+import { CurrentUser } from './current-user';
+import { NavbarLink } from './navbar-link';
 
 export const Navbar = () => {
   const { currentUser } = useCurrentUser();
@@ -38,5 +38,3 @@ export const Navbar = () => {
     </div>
   );
 };
-
-export default Navbar;

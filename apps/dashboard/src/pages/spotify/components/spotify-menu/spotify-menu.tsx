@@ -1,6 +1,7 @@
-import { AppRoute } from '../../../../models/enums/app-route.enum';
 import { useState } from 'react';
-import SpotifyMenuItem from './spotify-menu-item';
+
+import { AppRoute } from '../../../../models/enums/app-route.enum';
+import { SpotifyMenuItem } from './spotify-menu-item';
 
 export const SpotifyMenu = () => {
   const [selectedTab, setSelectedTab] = useState<AppRoute>(AppRoute.SPOTIFY_LATEST);
@@ -31,5 +32,3 @@ export const SpotifyMenu = () => {
     </div>
   );
 };
-
-export default SpotifyMenu;

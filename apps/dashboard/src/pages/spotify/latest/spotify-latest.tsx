@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
-import SpotifyTrackDetail from '../components/spotify-track-detail';
-import SpotifyTrackItem from '../components/spotify-track-item';
+import { SpotifyTrackDetail } from '../components/spotify-track-detail';
+import { SpotifyTrackItem } from '../components/spotify-track-item';
 
 export const SpotifyLatest = () => {
   const [latestTracks, setLatestTracks] = useState([]);
@@ -55,5 +55,3 @@ export const SpotifyLatest = () => {
     </div>
   );
 };
-
-export default SpotifyLatest;

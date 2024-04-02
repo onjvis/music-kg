@@ -25,5 +25,3 @@ export const SpotifyMenuItem = ({ className, handleSelect, isSelected, title, to
     </Link>
   );
 };
-
-export default SpotifyMenuItem;

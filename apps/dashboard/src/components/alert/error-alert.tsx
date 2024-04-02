@@ -17,5 +17,3 @@ export const ErrorAlert = ({ className, message }: SharedAlertProps) => {
     />
   );
 };
-
-export default ErrorAlert;

@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { AlertData } from '../../../components/alert/models/alert-data.model';
-import ErrorAlert from '../../../components/alert/error-alert';
-import FormErrorAlert from '../../../components/alert/form-error-alert';
-import SuccessAlert from '../../../components/alert/success-alert';
+import { ErrorAlert } from '../../../components/alert/error-alert';
+import { FormErrorAlert } from '../../../components/alert/form-error-alert';
+import { SuccessAlert } from '../../../components/alert/success-alert';
 import { useCurrentUser } from '../../../contexts/current-user.context';
 import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
@@ -61,5 +61,3 @@ export const CreateProfile = ({ id, email }: CreateProfileProps) => {
     </div>
   );
 };
-
-export default CreateProfile;

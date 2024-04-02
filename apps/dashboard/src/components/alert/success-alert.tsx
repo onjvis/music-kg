@@ -17,5 +17,3 @@ export const SuccessAlert = ({ message }: SharedAlertProps) => {
     />
   );
 };
-
-export default SuccessAlert;

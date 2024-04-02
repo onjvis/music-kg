@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { CurrentUserResponse, LoginRequest, LoginResponse } from '@music-kg/data';
 
 import { AlertData } from '../../../components/alert/models/alert-data.model';
-import ErrorAlert from '../../../components/alert/error-alert';
-import FormErrorAlert from '../../../components/alert/form-error-alert';
+import { ErrorAlert } from '../../../components/alert/error-alert';
+import { FormErrorAlert } from '../../../components/alert/form-error-alert';
 import { useCurrentUser } from '../../../contexts/current-user.context';
 import { useToken } from '../../../hooks/use-token';
 import { AppRoute } from '../../../models/enums/app-route.enum';
@@ -69,5 +69,3 @@ export const LoginForm = () => {
     </div>
   );
 };
-
-export default LoginForm;

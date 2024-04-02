@@ -59,5 +59,3 @@ export const CurrentUserProvider = ({ children }: CurrentUserProviderProps) => {
     </CurrentUserContext.Provider>
   );
 };
-
-export default CurrentUserProvider;

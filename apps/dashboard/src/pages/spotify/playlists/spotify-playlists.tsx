@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
-import SpotifyPlaylistItem from './components/spotify-playlist-item';
+import { SpotifyPlaylistItem } from './components/spotify-playlist-item';
 
 export const SpotifyPlaylists = () => {
   const [playlists, setPlaylists] = useState([]);
@@ -31,5 +31,3 @@ export const SpotifyPlaylists = () => {
     </div>
   );
 };
-
-export default SpotifyPlaylists;

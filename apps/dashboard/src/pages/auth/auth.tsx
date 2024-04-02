@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import AuthModeToggle from './components/auth-mode-toggle';
-import AuthModeToggleOption from './components/auth-mode-toggle-option';
-import LoginForm from './components/login-form';
-import RegisterForm from './components/register-form';
+import { AuthModeToggle } from './components/auth-mode-toggle';
+import { AuthModeToggleOption } from './components/auth-mode-toggle-option';
+import { LoginForm } from './components/login-form';
+import { RegisterForm } from './components/register-form';
 import { AuthMode } from './models/auth-mode.type';
 
 export const Auth = () => {
@@ -30,5 +30,3 @@ export const Auth = () => {
     </div>
   );
 };
-
-export default Auth;

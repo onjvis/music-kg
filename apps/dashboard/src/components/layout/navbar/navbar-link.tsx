@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 import { AppRoute } from '../../../models/enums/app-route.enum';
-import { Link } from 'react-router-dom';
 
 type NavbarLinkProps = {
   children?: ReactNode;
@@ -15,5 +15,3 @@ export const NavbarLink = ({ to, children }: NavbarLinkProps) => {
     </Link>
   );
 };
-
-export default NavbarLink;

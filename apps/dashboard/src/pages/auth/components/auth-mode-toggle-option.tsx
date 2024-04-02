@@ -19,5 +19,3 @@ export const AuthModeToggleOption = ({ authMode, className, handleClick, isSelec
     </div>
   );
 };
-
-export default AuthModeToggleOption;

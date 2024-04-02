@@ -27,5 +27,3 @@ export const SpotifyPlaylistItem = ({ playlist }: SpotifyPlaylistItemProps) => {
     </div>
   );
 };
-
-export default SpotifyPlaylistItem;

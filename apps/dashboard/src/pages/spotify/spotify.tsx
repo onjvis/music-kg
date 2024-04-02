@@ -6,9 +6,9 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 import { AppRoute } from '../../models/enums/app-route.enum';
 import { SPOTIFY_VERIFIER_KEY } from '../../models/local-storage.constants';
-import SpotifyMenu from './components/spotify-menu/spotify-menu';
+import { SpotifyMenu } from './components/spotify-menu/spotify-menu';
 
-const Spotify = () => {
+export const Spotify = () => {
   const [buttonText, setButtonText] = useState('Authorize');
   const [isAuthenticationFinished, setAuthenticationFinished] = useState(false);
 
@@ -60,5 +60,3 @@ const Spotify = () => {
     </div>
   );
 };
-
-export default Spotify;

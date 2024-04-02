@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
-import Navbar from '../components/layout/navbar/navbar';
-import CurrentUserProvider from '../contexts/current-user.context';
+import { Navbar } from '../components/layout/navbar/navbar';
+import { CurrentUserProvider } from '../contexts/current-user.context';
 
 export const Home = () => {
   return (
@@ -13,5 +13,3 @@ export const Home = () => {
     </CurrentUserProvider>
   );
 };
-
-export default Home;

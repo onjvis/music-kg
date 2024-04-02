@@ -42,5 +42,3 @@ export const CurrentUser = () => {
     </div>
   );
 };
-
-export default CurrentUser;

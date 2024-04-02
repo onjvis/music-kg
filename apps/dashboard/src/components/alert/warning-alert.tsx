@@ -17,5 +17,3 @@ export const WarningAlert = ({ message }: SharedAlertProps) => {
     />
   );
 };
-
-export default WarningAlert;

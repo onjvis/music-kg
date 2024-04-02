@@ -1,5 +1,6 @@
-import { ACCESS_TOKEN_KEY } from '../models/local-storage.constants';
 import { useState } from 'react';
+
+import { ACCESS_TOKEN_KEY } from '../models/local-storage.constants';
 
 export type UseTokenType = {
   removeToken: () => void;
