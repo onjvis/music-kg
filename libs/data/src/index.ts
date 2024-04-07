@@ -21,6 +21,7 @@ export * from './lib/sparql/update-user.request';
 export * from './lib/spotify/spotify-album.model';
 export * from './lib/spotify/spotify-artist.model';
 export * from './lib/spotify/spotify-playlist.model';
+export * from './lib/spotify/spotify-search-result.model';
 export * from './lib/spotify/spotify-track.model';
 
 export * from './lib/error.response';

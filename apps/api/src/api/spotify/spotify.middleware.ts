@@ -20,3 +20,12 @@ export const provideSpotifyApi = (req: Request, res: Response, next: NextFunctio
     res.sendStatus(401);
   }
 };
+
+export const provideSpotifyApiSimple = (_: Request, res: Response, next: NextFunction): void => {
+  res.locals.spotifyApi = SpotifyApi.withClientCredentials(
+    process.env.SPOTIFY_CLIENT_ID,
+    process.env.SPOTIFY_CLIENT_SECRET
+  );
+
+  next();
+};
