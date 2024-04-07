@@ -7,4 +7,5 @@ export const ApiUrl = {
   SPARQL_USERS: '/sparql/users',
   SPOTIFY_USERS_PLAYLISTS: '/spotify/playlists',
   SPOTIFY_RECENTLY_PLAYED: '/spotify/recently-played',
+  SPOTIFY_SEARCH: '/spotify/search',
 } as const;

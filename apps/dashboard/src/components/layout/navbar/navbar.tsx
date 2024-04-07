@@ -1,5 +1,5 @@
 import { IconContext } from 'react-icons';
-import { FaHeadphones, FaHouse, FaSpotify, FaUser } from 'react-icons/fa6';
+import { FaDownload, FaHeadphones, FaHouse, FaSpotify, FaUser } from 'react-icons/fa6';
 
 import { useCurrentUser } from '../../../contexts/current-user.context';
 import { AppRoute } from '../../../models/enums/app-route.enum';
@@ -30,6 +30,11 @@ export const Navbar = () => {
           {currentUser?.id && currentUser?.email && (
             <NavbarLink to={AppRoute.SPOTIFY}>
               <FaSpotify />
+            </NavbarLink>
+          )}
+          {currentUser?.id && currentUser?.email && (
+            <NavbarLink to={AppRoute.UPLOAD}>
+              <FaDownload />
             </NavbarLink>
           )}
         </nav>
