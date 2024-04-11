@@ -1,11 +1,16 @@
+import { MusicAlbumProductionType, MusicAlbumReleaseType } from '@music-kg/sparql-data';
+
+import { EntityData } from './entity-data.model';
+import { ExternalUrls } from './external-urls.model';
+
 export type UpdateAlbumRequest = {
-  albumProductionType?: string;
-  albumReleaseType?: string;
-  byArtist?: string[];
+  albumProductionType?: MusicAlbumProductionType;
+  albumReleaseType?: MusicAlbumReleaseType;
+  artists?: EntityData | EntityData[];
   datePublished?: string;
-  image?: string;
+  externalUrls?: ExternalUrls;
+  imageUrl?: string;
   name?: string;
-  numTracks?: string;
-  sameAs?: string;
-  track?: string[];
+  numTracks?: number;
+  tracks?: EntityData | EntityData[];
 };

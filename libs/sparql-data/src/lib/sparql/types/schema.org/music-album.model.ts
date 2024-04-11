@@ -9,5 +9,5 @@ import { MusicPlaylist } from './music-playlist.model';
 export type MusicAlbum = MusicPlaylist & {
   albumProductionType: MusicAlbumProductionType;
   albumReleaseType: MusicAlbumReleaseType;
-  byArtist: EntityId[]; // entity of type either Person or MusicGroup
+  byArtist: EntityId[] | EntityId; // entity of type either Person or MusicGroup
 };

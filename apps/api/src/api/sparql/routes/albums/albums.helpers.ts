@@ -1,34 +1,33 @@
-import { MusicAlbumProductionType, MusicAlbumReleaseType } from '@music-kg/sparql-data';
 import { CreateAlbumRequest, UpdateAlbumRequest } from '@music-kg/data';
+import { MusicAlbumProductionType, MusicAlbumReleaseType } from '@music-kg/sparql-data';
 
-export const isValidAlbumProductionType = (albumProductionType: string): boolean =>
-  Object.values(MusicAlbumProductionType).includes(albumProductionType as MusicAlbumProductionType);
+import { albumExists } from './album-exists';
 
-export const isValidAlbumReleaseType = (albumReleaseType: string): boolean =>
-  Object.values(MusicAlbumReleaseType).includes(albumReleaseType as MusicAlbumReleaseType);
-
-export const runAlbumCreationChecks = (body: CreateAlbumRequest | UpdateAlbumRequest): string => {
-  if (
-    !body?.albumProductionType ||
-    !body?.albumReleaseType ||
-    !body?.byArtist ||
-    !body?.datePublished ||
-    !body?.image ||
-    !body?.name ||
-    !body?.numTracks ||
-    !body?.sameAs ||
-    !body?.track
-  ) {
-    return 'The album does not exist in the RDF database yet, however the request body is missing one or more of the following required properties: albumProductionType, albumReleaseType, byArtist, datePublished, image, name, numTracks, sameAs, track.';
+export const runAlbumCreationChecks = async (body: CreateAlbumRequest | UpdateAlbumRequest): Promise<string> => {
+  // Will not create a new entity if there is already the entity with the same external ID
+  if (body?.externalUrls?.spotify || body?.externalUrls?.wikidata) {
+    if (await albumExists(body?.externalUrls)) {
+      return 'The artist already exists in the RDF database.';
+    }
   }
 
-  if (!isValidAlbumProductionType(body?.albumProductionType)) {
+  if (!body?.name) {
+    return 'The request body is missing required property name.';
+  }
+
+  if (body?.albumProductionType && !isValidAlbumProductionType(body?.albumProductionType)) {
     return `The albumProductionType property has unknown value: ${body?.albumProductionType}.`;
   }
 
-  if (!isValidAlbumReleaseType(body?.albumReleaseType)) {
+  if (body?.albumReleaseType && !isValidAlbumReleaseType(body?.albumReleaseType)) {
     return `The albumReleaseType property has unknown value: ${body?.albumReleaseType}.`;
   }
 
   return undefined;
 };
+
+const isValidAlbumProductionType = (albumProductionType: string): boolean =>
+  Object.values(MusicAlbumProductionType).includes(albumProductionType as MusicAlbumProductionType);
+
+const isValidAlbumReleaseType = (albumReleaseType: string): boolean =>
+  Object.values(MusicAlbumReleaseType).includes(albumReleaseType as MusicAlbumReleaseType);

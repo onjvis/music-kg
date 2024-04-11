@@ -6,5 +6,5 @@ import { CreativeWork } from './creative-work.model';
  */
 export type MusicPlaylist = CreativeWork & {
   numTracks: number;
-  tracks: EntityId[]; // entities of type MusicRecording
+  track: EntityId[] | EntityId; // entities of type MusicRecording
 };
