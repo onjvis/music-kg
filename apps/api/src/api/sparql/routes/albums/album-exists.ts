@@ -3,15 +3,15 @@ import axios from 'axios';
 import { ExternalUrls } from '@music-kg/data';
 import { MUSIC_KG_ALBUMS_PREFIX, prefix2graph } from '@music-kg/sparql-data';
 
-import { createExistsQuery } from '../../helpers/queries/create-ask-query';
+import { createExistsByExternalIdQuery } from '../../helpers/queries/create-ask-query';
 import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const albumExists = async (externalUrl?: ExternalUrls): Promise<boolean> => {
   const albumsPrefix: string = replaceBaseUri(MUSIC_KG_ALBUMS_PREFIX);
 
-  const query: string = createExistsQuery({
+  const query: string = createExistsByExternalIdQuery({
     graph: prefix2graph(albumsPrefix),
-    externalId: externalUrl?.spotify ?? externalUrl?.wikidata,
+    id: externalUrl?.spotify ?? externalUrl?.wikidata,
   });
 
   return axios

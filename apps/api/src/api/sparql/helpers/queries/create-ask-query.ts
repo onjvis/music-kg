@@ -17,13 +17,27 @@ export const createAskQuery = ({ graph, patterns }: AskQueryParams): string => {
   return sparqlGenerator.stringify(queryObject);
 };
 
-export const createExistsQuery = ({ graph, externalId }: ExistsQueryParams): string => {
+export const createExistsByEntityIdQuery = ({ graph, id }: ExistsQueryParams): string => {
+  const predicateVariable: VariableTerm = variable('predicate');
+  const objectVariable: VariableTerm = variable('object');
+
+  const patterns: Pattern[] = [
+    {
+      type: 'bgp',
+      triples: [{ subject: iri(id), predicate: predicateVariable, object: objectVariable }],
+    },
+  ];
+
+  return createAskQuery({ graph, patterns });
+};
+
+export const createExistsByExternalIdQuery = ({ graph, id }: ExistsQueryParams): string => {
   const subjectVariable: VariableTerm = variable('subject');
 
   const patterns: Pattern[] = [
     {
       type: 'bgp',
-      triples: [{ subject: subjectVariable, predicate: SCHEMA_PREDICATE.sameAs.iri, object: iri(externalId) }],
+      triples: [{ subject: subjectVariable, predicate: SCHEMA_PREDICATE.sameAs.iri, object: iri(id) }],
     },
   ];
 
