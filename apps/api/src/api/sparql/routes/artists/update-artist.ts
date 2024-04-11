@@ -4,7 +4,7 @@ import { IriTerm, Triple } from 'sparqljs';
 import { UpdateArtistRequest } from '@music-kg/data';
 import {
   COMPLEX_PREDICATES,
-  iri,
+  iriWithPrefix,
   literal,
   MUSIC_KG_ARTISTS_PREFIX,
   prefix2graph,
@@ -19,36 +19,47 @@ import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const updateArtist = async (id: string, request: UpdateArtistRequest): Promise<void> => {
   const artistsPrefix: string = replaceBaseUri(MUSIC_KG_ARTISTS_PREFIX);
-  const artistSubject: IriTerm = iri(artistsPrefix, id);
+  const artistSubject: IriTerm = iriWithPrefix(artistsPrefix, id);
+
+  const properties = {
+    ...(request?.albums ? { album: request?.albums } : {}),
+    ...(request?.externalUrls ? { sameAs: request?.externalUrls } : {}),
+    ...(request?.genres ? { genre: request?.genres } : {}),
+    ...(request?.imageUrl ? { image: request?.imageUrl } : {}),
+    ...(request?.name ? { name: request?.name } : {}),
+    ...(request?.tracks ? { track: request?.tracks } : {}),
+  };
 
   const triplesToInsert: Triple[] = [];
-  Object.keys(request).forEach((propertyName: string): void => {
+  for (const propertyName of Object.keys(properties)) {
     const predicate: SparqlIri = SCHEMA_PREDICATE[propertyName];
 
     if (COMPLEX_PREDICATES.includes(predicate)) {
-      triplesToInsert.push(...getTriplesForComplexPredicate(artistSubject, predicate, request[propertyName]));
+      triplesToInsert.push(
+        ...(await getTriplesForComplexPredicate(artistSubject, predicate, properties[propertyName]))
+      );
     } else {
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
 
-      const newTriples: Triple[] = Array.isArray(request[propertyName])
-        ? request[propertyName].map((value) => ({
+      const newTriples: Triple[] = Array.isArray(properties[propertyName])
+        ? properties[propertyName].map((value: string | number) => ({
             subject: artistSubject,
             predicate: predicate.iri,
-            object: literal(value, objectDatatype),
+            object: literal(value.toString(), objectDatatype),
           }))
         : [
             {
               subject: artistSubject,
               predicate: SCHEMA_PREDICATE[propertyName].iri as IriTerm,
-              object: literal(request[propertyName], objectDatatype),
+              object: literal(properties[propertyName].toString(), objectDatatype),
             },
           ];
 
       triplesToInsert.push(...newTriples);
     }
-  });
+  }
 
-  const predicatesToUpdate: IriTerm[] = Object.keys(request).map(
+  const predicatesToUpdate: IriTerm[] = Object.keys(properties).map(
     (propertyName: string) => SCHEMA_PREDICATE[propertyName].iri
   );
 

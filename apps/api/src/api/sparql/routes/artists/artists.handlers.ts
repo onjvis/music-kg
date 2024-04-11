@@ -1,8 +1,18 @@
 import { Request, Response } from 'express';
 
-import { CreateArtistRequest, ErrorResponse, UpdateArtistRequest } from '@music-kg/data';
+import {
+  CreateArtistRequest,
+  EntityData,
+  ErrorResponse,
+  ExternalUrls,
+  mapExternalUrl2property,
+  UpdateArtistRequest,
+  UpdateType,
+} from '@music-kg/data';
 import { MusicGroup } from '@music-kg/sparql-data';
 
+import { arrayUnion } from '../../../../utils/array-union';
+import { artistExists } from './artist-exists';
 import { createArtist } from './create-artist';
 import { deleteArtist } from './delete-artist';
 import { getAllArtists } from './get-all-artists';
@@ -12,20 +22,18 @@ import { updateArtist } from './update-artist';
 export const createArtistHandler = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
   const body: CreateArtistRequest = req.body as CreateArtistRequest;
 
-  if (!body?.id || !body?.album || !body?.genre || !body?.image || !body?.name || !body?.sameAs || !body?.track) {
-    res.status(400).send({
-      message:
-        'The request body is missing one or more of the following required properties: id, album, genre, image, name, sameAs, track.',
-    });
+  if (!body?.name) {
+    res.status(400).send({ message: 'The request body is missing required property name.' });
     return;
   }
 
   try {
-    const artist: MusicGroup = await getArtist(body.id);
-
-    if (artist) {
-      res.status(400).send({ message: `The playlist with id ${body.id} already exists in the RDF database.` });
-      return;
+    // Will not create a new entity if there is already the entity with the same external ID
+    if (body?.externalUrls?.spotify || body?.externalUrls?.wikidata) {
+      if (await artistExists(body?.externalUrls)) {
+        res.status(400).send({ message: 'The artist already exists in the RDF database.' });
+        return;
+      }
     }
 
     const createdIri: string = await createArtist(body);
@@ -70,32 +78,62 @@ export const getArtistHandler = async (req: Request, res: Response<MusicGroup | 
 };
 
 export const updateArtistHandler = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
-  const body: UpdateArtistRequest = req.body as UpdateArtistRequest;
+  let body: UpdateArtistRequest = req.body as UpdateArtistRequest;
   const id: string = req.params.id;
+  const updateType: UpdateType = (req.query.updateType as UpdateType) ?? UpdateType.REPLACE;
+
+  if (!body) {
+    res.status(400).send({ message: 'The request body is empty.' });
+    return;
+  }
 
   try {
     const artist: MusicGroup = await getArtist(id);
 
     if (!artist) {
-      if (!body?.album || !body?.genre || !body?.image || !body?.name || !body?.sameAs || !body?.track) {
-        res.status(400).send({
-          message:
-            'The artist does not exist in the RDF database yet, however the request body is missing one or more of the following required properties: album, artists, datePublished, duration, isrcCode, name, sameAs.',
-        });
-        return;
-      }
-
-      const createdIri: string = await createArtist({
-        id,
-        album: body.album,
-        genre: body.genre,
-        image: body.image,
-        name: body.name,
-        sameAs: body.sameAs,
-        track: body.track,
-      });
-      res.set('Location', createdIri).sendStatus(201);
+      res.status(400).send({ message: `The artist with id ${id} does not exist in the RDF database.` });
       return;
+    }
+
+    if (updateType === UpdateType.APPEND) {
+      const artistAlbums: EntityData[] = artist.album
+        ? Array.isArray(artist.album)
+          ? artist.album.map((artistId: string): EntityData => ({ id: artistId }))
+          : [{ id: artist.album }]
+        : [];
+      const artistTracks: EntityData[] = artist.track
+        ? Array.isArray(artist.track)
+          ? artist.track.map((artistId: string): EntityData => ({ id: artistId }))
+          : [{ id: artist.track }]
+        : [];
+      const artistGenres: string[] = Array.isArray(artist.genre) ? artist.genre : [artist.genre];
+      const artistExternalUrls: ExternalUrls = artist.sameAs
+        ? Array.isArray(artist.sameAs)
+          ? artist.sameAs
+              .map((externalUrl: string): ExternalUrls => ({ [mapExternalUrl2property(externalUrl)]: externalUrl }))
+              .reduce((result: ExternalUrls, obj: ExternalUrls): ExternalUrls => ({ ...result, ...obj }), {})
+          : { [mapExternalUrl2property(artist.sameAs)]: artist.sameAs }
+        : {};
+
+      body = {
+        ...body,
+        ...(body.albums
+          ? Array.isArray(body.albums)
+            ? { albums: arrayUnion<EntityData>(artistAlbums, body.albums) }
+            : { albums: [...artistAlbums, body.albums] }
+          : {}),
+        ...(body.tracks
+          ? Array.isArray(body.tracks)
+            ? { tracks: arrayUnion<EntityData>(artistTracks, body.tracks) }
+            : { tracks: [...artistTracks, body.tracks] }
+          : {}),
+        ...(body.genres
+          ? Array.isArray(body.genres)
+            ? { genres: arrayUnion<string>(artistGenres, body.genres) }
+            : { genres: [...artistGenres, body.genres] }
+          : {}),
+        ...(body.externalUrls ? { externalUrls: { ...artistExternalUrls, ...body.externalUrls } } : {}),
+      };
     }
 
     await updateArtist(id, body);

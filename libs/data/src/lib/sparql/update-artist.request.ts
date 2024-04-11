@@ -1,8 +1,11 @@
+import { EntityData } from './entity-data.model';
+import { ExternalUrls } from './external-urls.model';
+
 export type UpdateArtistRequest = {
-  album?: string[];
-  genre?: string[];
-  image?: string;
+  albums?: EntityData | EntityData[];
+  externalUrls?: ExternalUrls;
+  genres?: string | string[];
+  imageUrl?: string;
   name?: string;
-  sameAs?: string;
-  track?: string[];
+  tracks?: EntityData | EntityData[];
 };

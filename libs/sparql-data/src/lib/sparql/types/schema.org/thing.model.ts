@@ -6,5 +6,5 @@ import { SparqlEntity } from '../sparql-entity.model';
 export type Thing = SparqlEntity & {
   image?: string; // as IRI
   name: string;
-  sameAs?: string; // as IRI
+  sameAs?: string[] | string; // as IRI
 };
