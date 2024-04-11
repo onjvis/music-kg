@@ -1,31 +1,38 @@
 import { Request, Response } from 'express';
 
-import { CreatePlaylistRequest, ErrorResponse, UpdatePlaylistRequest } from '@music-kg/data';
+import {
+  CreatePlaylistRequest,
+  EntityData,
+  ErrorResponse,
+  ExternalUrls,
+  mapExternalUrl2property,
+  UpdatePlaylistRequest,
+  UpdateType,
+} from '@music-kg/data';
 import { MusicPlaylist } from '@music-kg/sparql-data';
 
+import { arrayUnion } from '../../../../utils/array-union';
 import { createPlaylist } from './create-playlist';
 import { deletePlaylist } from './delete-playlist';
 import { getAllPlaylists } from './get-all-playlists';
 import { getPlaylist } from './get-playlist';
+import { playlistExists } from './playlist-exists';
 import { updatePlaylist } from './update-playlist';
 
 export const handleCreatePlaylist = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
   const body: CreatePlaylistRequest = req.body as CreatePlaylistRequest;
 
-  if (!body?.id || !body?.creator || !body?.image || !body?.name || !body?.numTracks || !body?.sameAs || !body?.track) {
-    res.status(400).send({
-      message:
-        'The request body is missing one or more of the following required properties: id, creator, image, name, numTracks, sameAs, track.',
-    });
+  if (!body?.name) {
+    res.status(400).send({ message: 'The request body is missing required property name.' });
     return;
   }
 
   try {
-    const playlist: MusicPlaylist = await getPlaylist(body.id);
-
-    if (playlist) {
-      res.status(400).send({ message: `The playlist with id ${body.id} already exists in the RDF database.` });
-      return;
+    if (body?.externalUrls?.spotify || body?.externalUrls?.wikidata) {
+      if (await playlistExists(body?.externalUrls)) {
+        res.status(400).send({ message: 'The artist already exists in the RDF database.' });
+        return;
+      }
     }
 
     const createdIri: string = await createPlaylist(body);
@@ -70,33 +77,56 @@ export const handleGetPlaylist = async (req: Request, res: Response<MusicPlaylis
 };
 
 export const handleUpdatePlaylist = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
-  const body: UpdatePlaylistRequest = req.body as UpdatePlaylistRequest;
+  let body: UpdatePlaylistRequest = req.body as UpdatePlaylistRequest;
   const id: string = req.params.id;
+  const updateType: UpdateType = (req.query.updateType as UpdateType) ?? UpdateType.REPLACE;
+
+  if (!body) {
+    res.status(400).send({ message: 'The request body is empty.' });
+    return;
+  }
 
   try {
     const playlist: MusicPlaylist = await getPlaylist(id);
 
     if (!playlist) {
-      if (!body?.creator || !body?.image || !body?.name || !body?.numTracks || !body?.sameAs || !body?.track) {
-        res.status(400).send({
-          message:
-            'The playlist does not exist in the RDF database yet, however the request body is missing one or more of the following required properties: album, artists, datePublished, duration, isrcCode, name, sameAs.',
-        });
-        return;
-      }
-
-      const createdIri: string = await createPlaylist({
-        id,
-        creator: body.creator,
-        description: body.description,
-        image: body.image,
-        name: body.name,
-        numTracks: body.numTracks,
-        sameAs: body.sameAs,
-        track: body.track,
-      });
-      res.set('Location', createdIri).sendStatus(201);
+      res.status(400).send({ message: `The playlist with id ${id} does not exist in the RDF database.` });
       return;
+    }
+
+    if (updateType === UpdateType.APPEND) {
+      const playlistCreators: EntityData[] = playlist.creator
+        ? Array.isArray(playlist.creator)
+          ? playlist.creator.map((artistId: string): EntityData => ({ id: artistId }))
+          : [{ id: playlist.creator }]
+        : [];
+      const playlistTracks: EntityData[] = playlist.track
+        ? Array.isArray(playlist.track)
+          ? playlist.track.map((artistId: string): EntityData => ({ id: artistId }))
+          : [{ id: playlist.track }]
+        : [];
+      const playlistExternalUrls: ExternalUrls = playlist.sameAs
+        ? Array.isArray(playlist.sameAs)
+          ? playlist.sameAs
+              .map((externalUrl: string): ExternalUrls => ({ [mapExternalUrl2property(externalUrl)]: externalUrl }))
+              .reduce((result: ExternalUrls, obj: ExternalUrls): ExternalUrls => ({ ...result, ...obj }), {})
+          : { [mapExternalUrl2property(playlist.sameAs)]: playlist.sameAs }
+        : {};
+
+      body = {
+        ...body,
+        ...(body.creators
+          ? Array.isArray(body.creators)
+            ? { creators: arrayUnion<EntityData>(playlistCreators, body.creators) }
+            : { creators: [...playlistCreators, body.creators] }
+          : {}),
+        ...(body.tracks
+          ? Array.isArray(body.tracks)
+            ? { tracks: arrayUnion<EntityData>(playlistTracks, body.tracks) }
+            : { tracks: [...playlistTracks, body.tracks] }
+          : {}),
+        ...(body.externalUrls ? { externalUrls: { ...playlistExternalUrls, ...body.externalUrls } } : {}),
+      };
     }
 
     await updatePlaylist(id, body);

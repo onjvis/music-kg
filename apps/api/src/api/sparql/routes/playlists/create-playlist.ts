@@ -3,8 +3,8 @@ import { IriTerm, Triple } from 'sparqljs';
 
 import { CreatePlaylistRequest } from '@music-kg/data';
 import {
-  externalIri,
   iri,
+  iriWithPrefix,
   literal,
   MUSIC_KG_PLAYLISTS_PREFIX,
   MUSIC_KG_RECORDINGS_PREFIX,
@@ -17,6 +17,7 @@ import {
 } from '@music-kg/sparql-data';
 
 import { createInsertQuery } from '../../helpers/queries/create-insert-query';
+import { getSecondaryEntityTriples } from '../../helpers/get-secondary-entity-triples';
 import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const createPlaylist = async (request: CreatePlaylistRequest): Promise<string> => {
@@ -26,10 +27,32 @@ export const createPlaylist = async (request: CreatePlaylistRequest): Promise<st
 
   const dateTimeISO: string = new Date().toISOString();
 
-  const playlistSubject: IriTerm = iri(playlistsPrefix, request.id);
+  const playlistSubject: IriTerm = iriWithPrefix(playlistsPrefix, crypto.randomUUID());
+
+  const creatorsTriples: Triple[] = request.creators
+    ? await getSecondaryEntityTriples(
+        playlistSubject,
+        SCHEMA_PREDICATE.creator.iri,
+        usersPrefix,
+        Array.isArray(request.creators) ? request.creators : [request.creators]
+      )
+    : [];
+  const tracksTriples: Triple[] = request.tracks
+    ? await getSecondaryEntityTriples(
+        playlistSubject,
+        SCHEMA_PREDICATE.track.iri,
+        recordingsPrefix,
+        Array.isArray(request.tracks) ? request.tracks : [request.tracks]
+      )
+    : [];
+
   const triples: Triple[] = [
     { subject: playlistSubject, predicate: RDF_PREDICATE.type.iri, object: SCHEMA_TYPE.MusicPlaylist.iri },
-    { subject: playlistSubject, predicate: SCHEMA_PREDICATE.creator.iri, object: iri(usersPrefix, request.creator) },
+    {
+      subject: playlistSubject,
+      predicate: SCHEMA_PREDICATE.name.iri,
+      object: literal(request.name, XSD_DATATYPE.string),
+    },
     {
       subject: playlistSubject,
       predicate: SCHEMA_PREDICATE.dateCreated.iri,
@@ -40,26 +63,8 @@ export const createPlaylist = async (request: CreatePlaylistRequest): Promise<st
       predicate: SCHEMA_PREDICATE.dateModified.iri,
       object: literal(dateTimeISO, XSD_DATATYPE.dateTime),
     },
-    {
-      subject: playlistSubject,
-      predicate: SCHEMA_PREDICATE.image.iri,
-      object: externalIri(request.image),
-    },
-    {
-      subject: playlistSubject,
-      predicate: SCHEMA_PREDICATE.name.iri,
-      object: literal(request.name, XSD_DATATYPE.string),
-    },
-    {
-      subject: playlistSubject,
-      predicate: SCHEMA_PREDICATE.sameAs.iri,
-      object: externalIri(request.sameAs),
-    },
-    {
-      subject: playlistSubject,
-      predicate: SCHEMA_PREDICATE.numTracks.iri,
-      object: literal(request.numTracks, XSD_DATATYPE.integer),
-    },
+    ...creatorsTriples,
+    ...tracksTriples,
     ...(request.description
       ? [
           {
@@ -69,12 +74,32 @@ export const createPlaylist = async (request: CreatePlaylistRequest): Promise<st
           },
         ]
       : []),
-    ...(request.track
-      ? request.track.map((trackId: string) => ({
-          subject: playlistSubject,
-          predicate: SCHEMA_PREDICATE.track.iri,
-          object: iri(recordingsPrefix, trackId),
-        }))
+    ...(request.imageUrl
+      ? [
+          {
+            subject: playlistSubject,
+            predicate: SCHEMA_PREDICATE.image.iri,
+            object: iri(request.imageUrl),
+          },
+        ]
+      : []),
+    ...(request.numTracks
+      ? [
+          {
+            subject: playlistSubject,
+            predicate: SCHEMA_PREDICATE.numTracks.iri,
+            object: literal(request.numTracks.toString(), XSD_DATATYPE.integer),
+          },
+        ]
+      : []),
+    ...(request.externalUrls
+      ? Object.values(request.externalUrls).map(
+          (externalUrl: string): Triple => ({
+            subject: playlistSubject,
+            predicate: SCHEMA_PREDICATE.sameAs.iri,
+            object: iri(externalUrl),
+          })
+        )
       : []),
   ];
 

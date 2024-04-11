@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { IriTerm } from 'sparqljs';
 
-import { iri, MUSIC_KG_PLAYLISTS_PREFIX, prefix2graph } from '@music-kg/sparql-data';
+import { iriWithPrefix, MUSIC_KG_PLAYLISTS_PREFIX, prefix2graph } from '@music-kg/sparql-data';
 
 import { createDeleteQuery } from '../../helpers/queries/create-delete-query';
 import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const deletePlaylist = async (id: string): Promise<void> => {
   const playlistsPrefix: string = replaceBaseUri(MUSIC_KG_PLAYLISTS_PREFIX);
-  const playlistSubject: IriTerm = iri(playlistsPrefix, id);
+  const playlistSubject: IriTerm = iriWithPrefix(playlistsPrefix, id);
 
   const query: string = createDeleteQuery({ graph: prefix2graph(playlistsPrefix), subject: playlistSubject });
 

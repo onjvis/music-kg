@@ -1,9 +1,12 @@
+import { EntityData } from './entity-data.model';
+import { ExternalUrls } from './external-urls.model';
+
 export type UpdatePlaylistRequest = {
-  creator?: string;
+  creators?: EntityData | EntityData[];
   description?: string;
-  image?: string;
+  externalUrls?: ExternalUrls;
+  imageUrl?: string;
   name?: string;
-  numTracks?: string;
-  sameAs?: string;
-  track?: string[];
+  numTracks?: number;
+  tracks?: EntityData | EntityData[];
 };
