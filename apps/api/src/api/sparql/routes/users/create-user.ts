@@ -4,6 +4,7 @@ import { IriTerm, Triple } from 'sparqljs';
 import { CreateUserRequest } from '@music-kg/data';
 import {
   iri,
+  iriWithPrefix,
   literal,
   MUSIC_KG_USERS_PREFIX,
   prefix2graph,
@@ -18,7 +19,7 @@ import { replaceBaseUri } from '../../helpers/replace-base-uri';
 
 export const createUser = async (request: CreateUserRequest): Promise<string> => {
   const usersPrefix: string = replaceBaseUri(MUSIC_KG_USERS_PREFIX);
-  const userSubject: IriTerm = iri(usersPrefix, request.id);
+  const userSubject: IriTerm = iriWithPrefix(usersPrefix, request.id);
 
   const triples: Triple[] = [
     { subject: userSubject, predicate: RDF_PREDICATE.type.iri, object: SCHEMA_TYPE.Person.iri },
@@ -28,6 +29,15 @@ export const createUser = async (request: CreateUserRequest): Promise<string> =>
       predicate: SCHEMA_PREDICATE.email.iri,
       object: literal(request.email, XSD_DATATYPE.string),
     },
+    ...(request.externalUrls
+      ? Object.values(request.externalUrls).map(
+          (externalUrl: string): Triple => ({
+            subject: userSubject,
+            predicate: SCHEMA_PREDICATE.sameAs.iri,
+            object: iri(externalUrl),
+          })
+        )
+      : []),
   ];
 
   const query: string = createInsertQuery({ graph: prefix2graph(usersPrefix), triples });

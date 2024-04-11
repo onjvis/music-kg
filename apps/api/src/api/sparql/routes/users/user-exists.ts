@@ -11,7 +11,10 @@ export const userExists = async (params: UserExistsParams): Promise<boolean> => 
   let query: string;
 
   if (params?.externalUrls) {
-    query = createExistsByExternalIdQuery({ graph: prefix2graph(usersPrefix), id: params?.externalUrls?.spotify ?? params?.externalUrls?.wikidata });
+    query = createExistsByExternalIdQuery({
+      graph: prefix2graph(usersPrefix),
+      id: params?.externalUrls?.spotify ?? params?.externalUrls?.wikidata,
+    });
   } else if (params?.id) {
     query = createExistsByEntityIdQuery({ graph: prefix2graph(usersPrefix), id: params?.id });
   } else {

@@ -1,12 +1,19 @@
 import { IriTerm, Triple } from 'sparqljs';
 
-import { CreateAlbumRequest, CreateArtistRequest, CreateRecordingRequest, EntityData } from '@music-kg/data';
+import {
+  CreateAlbumRequest,
+  CreateArtistRequest,
+  CreateRecordingRequest,
+  CreateUserRequest,
+  EntityData,
+} from '@music-kg/data';
 import {
   iri,
   iriWithPrefix,
   MUSIC_KG_ALBUMS_PREFIX,
   MUSIC_KG_ARTISTS_PREFIX,
   MUSIC_KG_RECORDINGS_PREFIX,
+  MUSIC_KG_USERS_PREFIX,
   SparqlEntity,
 } from '@music-kg/sparql-data';
 
@@ -16,6 +23,8 @@ import { createArtist } from '../routes/artists/create-artist';
 import { getArtistByExternalUrl } from '../routes/artists/get-artist';
 import { createRecording } from '../routes/recordings/create-recording';
 import { getRecordingByExternalUrl } from '../routes/recordings/get-recording';
+import { createUser } from '../routes/users/create-user';
+import { getUserByExternalUrl } from '../routes/users/get-user';
 import { replaceBaseUri } from './replace-base-uri';
 
 export const getSecondaryEntityTriples = async (
@@ -88,12 +97,16 @@ const getEntityByExternalUrlFunction = (prefix: string): ((externalUrl: string) 
       return getArtistByExternalUrl;
     case replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX):
       return getRecordingByExternalUrl;
+    case replaceBaseUri(MUSIC_KG_USERS_PREFIX):
+      return getUserByExternalUrl;
   }
 };
 
 const getCreateEntityFunction = (
   prefix: string
-): ((request: CreateAlbumRequest | CreateArtistRequest | CreateRecordingRequest) => Promise<string>) => {
+): ((
+  request: CreateAlbumRequest | CreateArtistRequest | CreateRecordingRequest | CreateUserRequest
+) => Promise<string>) => {
   switch (prefix) {
     case replaceBaseUri(MUSIC_KG_ALBUMS_PREFIX):
       return createAlbum;
@@ -101,5 +114,7 @@ const getCreateEntityFunction = (
       return createArtist;
     case replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX):
       return createRecording;
+    case replaceBaseUri(MUSIC_KG_USERS_PREFIX):
+      return createUser;
   }
 };
