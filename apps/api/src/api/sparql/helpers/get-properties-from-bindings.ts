@@ -4,7 +4,13 @@ export const getPropertiesFromBindings = <T extends SparqlEntity>(
   bindings: SparqlBinding[],
   predicates = SCHEMA_PREDICATE
 ): T => {
-  const bindingsObject = {};
+  const bindingsObject: SparqlEntity = {} as SparqlEntity;
+
+  // If the subject ID is available, include it in the resulting object
+  if (bindings?.[0]?.subject) {
+    const uriParts: string[] = bindings?.[0]?.subject?.value?.split('/');
+    bindingsObject.id = uriParts[uriParts.length - 1];
+  }
 
   Object.entries(predicates).forEach(([key, value]) => {
     const boundObjects: SparqlObject[] = bindings

@@ -1,5 +1,5 @@
 import { XSD_PREFIX } from '../sparql-prefix.model';
-import { iri } from '../utils';
+import { iriWithPrefix } from '../utils';
 
 enum XsdDatatypeName {
   DATE = 'date',
@@ -10,9 +10,9 @@ enum XsdDatatypeName {
 }
 
 export const XSD_DATATYPE = {
-  date: { name: XsdDatatypeName.DATE, iri: iri(XSD_PREFIX, XsdDatatypeName.DATE) },
-  dateTime: { name: XsdDatatypeName.DATE_TIME, iri: iri(XSD_PREFIX, XsdDatatypeName.DATE_TIME) },
-  duration: { name: XsdDatatypeName.DURATION, iri: iri(XSD_PREFIX, XsdDatatypeName.DURATION) },
-  integer: { name: XsdDatatypeName.INTEGER, iri: iri(XSD_PREFIX, XsdDatatypeName.INTEGER) },
-  string: { name: XsdDatatypeName.STRING, iri: iri(XSD_PREFIX, XsdDatatypeName.STRING) },
+  date: { name: XsdDatatypeName.DATE, iri: iriWithPrefix(XSD_PREFIX, XsdDatatypeName.DATE) },
+  dateTime: { name: XsdDatatypeName.DATE_TIME, iri: iriWithPrefix(XSD_PREFIX, XsdDatatypeName.DATE_TIME) },
+  duration: { name: XsdDatatypeName.DURATION, iri: iriWithPrefix(XSD_PREFIX, XsdDatatypeName.DURATION) },
+  integer: { name: XsdDatatypeName.INTEGER, iri: iriWithPrefix(XSD_PREFIX, XsdDatatypeName.INTEGER) },
+  string: { name: XsdDatatypeName.STRING, iri: iriWithPrefix(XSD_PREFIX, XsdDatatypeName.STRING) },
 } as const;

@@ -1,5 +1,5 @@
 import { SCHEMA_PREFIX } from '../sparql-prefix.model';
-import { iri } from '../utils';
+import { iriWithPrefix } from '../utils';
 
 enum SchemaPredicateName {
   ALBUM = 'album',
@@ -17,7 +17,7 @@ enum SchemaPredicateName {
   GENRE = 'genre',
   IMAGE = 'image',
   IN_ALBUM = 'inAlbum',
-  ISRC_CODE = 'iscrCode',
+  ISRC_CODE = 'isrcCode',
   NAME = 'name',
   NUM_TRACKS = 'numTracks',
   PRODUCER = 'producer',
@@ -28,36 +28,54 @@ enum SchemaPredicateName {
 }
 
 export const SCHEMA_PREDICATE = {
-  album: { name: SchemaPredicateName.ALBUM, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.ALBUM) },
+  album: { name: SchemaPredicateName.ALBUM, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.ALBUM) },
   albumProductionType: {
     name: SchemaPredicateName.ALBUM_PRODUCTION_TYPE,
-    iri: iri(SCHEMA_PREFIX, SchemaPredicateName.ALBUM_PRODUCTION_TYPE),
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.ALBUM_PRODUCTION_TYPE),
   },
-  albumRelease: { name: SchemaPredicateName.ALBUM_RELEASE, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.ALBUM_RELEASE) },
+  albumRelease: {
+    name: SchemaPredicateName.ALBUM_RELEASE,
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.ALBUM_RELEASE),
+  },
   albumReleaseType: {
     name: SchemaPredicateName.ALBUM_RELEASE_TYPE,
-    iri: iri(SCHEMA_PREFIX, SchemaPredicateName.ALBUM_RELEASE_TYPE),
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.ALBUM_RELEASE_TYPE),
   },
-  byArtist: { name: SchemaPredicateName.BY_ARTIST, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.BY_ARTIST) },
-  creator: { name: SchemaPredicateName.CREATOR, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.CREATOR) },
-  dateCreated: { name: SchemaPredicateName.DATE_CREATED, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.DATE_CREATED) },
-  dateModified: { name: SchemaPredicateName.DATE_MODIFIED, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.DATE_MODIFIED) },
+  byArtist: { name: SchemaPredicateName.BY_ARTIST, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.BY_ARTIST) },
+  creator: { name: SchemaPredicateName.CREATOR, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.CREATOR) },
+  dateCreated: {
+    name: SchemaPredicateName.DATE_CREATED,
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.DATE_CREATED),
+  },
+  dateModified: {
+    name: SchemaPredicateName.DATE_MODIFIED,
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.DATE_MODIFIED),
+  },
   datePublished: {
     name: SchemaPredicateName.DATE_PUBLISHED,
-    iri: iri(SCHEMA_PREFIX, SchemaPredicateName.DATE_PUBLISHED),
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.DATE_PUBLISHED),
   },
-  description: { name: SchemaPredicateName.DESCRIPTION, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.DESCRIPTION) },
-  duration: { name: SchemaPredicateName.DURATION, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.DURATION) },
-  email: { name: SchemaPredicateName.EMAIL, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.EMAIL) },
-  genre: { name: SchemaPredicateName.GENRE, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.GENRE) },
-  image: { name: SchemaPredicateName.IMAGE, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.IMAGE) },
-  inAlbum: { name: SchemaPredicateName.IN_ALBUM, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.IN_ALBUM) },
-  isrcCode: { name: SchemaPredicateName.ISRC_CODE, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.ISRC_CODE) },
-  name: { name: SchemaPredicateName.NAME, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.NAME) },
-  numTracks: { name: SchemaPredicateName.NUM_TRACKS, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.NUM_TRACKS) },
-  producer: { name: SchemaPredicateName.PRODUCER, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.PRODUCER) },
-  recordingOf: { name: SchemaPredicateName.RECORDING_OF, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.RECORDING_OF) },
-  sameAs: { name: SchemaPredicateName.SAME_AS, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.SAME_AS) },
-  track: { name: SchemaPredicateName.TRACK, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.TRACK) },
-  url: { name: SchemaPredicateName.URL, iri: iri(SCHEMA_PREFIX, SchemaPredicateName.URL) },
+  description: {
+    name: SchemaPredicateName.DESCRIPTION,
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.DESCRIPTION),
+  },
+  duration: { name: SchemaPredicateName.DURATION, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.DURATION) },
+  email: { name: SchemaPredicateName.EMAIL, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.EMAIL) },
+  genre: { name: SchemaPredicateName.GENRE, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.GENRE) },
+  image: { name: SchemaPredicateName.IMAGE, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.IMAGE) },
+  inAlbum: { name: SchemaPredicateName.IN_ALBUM, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.IN_ALBUM) },
+  isrcCode: { name: SchemaPredicateName.ISRC_CODE, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.ISRC_CODE) },
+  name: { name: SchemaPredicateName.NAME, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.NAME) },
+  numTracks: {
+    name: SchemaPredicateName.NUM_TRACKS,
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.NUM_TRACKS),
+  },
+  producer: { name: SchemaPredicateName.PRODUCER, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.PRODUCER) },
+  recordingOf: {
+    name: SchemaPredicateName.RECORDING_OF,
+    iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.RECORDING_OF),
+  },
+  sameAs: { name: SchemaPredicateName.SAME_AS, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.SAME_AS) },
+  track: { name: SchemaPredicateName.TRACK, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.TRACK) },
+  url: { name: SchemaPredicateName.URL, iri: iriWithPrefix(SCHEMA_PREFIX, SchemaPredicateName.URL) },
 } as const;

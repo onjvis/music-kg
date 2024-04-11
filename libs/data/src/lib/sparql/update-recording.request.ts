@@ -1,9 +1,12 @@
+import { EntityData } from './entity-data.model';
+import { ExternalUrls } from './external-urls.model';
+
 export type UpdateRecordingRequest = {
-  byArtist?: string[];
+  album?: EntityData;
+  artists?: EntityData | EntityData[];
+  externalUrls?: ExternalUrls;
   datePublished?: string;
-  duration?: number;
-  inAlbum?: string;
-  isrcCode?: string;
+  duration?: number; // in milliseconds
+  isrc?: string;
   name?: string;
-  sameAs?: string;
 };

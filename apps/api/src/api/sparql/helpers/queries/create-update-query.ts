@@ -1,4 +1,4 @@
-import { Expression, IriTerm, OperationExpression, Update, VariableTerm } from 'sparqljs';
+import { IriTerm, Update, VariableTerm } from 'sparqljs';
 
 import { variable } from '@music-kg/sparql-data';
 
@@ -18,21 +18,6 @@ export const createUpdateQuery = ({
   const predicateVariable: VariableTerm = variable('predicate');
   const objectVariable: VariableTerm = variable('object');
 
-  const filterExpression: Expression =
-    predicatesToUpdate.length === 1
-      ? { type: 'operation', operator: '=', args: [predicateVariable, predicatesToUpdate[0]] }
-      : {
-          type: 'operation',
-          operator: '||',
-          args: predicatesToUpdate.map(
-            (predicate: IriTerm): OperationExpression => ({
-              type: 'operation',
-              operator: '=',
-              args: [predicateVariable, predicate],
-            })
-          ),
-        };
-
   const queryObject: Update = {
     type: 'update',
     updates: [
@@ -42,13 +27,44 @@ export const createUpdateQuery = ({
         delete: [{ type: 'bgp', triples: [{ subject, predicate: predicateVariable, object: objectVariable }] }],
         insert: [{ type: 'bgp', triples: triplesToInsert }],
         where: [
-          { type: 'bgp', triples: [{ subject, predicate: predicateVariable, object: objectVariable }] },
-          { type: 'filter', expression: filterExpression },
+          {
+            type: 'optional',
+            patterns: [
+              { type: 'bgp', triples: [{ subject, predicate: predicateVariable, object: objectVariable }] },
+              {
+                type: 'filter',
+                expression: {
+                  type: 'operation',
+                  operator: '||',
+                  args: [
+                    {
+                      type: 'operation',
+                      operator: '!',
+                      args: [{ type: 'operation', operator: 'bound', args: [predicateVariable] }],
+                    },
+                    {
+                      type: 'operation',
+                      operator: '!',
+                      args: [{ type: 'operation', operator: 'bound', args: [objectVariable] }],
+                    },
+                  ],
+                },
+              },
+            ],
+          },
         ],
       },
     ],
     prefixes: {},
   };
 
-  return sparqlGenerator.stringify(queryObject);
+  const query: string = sparqlGenerator.stringify(queryObject);
+  // Create FILTER expression for filtering replaced triples
+  const regex = /FILTER(.*)/;
+  const filter = `FILTER(!BOUND(?predicate) || !BOUND(?object) || ${predicatesToUpdate
+    .map((predicate: IriTerm): string => `(?predicate = <${predicate.value}>)`)
+    .join(' || ')})`;
+
+  // Replace generated FILTER clause with created FILTER clause
+  return query.replace(regex, filter);
 };

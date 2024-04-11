@@ -1,40 +1,41 @@
 import { Request, Response } from 'express';
 
-import { CreateRecordingRequest, ErrorResponse, UpdateRecordingRequest } from '@music-kg/data';
+import {
+  CreateRecordingRequest,
+  EntityData,
+  ErrorResponse,
+  ExternalUrls,
+  mapExternalUrl2property,
+  UpdateRecordingRequest,
+  UpdateType,
+} from '@music-kg/data';
 import { MusicRecording } from '@music-kg/sparql-data';
 
+import { arrayUnion } from '../../../../utils/array-union';
 import { createRecording } from './create-recording';
 import { deleteRecording } from './delete-recording';
 import { getAllRecordings } from './get-all-recordings';
 import { getRecording } from './get-recording';
+import { recordingExists } from './recording-exists';
 import { updateRecording } from './update-recording';
 
 export const handleCreateRecording = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
   const body: CreateRecordingRequest = req.body as CreateRecordingRequest;
 
-  if (
-    !body?.id ||
-    !body?.byArtist ||
-    !body?.datePublished ||
-    !body?.duration ||
-    !body?.inAlbum ||
-    !body?.isrcCode ||
-    !body?.name ||
-    !body?.sameAs
-  ) {
-    res.status(400).send({
-      message:
-        'The request body is missing one or more of the following required properties: id, byArtist, datePublished, duration, inAlbum, isrcCode, name, sameAs.',
-    });
+  if (!body?.name) {
+    res
+      .status(400)
+      .send({ message: 'The request body is missing one or more of the following required property name.' });
     return;
   }
 
   try {
-    const recording: MusicRecording = await getRecording(body.id);
-
-    if (recording) {
-      res.status(400).send({ message: `The recording with id ${body.id} already exists in the RDF database.` });
-      return;
+    // Will not create a new entity if there is already the entity with the same external ID
+    if (body.externalUrls?.spotify || body.externalUrls?.wikidata) {
+      if (await recordingExists(body.externalUrls)) {
+        res.status(400).send({ message: 'The recording already exists in the RDF database.' });
+        return;
+      }
     }
 
     const createdIri: string = await createRecording(body);
@@ -82,41 +83,45 @@ export const handleGetRecording = async (
 };
 
 export const handleUpdateRecording = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
-  const body: UpdateRecordingRequest = req.body as UpdateRecordingRequest;
+  let body: UpdateRecordingRequest = req.body as UpdateRecordingRequest;
   const id: string = req.params.id;
+  const updateType: UpdateType = (req.query.updateType as UpdateType) ?? UpdateType.REPLACE;
+  if (!body) {
+    res.status(400).send({ message: 'The request body is empty.' });
+    return;
+  }
 
   try {
     const recording: MusicRecording = await getRecording(id);
 
     if (!recording) {
-      if (
-        !body?.byArtist ||
-        !body?.datePublished ||
-        !body?.duration ||
-        !body?.inAlbum ||
-        !body?.isrcCode ||
-        !body?.name ||
-        !body?.sameAs
-      ) {
-        res.status(400).send({
-          message:
-            'The recording does not exist in the RDF database yet, however the request body is missing one or more of the following required properties: album, artists, datePublished, duration, isrcCode, name, sameAs.',
-        });
-        return;
-      }
-
-      const createdIri: string = await createRecording({
-        id,
-        byArtist: body.byArtist,
-        datePublished: body.datePublished,
-        duration: body.duration,
-        inAlbum: body.inAlbum,
-        isrcCode: body.isrcCode,
-        name: body.name,
-        sameAs: body.sameAs,
-      });
-      res.set('Location', createdIri).sendStatus(201);
+      res.status(400).send({ message: `The recording with id ${id} does not exist in the RDF database.` });
       return;
+    }
+
+    if (updateType === UpdateType.APPEND) {
+      const recordingArtists: EntityData[] = recording.byArtist
+        ? Array.isArray(recording.byArtist)
+          ? recording.byArtist.map((artistId) => ({ id: artistId }))
+          : [{ id: recording.byArtist }]
+        : [];
+      const recordingExternalUrls: ExternalUrls = recording.sameAs
+        ? Array.isArray(recording.sameAs)
+          ? recording.sameAs
+              .map((externalUrl) => ({ [mapExternalUrl2property(externalUrl)]: externalUrl }))
+              .reduce((result: ExternalUrls, obj: ExternalUrls): ExternalUrls => ({ ...result, ...obj }), {})
+          : { [mapExternalUrl2property(recording.sameAs)]: recording.sameAs }
+        : {};
+
+      body = {
+        ...body,
+        ...(body.artists
+          ? Array.isArray(body.artists)
+            ? { artists: arrayUnion<EntityData>(recordingArtists, body.artists) }
+            : { artists: [...recordingArtists, body.artists] }
+          : {}),
+        ...(body.externalUrls ? { externalUrls: { ...recordingExternalUrls, ...body.externalUrls } } : {}),
+      };
     }
 
     await updateRecording(id, body);
