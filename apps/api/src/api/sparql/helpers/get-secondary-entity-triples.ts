@@ -17,14 +17,10 @@ import {
   SparqlEntity,
 } from '@music-kg/sparql-data';
 
-import { createAlbum } from '../routes/albums/create-album';
-import { getAlbumByExternalUrl } from '../routes/albums/get-album';
-import { createArtist } from '../routes/artists/create-artist';
-import { getArtistByExternalUrl } from '../routes/artists/get-artist';
-import { createRecording } from '../routes/recordings/create-recording';
-import { getRecordingByExternalUrl } from '../routes/recordings/get-recording';
-import { createUser } from '../routes/users/create-user';
-import { getUserByExternalUrl } from '../routes/users/get-user';
+import { createAlbum, getAlbumByExternalUrl } from '../routes/albums/features';
+import { createArtist, getArtistByExternalUrl } from '../routes/artists/features';
+import { createRecording, getRecordingByExternalUrl } from '../routes/recordings/features';
+import { createUser, getUserByExternalUrl } from '../routes/users/features';
 import { replaceBaseUri } from './replace-base-uri';
 
 export const getSecondaryEntityTriples = async (
@@ -63,7 +59,9 @@ const handleEntityExternalUrls = async (
   const getEntityByExternalUrl = getEntityByExternalUrlFunction(objectPrefix);
   const createEntity = getCreateEntityFunction(objectPrefix);
 
-  const entity = await getEntityByExternalUrl(entityData?.externalUrls?.spotify ?? entityData?.externalUrls?.wikidata);
+  const entity: SparqlEntity = await getEntityByExternalUrl(
+    entityData?.externalUrls?.spotify ?? entityData?.externalUrls?.wikidata
+  );
 
   if (entity) {
     return { subject, predicate, object: iriWithPrefix(objectPrefix, entity.id) };

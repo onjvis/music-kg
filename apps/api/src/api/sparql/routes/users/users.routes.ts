@@ -1,13 +1,7 @@
 import { Router } from 'express';
 
 import { authenticateToken } from '../../../auth/auth.middleware';
-import {
-  handleCreateUser,
-  handleDeleteUser,
-  handleGetAllUsers,
-  handleGetUser,
-  handleUpdateUser,
-} from './users.handlers';
+import { handleCreateUser, handleDeleteUser, handleGetAllUsers, handleGetUser, handleUpdateUser } from './handlers';
 import { checkUserId } from './users.middleware';
 
 const usersRoutes: Router = Router();

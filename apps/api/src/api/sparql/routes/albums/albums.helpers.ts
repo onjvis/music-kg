@@ -1,7 +1,7 @@
 import { CreateAlbumRequest, UpdateAlbumRequest } from '@music-kg/data';
 import { MusicAlbumProductionType, MusicAlbumReleaseType } from '@music-kg/sparql-data';
 
-import { albumExists } from './album-exists';
+import { albumExists } from './features';
 
 export const runAlbumCreationChecks = async (body: CreateAlbumRequest | UpdateAlbumRequest): Promise<string> => {
   // Will not create a new entity if there is already the entity with the same external ID

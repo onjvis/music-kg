@@ -8,7 +8,7 @@ import {
   handleGetAllRecordings,
   handleGetRecording,
   handleUpdateRecording,
-} from './recordings.handlers';
+} from './handlers';
 
 const recordingsRoutes: Router = Router();
 recordingsRoutes.get('/', authenticateToken, handleGetAllRecordings);

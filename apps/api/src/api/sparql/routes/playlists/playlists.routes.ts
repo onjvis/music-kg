@@ -8,7 +8,7 @@ import {
   handleGetAllPlaylists,
   handleGetPlaylist,
   handleUpdatePlaylist,
-} from './playlists.handlers';
+} from './handlers';
 
 const playlistsRoutes: Router = Router();
 playlistsRoutes.get('/', authenticateToken, handleGetAllPlaylists);

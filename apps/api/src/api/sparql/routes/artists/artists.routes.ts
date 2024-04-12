@@ -8,7 +8,7 @@ import {
   handleGetAllArtists,
   handleGetArtist,
   handleUpdateArtist,
-} from './artists.handlers';
+} from './handlers';
 
 const artistsRoutes: Router = Router();
 artistsRoutes.get('/', authenticateToken, handleGetAllArtists);

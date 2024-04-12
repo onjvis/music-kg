@@ -8,7 +8,7 @@ import {
   handleGetAlbum,
   handleGetAllAlbums,
   handleUpdateAlbum,
-} from './albums.handlers';
+} from './handlers';
 
 const albumsRoutes: Router = Router();
 albumsRoutes.get('/', authenticateToken, handleGetAllAlbums);
