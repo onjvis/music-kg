@@ -37,11 +37,13 @@ export const updateUser = async (id: string, request: UpdateUserRequest): Promis
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
 
       const newTriples: Triple[] = Array.isArray(properties[propertyName])
-        ? properties[propertyName].map((value: string | number): Triple => ({
-            subject: userSubject,
-            predicate: predicate.iri,
-            object: literal(value.toString(), objectDatatype),
-          }))
+        ? properties[propertyName].map(
+            (value: string): Triple => ({
+              subject: userSubject,
+              predicate: predicate.iri,
+              object: literal(value.toString(), objectDatatype),
+            })
+          )
         : [
             {
               subject: userSubject,

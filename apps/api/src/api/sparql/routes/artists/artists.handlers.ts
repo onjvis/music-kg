@@ -16,10 +16,10 @@ import { artistExists } from './artist-exists';
 import { createArtist } from './create-artist';
 import { deleteArtist } from './delete-artist';
 import { getAllArtists } from './get-all-artists';
-import { getArtist } from './get-artist';
+import { getArtist, getArtistByExternalUrl } from './get-artist';
 import { updateArtist } from './update-artist';
 
-export const createArtistHandler = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
+export const handleCreateArtist = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
   const body: CreateArtistRequest = req.body as CreateArtistRequest;
 
   if (!body?.name) {
@@ -43,7 +43,7 @@ export const createArtistHandler = async (req: Request, res: Response<void | Err
   }
 };
 
-export const deleteArtistHandler = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
+export const handleDeleteArtist = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
   const id: string = req.params.id;
 
   try {
@@ -54,7 +54,23 @@ export const deleteArtistHandler = async (req: Request, res: Response<void | Err
   }
 };
 
-export const getAllArtistsHandler = async (_: Request, res: Response<string[] | ErrorResponse>): Promise<void> => {
+export const handleFindArtist = async (req: Request, res: Response<MusicGroup | ErrorResponse>): Promise<void> => {
+  const spotifyUrl: string = decodeURIComponent(req.query.spotifyUrl as string);
+
+  try {
+    const artist: MusicGroup = await getArtistByExternalUrl(spotifyUrl);
+
+    !artist
+      ? res
+          .status(404)
+          .send({ message: `The artist with Spotify URL '${spotifyUrl}' does not exist in the RDF database.` })
+      : res.status(200).send(artist);
+  } catch (error) {
+    res.status(500).send({ message: error?.message });
+  }
+};
+
+export const handleGetAllArtists = async (_: Request, res: Response<string[] | ErrorResponse>): Promise<void> => {
   try {
     const artists: string[] = await getAllArtists();
     res.status(200).send(artists);
@@ -63,7 +79,7 @@ export const getAllArtistsHandler = async (_: Request, res: Response<string[] | 
   }
 };
 
-export const getArtistHandler = async (req: Request, res: Response<MusicGroup | ErrorResponse>): Promise<void> => {
+export const handleGetArtist = async (req: Request, res: Response<MusicGroup | ErrorResponse>): Promise<void> => {
   const id: string = req.params.id;
 
   try {
@@ -77,7 +93,7 @@ export const getArtistHandler = async (req: Request, res: Response<MusicGroup | 
   }
 };
 
-export const updateArtistHandler = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
+export const handleUpdateArtist = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
   let body: UpdateArtistRequest = req.body as UpdateArtistRequest;
   const id: string = req.params.id;
   const updateType: UpdateType = (req.query.updateType as UpdateType) ?? UpdateType.REPLACE;

@@ -15,7 +15,7 @@ import { arrayUnion } from '../../../../utils/array-union';
 import { runAlbumCreationChecks } from './albums.helpers';
 import { createAlbum } from './create-album';
 import { deleteAlbum } from './delete-album';
-import { getAlbum } from './get-album';
+import { getAlbum, getAlbumByExternalUrl } from './get-album';
 import { getAllAlbums } from './get-all-albums';
 import { updateAlbum } from './update-album';
 
@@ -43,6 +43,22 @@ export const handleDeleteAlbum = async (req: Request, res: Response<void | Error
   try {
     await deleteAlbum(id);
     res.sendStatus(204);
+  } catch (error) {
+    res.status(500).send({ message: error?.message });
+  }
+};
+
+export const handleFindAlbum = async (req: Request, res: Response<MusicAlbum | ErrorResponse>): Promise<void> => {
+  const spotifyUrl: string = decodeURIComponent(req.query.spotifyUrl as string);
+
+  try {
+    const album: MusicAlbum = await getAlbumByExternalUrl(spotifyUrl);
+
+    !album
+      ? res
+          .status(404)
+          .send({ message: `The album with Spotify URL '${spotifyUrl}' does not exist in the RDF database.` })
+      : res.status(200).send(album);
   } catch (error) {
     res.status(500).send({ message: error?.message });
   }

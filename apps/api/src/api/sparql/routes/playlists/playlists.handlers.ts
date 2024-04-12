@@ -15,7 +15,7 @@ import { arrayUnion } from '../../../../utils/array-union';
 import { createPlaylist } from './create-playlist';
 import { deletePlaylist } from './delete-playlist';
 import { getAllPlaylists } from './get-all-playlists';
-import { getPlaylist } from './get-playlist';
+import { getPlaylist, getPlaylistByExternalUrl } from './get-playlist';
 import { playlistExists } from './playlist-exists';
 import { updatePlaylist } from './update-playlist';
 
@@ -71,6 +71,22 @@ export const handleGetPlaylist = async (req: Request, res: Response<MusicPlaylis
     !playlist
       ? res.status(404).send({ message: `The playlist with id ${id} does not exist in the RDF database.` })
       : res.status(200).send({ ...playlist, id });
+  } catch (error) {
+    res.status(500).send({ message: error?.message });
+  }
+};
+
+export const handleFindPlaylist = async (req: Request, res: Response<MusicPlaylist | ErrorResponse>): Promise<void> => {
+  const spotifyUrl: string = decodeURIComponent(req.query.spotifyUrl as string);
+
+  try {
+    const playlist: MusicPlaylist = await getPlaylistByExternalUrl(spotifyUrl);
+
+    !playlist
+      ? res
+          .status(404)
+          .send({ message: `The playlist with Spotify URL '${spotifyUrl}' does not exist in the RDF database.` })
+      : res.status(200).send(playlist);
   } catch (error) {
     res.status(500).send({ message: error?.message });
   }

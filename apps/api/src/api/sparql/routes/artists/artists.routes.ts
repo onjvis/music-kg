@@ -2,18 +2,20 @@ import { Router } from 'express';
 
 import { authenticateToken } from '../../../auth/auth.middleware';
 import {
-  createArtistHandler,
-  deleteArtistHandler,
-  getAllArtistsHandler,
-  getArtistHandler,
-  updateArtistHandler,
+  handleCreateArtist,
+  handleDeleteArtist,
+  handleFindArtist,
+  handleGetAllArtists,
+  handleGetArtist,
+  handleUpdateArtist,
 } from './artists.handlers';
 
 const artistsRoutes: Router = Router();
-artistsRoutes.get('/', authenticateToken, getAllArtistsHandler);
-artistsRoutes.post('/', authenticateToken, createArtistHandler);
-artistsRoutes.delete('/:id', authenticateToken, deleteArtistHandler);
-artistsRoutes.get('/:id', authenticateToken, getArtistHandler);
-artistsRoutes.put('/:id', authenticateToken, updateArtistHandler);
+artistsRoutes.get('/', authenticateToken, handleGetAllArtists);
+artistsRoutes.post('/', authenticateToken, handleCreateArtist);
+artistsRoutes.get('/find', authenticateToken, handleFindArtist);
+artistsRoutes.delete('/:id', authenticateToken, handleDeleteArtist);
+artistsRoutes.get('/:id', authenticateToken, handleGetArtist);
+artistsRoutes.put('/:id', authenticateToken, handleUpdateArtist);
 
 export default artistsRoutes;
