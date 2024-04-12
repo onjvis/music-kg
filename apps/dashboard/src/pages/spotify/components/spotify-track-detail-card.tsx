@@ -1,8 +1,8 @@
-import { Track } from '@spotify/web-api-ts-sdk';
+import { SimplifiedArtist, Track } from '@spotify/web-api-ts-sdk';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-import { CreateRecordingRequest } from '@music-kg/data';
+import { CreateRecordingRequest, EntityData } from '@music-kg/data';
 
 import { AlertData } from '../../../components/alert/models/alert-data.model';
 import { ErrorAlert } from '../../../components/alert/error-alert';
@@ -23,7 +23,7 @@ export const SpotifyTrackDetailCard = ({ handleDetailClose, track }: SpotifyTrac
 
   useEffect(() => {
     httpClient
-      .get(`${ApiUrl.SPARQL_RECORDINGS}/${track?.id}`)
+      .get(`${ApiUrl.SPARQL_RECORDINGS}/find?spotifyUrl=${encodeURIComponent(track?.external_urls.spotify)}`)
       .then(() => setSynchronized(true))
       .catch((error) => {
         if (axios.isAxiosError(error)) {
@@ -37,18 +37,22 @@ export const SpotifyTrackDetailCard = ({ handleDetailClose, track }: SpotifyTrac
           }
         }
       });
-  }, [track?.id]);
+  }, [track?.external_urls.spotify]);
 
   const handleSynchronize = async (): Promise<void> => {
     const data: CreateRecordingRequest = {
-      byArtist: track.artists?.map((artist) => artist?.id),
+      artists: track.artists?.map(
+        (artist: SimplifiedArtist): EntityData => ({
+          name: artist?.name,
+          externalUrls: { spotify: artist?.external_urls?.spotify },
+        })
+      ),
+      album: { name: track.album?.name, externalUrls: { spotify: track?.album?.external_urls?.spotify } },
+      name: track.name,
       datePublished: track.album?.release_date,
       duration: track.duration_ms,
-      id: track.id,
-      inAlbum: track.album?.id,
-      isrcCode: track.external_ids?.isrc,
-      name: track.name,
-      sameAs: track.external_urls?.spotify,
+      externalUrls: { spotify: track?.external_urls?.spotify },
+      isrc: track.external_ids?.isrc,
     };
 
     try {

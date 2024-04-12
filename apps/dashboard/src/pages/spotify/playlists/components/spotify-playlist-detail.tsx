@@ -1,18 +1,17 @@
-import { Playlist, Track } from '@spotify/web-api-ts-sdk';
+import { Playlist, PlaylistedTrack, Track } from '@spotify/web-api-ts-sdk';
 import axios, { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
-import { CreatePlaylistRequest } from '@music-kg/data';
+import { CreatePlaylistRequest, EntityData } from '@music-kg/data';
 
 import { AlertData } from '../../../../components/alert/models/alert-data.model';
 import { ErrorAlert } from '../../../../components/alert/error-alert';
 import { SuccessAlert } from '../../../../components/alert/success-alert';
 import { FlexTextRow } from '../../../../components/flex-text-row';
 import { SynchronizationStatus } from '../../../../components/synchronization-status';
-import { useCurrentUser } from '../../../../contexts/current-user.context';
 import { ApiUrl } from '../../../../models/api-url.model';
 import httpClient from '../../../../services/http-client';
 import { ms2timeStr } from '../../../../utils/ms2timeStr';
@@ -24,13 +23,12 @@ export const SpotifyPlaylistDetail = () => {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [isSynchronized, setSynchronized] = useState<boolean>(false);
   const playlist: Playlist = (useLoaderData() as AxiosResponse)?.data;
-  const { currentUser } = useCurrentUser();
 
   const navigate = useNavigate();
 
   useEffect(() => {
     httpClient
-      .get(`${ApiUrl.SPARQL_PLAYLISTS}/${playlist?.id}`)
+      .get(`${ApiUrl.SPARQL_PLAYLISTS}/find?spotifyUrl=${encodeURIComponent(playlist?.external_urls?.spotify)}`)
       .then(() => setSynchronized(true))
       .catch((error) => {
         if (axios.isAxiosError(error)) {
@@ -44,7 +42,7 @@ export const SpotifyPlaylistDetail = () => {
           }
         }
       });
-  }, [playlist?.id]);
+  }, [playlist?.external_urls?.spotify]);
 
   const handleBack = (): void => navigate(-1);
 
@@ -57,14 +55,21 @@ export const SpotifyPlaylistDetail = () => {
 
   const handleSynchronize = async (): Promise<void> => {
     const data: CreatePlaylistRequest = {
-      id: playlist?.id,
-      creator: currentUser.id,
+      creators: {
+        name: playlist?.owner?.display_name,
+        externalUrls: { spotify: playlist?.owner?.external_urls?.spotify },
+      },
       description: playlist?.description,
-      image: playlist?.images?.[0]?.url,
+      externalUrls: { spotify: playlist?.external_urls?.spotify },
+      imageUrl: playlist?.images?.[0]?.url,
       name: playlist?.name,
-      numTracks: playlist?.tracks?.total.toString(),
-      sameAs: playlist?.href,
-      track: playlist?.tracks?.items?.map((item) => item?.track?.id),
+      numTracks: playlist?.tracks?.total,
+      tracks: playlist?.tracks?.items?.map(
+        (item: PlaylistedTrack): EntityData => ({
+          name: item?.track?.name,
+          externalUrls: { spotify: item?.track?.external_urls?.spotify },
+        })
+      ),
     };
 
     try {
