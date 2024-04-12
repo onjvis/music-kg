@@ -4,9 +4,10 @@ import { FaSpotify } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import { NavigationMenuOption } from '../../components/layout/navigation-menu/models/navigation-menu-option.model';
+import { HorizontalNavigationMenu } from '../../components/layout/navigation-menu/horizontal-navigation-menu';
 import { AppRoute } from '../../models/enums/app-route.enum';
 import { SPOTIFY_VERIFIER_KEY } from '../../models/local-storage.constants';
-import { SpotifyMenu } from './components/spotify-menu/spotify-menu';
 
 export const Spotify = () => {
   const [buttonText, setButtonText] = useState('Authorize');
@@ -36,6 +37,17 @@ export const Spotify = () => {
     );
   };
 
+  const menuOptions: NavigationMenuOption[] = [
+    {
+      to: AppRoute.SPOTIFY_LATEST,
+      title: 'Latest tracks',
+    },
+    {
+      to: AppRoute.SPOTIFY_PLAYLISTS,
+      title: 'Playlists',
+    },
+  ];
+
   return (
     <div className="flex w-full flex-grow flex-col gap-4 self-center rounded-lg border-2 bg-white p-8">
       <div className="flex flex-row items-center justify-between">
@@ -53,7 +65,7 @@ export const Spotify = () => {
       </div>
       {isAuthenticationFinished && (
         <div className="flex flex-col gap-4">
-          <SpotifyMenu />
+          <HorizontalNavigationMenu defaultOption={AppRoute.SPOTIFY_LATEST} menuOptions={menuOptions} />
           <Outlet />
         </div>
       )}
