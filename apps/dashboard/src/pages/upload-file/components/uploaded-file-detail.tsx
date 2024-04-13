@@ -2,15 +2,18 @@ import { RefObject, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { IconContext } from 'react-icons';
 import { CiLock, CiUnlock } from 'react-icons/ci';
-import { FaSpotify } from 'react-icons/fa6';
 
 import { AlertData } from '../../../components/alert/models/alert-data.model';
 import { InfoAlert } from '../../../components/alert/info-alert';
 import { SuccessAlert } from '../../../components/alert/success-alert';
+import { SpotifyIcon } from '../../../components/icons/spotify-icon';
+import { SpotifyAutoLookupResults } from '../models/spotify-auto-lookup-results';
 import { SpotifyLookupDialogSelectionResult } from '../models/spotify-lookup-dialog-selection-result.model';
+import { SpotifySearchMode } from '../models/spotify-search-mode.type';
 import { SpotifySearchParams } from '../models/spotify-search-params.model';
 import { UploadedFile } from '../models/uploaded-file.model';
 import { UploadedFileMetadata } from '../models/uploaded-file-metadata.model';
+import { SpotifyAutoLookupButton } from './spotify-auto-lookup-button';
 import { SpotifyLookupDialog } from './spotify-lookup-dialog';
 
 type UploadedFileDetailProps = {
@@ -64,7 +67,7 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
     dialogRef?.current?.close();
   };
 
-  const handleSpotifyLookup = (type: 'album' | 'artist' | 'track'): void => {
+  const handleSpotifyLookup = (type: SpotifySearchMode): void => {
     const formValues: UploadedFileMetadata = getValues();
     const params: SpotifySearchParams = { type };
 
@@ -90,9 +93,24 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
     handleOpenDialog();
   };
 
-  const handleSelect = (result: SpotifyLookupDialogSelectionResult) => {
-    setValue(result?.type, result?.id);
+  const handleSpotifyAutoLookupResults = (results: SpotifyAutoLookupResults): void =>
+    Object.values(results).forEach((result: SpotifyLookupDialogSelectionResult) => setValuesFromSpotifyLookup(result));
+
+  const handleSelect = (result: SpotifyLookupDialogSelectionResult): void => {
+    setValuesFromSpotifyLookup(result);
     handleCloseDialog();
+  };
+
+  const setValuesFromSpotifyLookup = (result: SpotifyLookupDialogSelectionResult): void => {
+    setValue(result?.type, result?.id);
+
+    if (result?.type === 'album') {
+      setValue('albumName', result?.name);
+    } else if (result?.type === 'artist') {
+      setValue('artistName', result?.name);
+    } else if (result?.type === 'track') {
+      setValue('title', result?.name);
+    }
   };
 
   return (
@@ -109,12 +127,17 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
 
       <div className="flex flex-row justify-between gap-2">
         <h2>File metadata</h2>
-        <button className="btn-primary flex flex-row items-center gap-2" onClick={handleEditModeToggle}>
-          <IconContext.Provider value={{ size: '1.5em' }}>
-            {isEditMode ? <CiLock /> : <CiUnlock />}
-          </IconContext.Provider>
-          <span>{isEditMode ? 'Lock' : 'Edit'}</span>
-        </button>
+        <div className="flex flex-row gap-2">
+          {isEditMode && (
+            <SpotifyAutoLookupButton getValues={getValues} handleResults={handleSpotifyAutoLookupResults} />
+          )}
+          <button className="btn-primary flex flex-row items-center gap-2" onClick={handleEditModeToggle}>
+            <IconContext.Provider value={{ size: '1.5em' }}>
+              {isEditMode ? <CiLock /> : <CiUnlock />}
+            </IconContext.Provider>
+            <span>{isEditMode ? 'Lock' : 'Edit'}</span>
+          </button>
+        </div>
       </div>
 
       {alertData?.type === 'success' && <SuccessAlert message={alertData?.message} />}
@@ -123,7 +146,7 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
 
       <form className="flex flex-col justify-start gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1">
-          <label htmlFor="title">Title</label>
+          <label htmlFor="title">Title *</label>
           <div className="flex flex-row items-center justify-between gap-1">
             <input
               className="w-1/2 disabled:cursor-not-allowed disabled:text-gray-300"
@@ -131,17 +154,16 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
               type="text"
               {...register('title', { disabled: !isEditMode })}
             />
-            {getValues('track') && (
+            <div className="flex flex-row items-center gap-2">
+              <SpotifyIcon />
               <input className="disabled:text-gray-300" disabled type="text" {...register('track')} />
-            )}
+            </div>
             {isEditMode && (
               <button
                 className="btn-secondary flex flex-row items-center gap-2"
                 onClick={() => handleSpotifyLookup('track')}
               >
-                <IconContext.Provider value={{ color: 'black', size: '1.5em' }}>
-                  <FaSpotify />
-                </IconContext.Provider>
+                <SpotifyIcon />
                 <span>Lookup track</span>
               </button>
             )}
@@ -149,7 +171,7 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="isrc">ISRC</label>
+          <label htmlFor="isrc">ISRC (International Standard Recording Code)</label>
           <input
             className="w-1/2 disabled:cursor-not-allowed disabled:text-gray-300"
             id="isrc"
@@ -159,7 +181,7 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="date">Date</label>
+          <label htmlFor="date">Date of Publishing</label>
           <input
             className="w-1/2 disabled:cursor-not-allowed disabled:text-gray-300"
             id="date"
@@ -179,7 +201,7 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="artist">Artist</label>
+          <label htmlFor="artist">Artist *</label>
           <div className="flex flex-row items-center justify-between gap-2">
             <input
               className="w-1/2 disabled:cursor-not-allowed disabled:text-gray-300"
@@ -187,17 +209,16 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
               type="text"
               {...register('artistName', { disabled: !isEditMode })}
             />
-            {getValues('artist') && (
+            <div className="flex flex-row items-center gap-2">
+              <SpotifyIcon />
               <input className="disabled:text-gray-300" disabled type="text" {...register('artist')} />
-            )}
+            </div>
             {isEditMode && (
               <button
                 className="btn-secondary flex flex-row items-center gap-2"
                 onClick={() => handleSpotifyLookup('artist')}
               >
-                <IconContext.Provider value={{ color: 'black', size: '1.5em' }}>
-                  <FaSpotify />
-                </IconContext.Provider>
+                <SpotifyIcon />
                 <span>Lookup artist</span>
               </button>
             )}
@@ -205,7 +226,7 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="album">Album</label>
+          <label htmlFor="album">Album *</label>
           <div className="flex flex-row items-center justify-between gap-2">
             <input
               className="w-1/2 disabled:cursor-not-allowed disabled:text-gray-300"
@@ -213,17 +234,16 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
               type="text"
               {...register('albumName', { disabled: !isEditMode })}
             />
-            {getValues('album') && (
+            <div className="flex flex-row items-center gap-2">
+              <SpotifyIcon />
               <input className="disabled:text-gray-300" disabled type="text" {...register('album')} />
-            )}
+            </div>
             {isEditMode && (
               <button
                 className="btn-secondary flex flex-row items-center gap-2"
                 onClick={() => handleSpotifyLookup('album')}
               >
-                <IconContext.Provider value={{ color: 'black', size: '1.5em' }}>
-                  <FaSpotify />
-                </IconContext.Provider>
+                <SpotifyIcon />
                 <span>Lookup album</span>
               </button>
             )}

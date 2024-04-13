@@ -1,9 +1,8 @@
 import { AccessToken, Scopes, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { useEffect, useState } from 'react';
-import { FaSpotify } from 'react-icons/fa6';
-import { IconContext } from 'react-icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import { SpotifyIcon } from '../../components/icons/spotify-icon';
 import { NavigationMenuOption } from '../../components/layout/navigation-menu/models/navigation-menu-option.model';
 import { HorizontalNavigationMenu } from '../../components/layout/navigation-menu/horizontal-navigation-menu';
 import { AppRoute } from '../../models/enums/app-route.enum';
@@ -52,9 +51,7 @@ export const Spotify = () => {
     <div className="flex w-full flex-grow flex-col gap-4 self-center rounded-lg border-2 bg-white p-8">
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-2">
-          <IconContext.Provider value={{ size: '3em' }}>
-            <FaSpotify />
-          </IconContext.Provider>
+          <SpotifyIcon size="3em" />
           <h1 className="text-3xl">Spotify integration</h1>
         </div>
         {!isAuthenticationFinished && (

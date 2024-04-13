@@ -15,6 +15,7 @@ import { UploadedFileDetail } from './components/uploaded-file-detail';
 import { UploadedFileItem } from './components/uploaded-file-item';
 import { UploadedFileMetadata } from './models/uploaded-file-metadata.model';
 import { UploadedFile } from './models/uploaded-file.model';
+import { getSpotifyEntityPrefix } from './utils/get-spotify-entity-prefix';
 import './upload-file.css';
 
 export const UploadFile = () => {
@@ -81,29 +82,36 @@ export const UploadFile = () => {
     const trackRequestsData: CreateRecordingRequest[] = [];
 
     for (const metadata of uploadedFiles.map((file: UploadedFile) => file.parsedMetadata)) {
-      if (
-        !metadata.artist ||
-        !metadata.date ||
-        !metadata.duration ||
-        !metadata.track ||
-        !metadata.album ||
-        !metadata.isrc ||
-        !metadata.title
-      ) {
-        setAlertData({ type: 'error', message: 'Some files have missing properties!' });
+      if (!metadata.artistName || !metadata.albumName || !metadata.title) {
+        setAlertData({
+          type: 'error',
+          message:
+            'Some files have missing required properties: the track title, the name of the artist or the name of the album!',
+        });
         setTimeout(() => setAlertData(undefined), 3000);
         return;
       }
 
       const requestData: CreateRecordingRequest = {
-        byArtist: [metadata.artist],
-        datePublished: metadata.date,
-        duration: Math.floor(metadata.duration * 1000),
-        id: metadata.track,
-        inAlbum: metadata.album,
-        isrcCode: metadata.isrc,
+        album: {
+          name: metadata.albumName,
+          ...(metadata.album
+            ? { externalUrls: { spotify: `${getSpotifyEntityPrefix('album')}/${metadata.album}` } }
+            : {}),
+        },
+        artists: {
+          name: metadata.artistName,
+          ...(metadata.artist
+            ? { externalUrls: { spotify: `${getSpotifyEntityPrefix('artist')}/${metadata.artist}` } }
+            : {}),
+        },
         name: metadata.title,
-        sameAs: `https://open.spotify.com/tracks/${metadata.track}`,
+        ...(metadata.date ? { datePublished: metadata.date } : {}),
+        ...(metadata.duration ? { duration: Math.floor(metadata.duration * 1000) } : {}),
+        ...(metadata.isrc ? { isrc: metadata.isrc } : {}),
+        ...(metadata.track
+          ? { externalUrls: { spotify: `${getSpotifyEntityPrefix('track')}/${metadata.track}` } }
+          : {}),
       };
 
       trackRequestsData.push(requestData);

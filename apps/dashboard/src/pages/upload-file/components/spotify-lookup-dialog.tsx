@@ -37,9 +37,8 @@ export const SpotifyLookupDialog = ({ handleClose, handleSelect, searchParams }:
     httpClient.get(url).then((response) => setData(response?.data));
   };
 
-  const handleItemClicked = (id: string): void => {
-    handleSelect({ type: searchParams?.type, id });
-  };
+  const handleItemClicked = ({ id, name }: SpotifySearchResult): void =>
+    handleSelect({ type: searchParams?.type, id, name });
 
   return (
     <div className="flex flex-col">
@@ -89,7 +88,7 @@ export const SpotifyLookupDialog = ({ handleClose, handleSelect, searchParams }:
                 <div
                   key={result?.id}
                   className="flex flex-row justify-between gap-8 p-2 first:rounded-t-md last:rounded-b-md hover:cursor-pointer hover:bg-cyan-200"
-                  onClick={() => handleItemClicked(result?.id)}
+                  onClick={() => handleItemClicked(result)}
                 >
                   <strong>{result?.name}</strong>
                   <span>{result?.id}</span>
