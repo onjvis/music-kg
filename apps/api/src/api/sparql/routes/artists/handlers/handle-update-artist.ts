@@ -42,7 +42,7 @@ export const handleUpdateArtist = async (req: Request, res: Response<void | Erro
           ? artist.track.map((artistId: string): EntityData => ({ id: artistId }))
           : [{ id: artist.track }]
         : [];
-      const artistGenres: string[] = Array.isArray(artist.genre) ? artist.genre : [artist.genre];
+      const artistGenres: string[] = artist.genre ? (Array.isArray(artist.genre) ? artist.genre : [artist.genre]) : [];
       const artistExternalUrls: ExternalUrls = artist.sameAs
         ? Array.isArray(artist.sameAs)
           ? artist.sameAs
