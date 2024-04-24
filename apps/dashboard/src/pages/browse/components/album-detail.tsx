@@ -47,7 +47,11 @@ export const AlbumDetail = () => {
             Array.isArray(album.byArtist) ? (
               <div className="flex flex-col items-end gap-1">
                 {album.byArtist.map((artistId: string) => (
-                  <CustomLink key={`${album.id}:artistId:${artistId}`} linkTitle={artistId} to={artistId} />
+                  <CustomLink
+                    key={`${album.id}:artistId:${artistId}`}
+                    linkTitle={artistId}
+                    to={`${AppRoute.BROWSE_ARTISTS}/${artistId}`}
+                  />
                 ))}
               </div>
             ) : (

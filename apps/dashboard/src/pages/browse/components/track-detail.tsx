@@ -32,7 +32,7 @@ export const TrackDetail = () => {
       {track?.inAlbum && (
         <FlexRow
           label="Album"
-          element={<CustomLink linkTitle={track.inAlbum} to={`${AppRoute.BROWSE_ARTISTS}/${track.inAlbum}`} />}
+          element={<CustomLink linkTitle={track.inAlbum} to={`${AppRoute.BROWSE_ALBUMS}/${track.inAlbum}`} />}
         />
       )}
       {track?.byArtist && (
