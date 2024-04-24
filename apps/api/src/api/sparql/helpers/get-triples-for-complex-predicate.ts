@@ -40,6 +40,7 @@ export const getTriplesForComplexPredicate = async (
     case SCHEMA_PREDICATE.creator:
       return [{ subject, predicate: predicate.iri, object: iriWithPrefix(objectPrefix, value as string) }];
     case SCHEMA_PREDICATE.image:
+      return [{ subject, predicate: predicate.iri, object: iri(value as string) }];
     case SCHEMA_PREDICATE.sameAs:
       return Object.values(value).map(
         (externalUrl: string): Triple => ({ subject, predicate: predicate.iri, object: iri(externalUrl) })
