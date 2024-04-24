@@ -1,13 +1,12 @@
-import { SimplifiedArtist, Track } from '@spotify/web-api-ts-sdk';
+import { Track } from '@spotify/web-api-ts-sdk';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-
-import { CreateRecordingRequest, EntityData } from '@music-kg/data';
 
 import { AlertData } from '../../../components/alert/models/alert-data.model';
 import { ErrorAlert } from '../../../components/alert/error-alert';
 import { SuccessAlert } from '../../../components/alert/success-alert';
 import { SynchronizationStatus } from '../../../components/synchronization-status';
+import { synchronizeSpotifyTrack } from '../../../services/synchronization/synchronize-spotify-track';
 import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
 import { SpotifyTrackDetail } from './spotify-track-detail';
@@ -19,6 +18,7 @@ type SpotifyTrackDetailCardProps = {
 
 export const SpotifyTrackDetailCard = ({ handleDetailClose, track }: SpotifyTrackDetailCardProps) => {
   const [alertData, setAlertData] = useState<AlertData>();
+  const [isSynchronizationPending, setSynchronizationPending] = useState<boolean>(false);
   const [isSynchronized, setSynchronized] = useState<boolean>(false);
 
   useEffect(() => {
@@ -40,23 +40,11 @@ export const SpotifyTrackDetailCard = ({ handleDetailClose, track }: SpotifyTrac
   }, [track?.external_urls.spotify]);
 
   const handleSynchronize = async (): Promise<void> => {
-    const data: CreateRecordingRequest = {
-      artists: track.artists?.map(
-        (artist: SimplifiedArtist): EntityData => ({
-          name: artist?.name,
-          externalUrls: { spotify: artist?.external_urls?.spotify },
-        })
-      ),
-      album: { name: track.album?.name, externalUrls: { spotify: track?.album?.external_urls?.spotify } },
-      name: track.name,
-      datePublished: track.album?.release_date,
-      duration: track.duration_ms,
-      externalUrls: { spotify: track?.external_urls?.spotify },
-      isrc: track.external_ids?.isrc,
-    };
-
     try {
-      await httpClient.post(ApiUrl.SPARQL_RECORDINGS, data);
+      setSynchronizationPending(true);
+      await synchronizeSpotifyTrack(track);
+      setSynchronizationPending(false);
+
       setSynchronized(true);
       setAlertData({ type: 'success', message: 'Track successfully synchronized.' });
     } catch (error) {
@@ -82,6 +70,7 @@ export const SpotifyTrackDetailCard = ({ handleDetailClose, track }: SpotifyTrac
         <SynchronizationStatus
           entityName="Track"
           handleSynchronize={handleSynchronize}
+          isPending={isSynchronizationPending}
           isSynchronized={isSynchronized}
         />
         <button className="btn-secondary" onClick={handleDetailClose}>

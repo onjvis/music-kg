@@ -1,11 +1,9 @@
-import { Playlist, PlaylistedTrack, Track } from '@spotify/web-api-ts-sdk';
+import { Playlist, Track } from '@spotify/web-api-ts-sdk';
 import axios, { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import { useLoaderData, useNavigate } from 'react-router-dom';
-
-import { CreatePlaylistRequest, EntityData } from '@music-kg/data';
 
 import { AlertData } from '../../../../components/alert/models/alert-data.model';
 import { ErrorAlert } from '../../../../components/alert/error-alert';
@@ -14,6 +12,7 @@ import { FlexTextRow } from '../../../../components/flex-text-row';
 import { SynchronizationStatus } from '../../../../components/synchronization-status';
 import { ApiUrl } from '../../../../models/api-url.model';
 import httpClient from '../../../../services/http-client';
+import { synchronizeSpotifyPlaylist } from '../../../../services/synchronization/synchronize-spotify-playlist';
 import { ms2timeStr } from '../../../../utils/ms2timeStr';
 import { SpotifyTrackDetailCard } from '../../components/spotify-track-detail-card';
 import { SpotifyTrackItem } from '../../components/spotify-track-item';
@@ -21,6 +20,7 @@ import { SpotifyTrackItem } from '../../components/spotify-track-item';
 export const SpotifyPlaylistDetail = () => {
   const [alertData, setAlertData] = useState<AlertData>();
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+  const [isSynchronizationPending, setSynchronizationPending] = useState<boolean>(false);
   const [isSynchronized, setSynchronized] = useState<boolean>(false);
   const playlist: Playlist = (useLoaderData() as AxiosResponse)?.data;
 
@@ -54,26 +54,11 @@ export const SpotifyPlaylistDetail = () => {
   const handleDetailClose = (): void => setSelectedTrack(null);
 
   const handleSynchronize = async (): Promise<void> => {
-    const data: CreatePlaylistRequest = {
-      creators: {
-        name: playlist?.owner?.display_name,
-        externalUrls: { spotify: playlist?.owner?.external_urls?.spotify },
-      },
-      description: playlist?.description,
-      externalUrls: { spotify: playlist?.external_urls?.spotify },
-      imageUrl: playlist?.images?.[0]?.url,
-      name: playlist?.name,
-      numTracks: playlist?.tracks?.total,
-      tracks: playlist?.tracks?.items?.map(
-        (item: PlaylistedTrack): EntityData => ({
-          name: item?.track?.name,
-          externalUrls: { spotify: item?.track?.external_urls?.spotify },
-        })
-      ),
-    };
-
     try {
-      await httpClient.post(ApiUrl.SPARQL_PLAYLISTS, data);
+      setSynchronizationPending(true);
+      await synchronizeSpotifyPlaylist(playlist);
+      setSynchronizationPending(false);
+
       setSynchronized(true);
       setAlertData({ type: 'success', message: 'Playlist successfully synchronized.' });
     } catch (error) {
@@ -97,6 +82,7 @@ export const SpotifyPlaylistDetail = () => {
         <SynchronizationStatus
           entityName="Playlist"
           handleSynchronize={handleSynchronize}
+          isPending={isSynchronizationPending}
           isSynchronized={isSynchronized}
         />
       </div>
