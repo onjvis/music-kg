@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import {
+  DataOrigin,
   EntityData,
   ErrorResponse,
   ExternalUrls,
@@ -17,14 +18,10 @@ export const handleUpdatePlaylist = async (req: Request, res: Response<void | Er
   let body: UpdatePlaylistRequest = req.body as UpdatePlaylistRequest;
   const id: string = req.params.id;
   const updateType: UpdateType = (req.query.updateType as UpdateType) ?? UpdateType.REPLACE;
-
-  if (!body) {
-    res.status(400).send({ message: 'The request body is empty.' });
-    return;
-  }
+  const origin: DataOrigin = req.query.origin as DataOrigin;
 
   try {
-    const playlist: MusicPlaylist = await getPlaylist(id);
+    const playlist: MusicPlaylist = await getPlaylist(id, origin);
 
     if (!playlist) {
       res.status(400).send({ message: `The playlist with id ${id} does not exist in the RDF database.` });
@@ -34,13 +31,13 @@ export const handleUpdatePlaylist = async (req: Request, res: Response<void | Er
     if (updateType === UpdateType.APPEND) {
       const playlistCreators: EntityData[] = playlist.creator
         ? Array.isArray(playlist.creator)
-          ? playlist.creator.map((artistId: string): EntityData => ({ id: artistId }))
-          : [{ id: playlist.creator }]
+          ? playlist.creator.map((creatorId: string): EntityData => ({ id: creatorId, type: 'user' }))
+          : [{ id: playlist.creator, type: 'user' }]
         : [];
       const playlistTracks: EntityData[] = playlist.track
         ? Array.isArray(playlist.track)
-          ? playlist.track.map((artistId: string): EntityData => ({ id: artistId }))
-          : [{ id: playlist.track }]
+          ? playlist.track.map((trackId: string): EntityData => ({ id: trackId, type: 'track' }))
+          : [{ id: playlist.track, type: 'track' }]
         : [];
       const playlistExternalUrls: ExternalUrls = playlist.sameAs
         ? Array.isArray(playlist.sameAs)
@@ -66,7 +63,7 @@ export const handleUpdatePlaylist = async (req: Request, res: Response<void | Er
       };
     }
 
-    await updatePlaylist(id, body);
+    await updatePlaylist(id, body, origin);
     res.sendStatus(204);
   } catch (error) {
     res.status(500).send({ message: error?.message });

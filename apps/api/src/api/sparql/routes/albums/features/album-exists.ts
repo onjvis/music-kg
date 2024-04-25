@@ -1,16 +1,16 @@
 import axios from 'axios';
 
-import { ExternalUrls } from '@music-kg/data';
-import { MUSIC_KG_ALBUMS_PREFIX, prefix2graph } from '@music-kg/sparql-data';
+import { DataOrigin, ExternalUrls } from '@music-kg/data';
+import { prefix2graph } from '@music-kg/sparql-data';
 
 import { createExistsByExternalIdQuery } from '../../../helpers/queries/create-ask-query';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 
-export const albumExists = async (externalUrl?: ExternalUrls): Promise<boolean> => {
-  const albumsPrefix: string = replaceBaseUri(MUSIC_KG_ALBUMS_PREFIX);
+export const albumExists = async (externalUrl: ExternalUrls, origin: DataOrigin): Promise<boolean> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
 
   const query: string = createExistsByExternalIdQuery({
-    graph: prefix2graph(albumsPrefix),
+    graph: prefix2graph(originPrefix),
     id: externalUrl?.spotify ?? externalUrl?.wikidata,
   });
 

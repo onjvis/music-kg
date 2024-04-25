@@ -1,12 +1,11 @@
 import axios from 'axios';
 import { IriTerm, Triple } from 'sparqljs';
 
-import { UpdatePlaylistRequest } from '@music-kg/data';
+import { DataOrigin, UpdatePlaylistRequest } from '@music-kg/data';
 import {
   COMPLEX_PREDICATES,
   iriWithPrefix,
   literal,
-  MUSIC_KG_PLAYLISTS_PREFIX,
   prefix2graph,
   SCHEMA_PREDICATE,
   SPARQL_DATATYPE_MAPPER,
@@ -15,12 +14,12 @@ import {
 } from '@music-kg/sparql-data';
 
 import { createUpdateQuery } from '../../../helpers/queries/create-update-query';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 import { getTriplesForComplexPredicate } from '../../../helpers/get-triples-for-complex-predicate';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
 
-export const updatePlaylist = async (id: string, request: UpdatePlaylistRequest): Promise<void> => {
-  const playlistsPrefix: string = replaceBaseUri(MUSIC_KG_PLAYLISTS_PREFIX);
-  const playlistSubject: IriTerm = iriWithPrefix(playlistsPrefix, id);
+export const updatePlaylist = async (id: string, request: UpdatePlaylistRequest, origin: DataOrigin): Promise<void> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
+  const playlistSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
   const properties = {
     ...(request?.creators ? { creator: request?.creators } : {}),
@@ -38,7 +37,7 @@ export const updatePlaylist = async (id: string, request: UpdatePlaylistRequest)
 
     if (COMPLEX_PREDICATES.includes(predicate)) {
       triplesToInsert.push(
-        ...(await getTriplesForComplexPredicate(playlistSubject, predicate, properties[propertyName]))
+        ...(await getTriplesForComplexPredicate(playlistSubject, predicate, properties[propertyName], origin))
       );
     } else {
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
@@ -77,7 +76,7 @@ export const updatePlaylist = async (id: string, request: UpdatePlaylistRequest)
   predicatesToUpdate.push(SCHEMA_PREDICATE.dateModified.iri);
 
   const query: string = createUpdateQuery({
-    graph: prefix2graph(playlistsPrefix),
+    graph: prefix2graph(originPrefix),
     triplesToInsert,
     subject: playlistSubject,
     predicatesToUpdate,

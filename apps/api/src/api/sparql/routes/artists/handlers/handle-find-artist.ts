@@ -1,15 +1,21 @@
 import { Request, Response } from 'express';
 
-import { ErrorResponse } from '@music-kg/data';
+import { DataOrigin, ErrorResponse } from '@music-kg/data';
 import { MusicGroup } from '@music-kg/sparql-data';
 
 import { getArtistByExternalUrl } from '../features';
 
 export const handleFindArtist = async (req: Request, res: Response<MusicGroup | ErrorResponse>): Promise<void> => {
   const spotifyUrl: string = decodeURIComponent(req.query.spotifyUrl as string);
+  const origin: DataOrigin = req.query.origin as DataOrigin;
+
+  if (!origin) {
+    res.status(400).send({ message: 'The request query is missing parameter origin.' });
+    return;
+  }
 
   try {
-    const artist: MusicGroup = await getArtistByExternalUrl(spotifyUrl);
+    const artist: MusicGroup = await getArtistByExternalUrl(spotifyUrl, origin);
 
     !artist
       ? res

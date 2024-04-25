@@ -5,39 +5,44 @@ import {
   CreateArtistRequest,
   CreateRecordingRequest,
   CreateUserRequest,
+  DataOrigin,
   EntityData,
+  EntityType,
 } from '@music-kg/data';
-import {
-  iri,
-  iriWithPrefix,
-  MUSIC_KG_ALBUMS_PREFIX,
-  MUSIC_KG_ARTISTS_PREFIX,
-  MUSIC_KG_RECORDINGS_PREFIX,
-  MUSIC_KG_USERS_PREFIX,
-  SparqlEntity,
-} from '@music-kg/sparql-data';
+import { iri, iriWithPrefix, SparqlEntity } from '@music-kg/sparql-data';
 
 import { createAlbum, getAlbumByExternalUrl } from '../routes/albums/features';
 import { createArtist, getArtistByExternalUrl } from '../routes/artists/features';
 import { createRecording, getRecordingByExternalUrl } from '../routes/recordings/features';
 import { createUser, getUserByExternalUrl } from '../routes/users/features';
-import { replaceBaseUri } from './replace-base-uri';
+import { generateUniqueId } from '../features/generate-unique-id';
+
+const ALLOWED_ENTITY_DATA_TYPES: EntityType[] = ['album', 'artist', 'track', 'user'];
 
 export const getSecondaryEntityTriples = async (
   subject: IriTerm,
   predicate: IriTerm,
   objectPrefix: string,
-  entities: EntityData[]
+  entities: EntityData[],
+  origin: DataOrigin
 ): Promise<Triple[]> => {
   const createdTriples: Triple[] = [];
 
   for (const entity of entities) {
+    if (!entity?.type || !ALLOWED_ENTITY_DATA_TYPES.includes(entity?.type)) {
+      throw new Error(
+        'getSecondaryEntityTriples: ENTITY DATA ERROR: Entity data is missing type or the given type is not allowed.'
+      );
+    }
+
+    const entityOrigin: DataOrigin = entity?.type === 'user' ? DataOrigin.LOCAL_USERS : origin;
+
     if (entity?.id) {
       createdTriples.push(handleEntityId(subject, predicate, objectPrefix, entity));
     } else if (entity?.externalUrls) {
-      createdTriples.push(await handleEntityExternalUrls(subject, predicate, objectPrefix, entity));
+      createdTriples.push(await handleEntityExternalUrls(subject, predicate, objectPrefix, entity, entityOrigin));
     } else if (entity?.name) {
-      createdTriples.push(await handleEntityName(subject, predicate, objectPrefix, entity));
+      createdTriples.push(await handleEntityName(subject, predicate, entity, entityOrigin));
     } else {
       throw new Error('getSecondaryEntityTriples: EMPTY ENTITY DATA ERROR: Entity data is empty object.');
     }
@@ -54,22 +59,28 @@ const handleEntityExternalUrls = async (
   subject: IriTerm,
   predicate: IriTerm,
   objectPrefix: string,
-  entityData: EntityData
+  entityData: EntityData,
+  origin: DataOrigin
 ): Promise<Triple> => {
-  const getEntityByExternalUrl = getEntityByExternalUrlFunction(objectPrefix);
-  const createEntity = getCreateEntityFunction(objectPrefix);
+  const getEntityByExternalUrl = getEntityByExternalUrlFunction(entityData);
+  const createEntity = getCreateEntityFunction(entityData);
 
   const entity: SparqlEntity = await getEntityByExternalUrl(
-    entityData?.externalUrls?.spotify ?? entityData?.externalUrls?.wikidata
+    entityData?.externalUrls?.spotify ?? entityData?.externalUrls?.wikidata,
+    origin
   );
 
   if (entity) {
     return { subject, predicate, object: iriWithPrefix(objectPrefix, entity.id) };
   } else if (entityData?.name) {
-    const createdEntity: string = await createEntity({
-      name: entityData?.name,
-      externalUrls: entityData?.externalUrls,
-    });
+    const createdEntity: string = await createEntity(
+      {
+        name: entityData?.name,
+        externalUrls: entityData?.externalUrls,
+        ...(entityData?.type === 'user' ? { id: await generateUniqueId(DataOrigin.LOCAL_USERS) } : {}),
+      },
+      origin
+    );
     return { subject, predicate, object: iri(createdEntity) };
   } else {
     throw new Error('handleEntityExternalUrls: CREATE ENTITY ERROR: Entity does not have a name.');
@@ -79,40 +90,51 @@ const handleEntityExternalUrls = async (
 const handleEntityName = async (
   subject: IriTerm,
   predicate: IriTerm,
-  objectPrefix: string,
-  entityData: EntityData
+  entityData: EntityData,
+  origin: DataOrigin
 ): Promise<Triple> => {
-  const createEntity = getCreateEntityFunction(objectPrefix);
-  const createdEntity: string = await createEntity({ name: entityData?.name });
+  const createEntity = getCreateEntityFunction(entityData);
+  const createdEntity: string = await createEntity(
+    {
+      name: entityData?.name,
+      ...(entityData?.type === 'user' ? { id: await generateUniqueId(DataOrigin.LOCAL_USERS) } : {}),
+    },
+    origin
+  );
   return { subject, predicate, object: iri(createdEntity) };
 };
 
-const getEntityByExternalUrlFunction = (prefix: string): ((externalUrl: string) => Promise<SparqlEntity>) => {
-  switch (prefix) {
-    case replaceBaseUri(MUSIC_KG_ALBUMS_PREFIX):
+const getEntityByExternalUrlFunction = (
+  entityData: EntityData
+): ((externalUrl: string, origin: DataOrigin) => Promise<SparqlEntity>) => {
+  console.log(entityData);
+
+  switch (entityData.type) {
+    case 'album':
       return getAlbumByExternalUrl;
-    case replaceBaseUri(MUSIC_KG_ARTISTS_PREFIX):
+    case 'artist':
       return getArtistByExternalUrl;
-    case replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX):
+    case 'track':
       return getRecordingByExternalUrl;
-    case replaceBaseUri(MUSIC_KG_USERS_PREFIX):
+    case 'user':
       return getUserByExternalUrl;
   }
 };
 
 const getCreateEntityFunction = (
-  prefix: string
+  entityData: EntityData
 ): ((
-  request: CreateAlbumRequest | CreateArtistRequest | CreateRecordingRequest | CreateUserRequest
+  request: CreateAlbumRequest | CreateArtistRequest | CreateRecordingRequest | CreateUserRequest,
+  origin: DataOrigin
 ) => Promise<string>) => {
-  switch (prefix) {
-    case replaceBaseUri(MUSIC_KG_ALBUMS_PREFIX):
+  switch (entityData?.type) {
+    case 'album':
       return createAlbum;
-    case replaceBaseUri(MUSIC_KG_ARTISTS_PREFIX):
+    case 'artist':
       return createArtist;
-    case replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX):
+    case 'track':
       return createRecording;
-    case replaceBaseUri(MUSIC_KG_USERS_PREFIX):
+    case 'user':
       return createUser;
   }
 };

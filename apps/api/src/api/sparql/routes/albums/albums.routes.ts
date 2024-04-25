@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { authenticateToken } from '../../../auth/auth.middleware';
+import { doCommonChecks, doCreateRequirementsCheck, doUpdateRequirementsCheck } from '../../sparql.middleware';
 import {
   handleCreateAlbum,
   handleDeleteAlbum,
@@ -11,11 +11,11 @@ import {
 } from './handlers';
 
 const albumsRoutes: Router = Router();
-albumsRoutes.get('/', authenticateToken, handleGetAllAlbums);
-albumsRoutes.post('/', authenticateToken, handleCreateAlbum);
-albumsRoutes.get('/find', authenticateToken, handleFindAlbum);
-albumsRoutes.delete('/:id', authenticateToken, handleDeleteAlbum);
-albumsRoutes.get('/:id', authenticateToken, handleGetAlbum);
-albumsRoutes.put('/:id', authenticateToken, handleUpdateAlbum);
+albumsRoutes.get('/', doCommonChecks, handleGetAllAlbums);
+albumsRoutes.post('/', doCommonChecks, doCreateRequirementsCheck, handleCreateAlbum);
+albumsRoutes.get('/find', doCommonChecks, handleFindAlbum);
+albumsRoutes.delete('/:id', doCommonChecks, handleDeleteAlbum);
+albumsRoutes.get('/:id', doCommonChecks, handleGetAlbum);
+albumsRoutes.put('/:id', doCommonChecks, doUpdateRequirementsCheck, handleUpdateAlbum);
 
 export default albumsRoutes;

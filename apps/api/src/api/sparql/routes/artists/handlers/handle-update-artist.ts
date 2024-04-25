@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import {
+  DataOrigin,
   EntityData,
   ErrorResponse,
   ExternalUrls,
@@ -17,14 +18,10 @@ export const handleUpdateArtist = async (req: Request, res: Response<void | Erro
   let body: UpdateArtistRequest = req.body as UpdateArtistRequest;
   const id: string = req.params.id;
   const updateType: UpdateType = (req.query.updateType as UpdateType) ?? UpdateType.REPLACE;
-
-  if (!body) {
-    res.status(400).send({ message: 'The request body is empty.' });
-    return;
-  }
+  const origin: DataOrigin = req.query.origin as DataOrigin;
 
   try {
-    const artist: MusicGroup = await getArtist(id);
+    const artist: MusicGroup = await getArtist(id, origin);
 
     if (!artist) {
       res.status(400).send({ message: `The artist with id ${id} does not exist in the RDF database.` });
@@ -34,13 +31,13 @@ export const handleUpdateArtist = async (req: Request, res: Response<void | Erro
     if (updateType === UpdateType.APPEND) {
       const artistAlbums: EntityData[] = artist.album
         ? Array.isArray(artist.album)
-          ? artist.album.map((artistId: string): EntityData => ({ id: artistId }))
-          : [{ id: artist.album }]
+          ? artist.album.map((albumId: string): EntityData => ({ id: albumId, type: 'album' }))
+          : [{ id: artist.album, type: 'album' }]
         : [];
       const artistTracks: EntityData[] = artist.track
         ? Array.isArray(artist.track)
-          ? artist.track.map((artistId: string): EntityData => ({ id: artistId }))
-          : [{ id: artist.track }]
+          ? artist.track.map((trackId: string): EntityData => ({ id: trackId, type: 'track' }))
+          : [{ id: artist.track, type: 'track' }]
         : [];
       const artistGenres: string[] = artist.genre ? (Array.isArray(artist.genre) ? artist.genre : [artist.genre]) : [];
       const artistExternalUrls: ExternalUrls = artist.sameAs
@@ -72,7 +69,7 @@ export const handleUpdateArtist = async (req: Request, res: Response<void | Erro
       };
     }
 
-    await updateArtist(id, body);
+    await updateArtist(id, body, origin);
     res.sendStatus(204);
   } catch (error) {
     res.status(500).send({ message: error?.message });

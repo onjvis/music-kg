@@ -18,7 +18,7 @@ export const getPropertiesFromBindings = <T extends SparqlEntity>(
       .map((filteredBinding: SparqlBinding) => filteredBinding?.object);
 
     const boundValues = boundObjects?.map((object) => {
-      if (value === SCHEMA_PREDICATE.image || value === SCHEMA_PREDICATE.sameAs) {
+      if (value === SCHEMA_PREDICATE.image || value === SCHEMA_PREDICATE.sameAs || value === SCHEMA_PREDICATE.url) {
         return object?.value;
       } else if (object?.type === 'uri') {
         const uriParts: string[] = object?.value?.split('/');

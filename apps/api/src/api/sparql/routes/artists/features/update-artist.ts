@@ -1,12 +1,11 @@
 import axios from 'axios';
 import { IriTerm, Triple } from 'sparqljs';
 
-import { UpdateArtistRequest } from '@music-kg/data';
+import { DataOrigin, UpdateArtistRequest } from '@music-kg/data';
 import {
   COMPLEX_PREDICATES,
   iriWithPrefix,
   literal,
-  MUSIC_KG_ARTISTS_PREFIX,
   prefix2graph,
   SCHEMA_PREDICATE,
   SPARQL_DATATYPE_MAPPER,
@@ -14,12 +13,12 @@ import {
 } from '@music-kg/sparql-data';
 
 import { createUpdateQuery } from '../../../helpers/queries/create-update-query';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 import { getTriplesForComplexPredicate } from '../../../helpers/get-triples-for-complex-predicate';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
 
-export const updateArtist = async (id: string, request: UpdateArtistRequest): Promise<void> => {
-  const artistsPrefix: string = replaceBaseUri(MUSIC_KG_ARTISTS_PREFIX);
-  const artistSubject: IriTerm = iriWithPrefix(artistsPrefix, id);
+export const updateArtist = async (id: string, request: UpdateArtistRequest, origin: DataOrigin): Promise<void> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
+  const artistSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
   const properties = {
     ...(request?.albums ? { album: request?.albums } : {}),
@@ -36,7 +35,7 @@ export const updateArtist = async (id: string, request: UpdateArtistRequest): Pr
 
     if (COMPLEX_PREDICATES.includes(predicate)) {
       triplesToInsert.push(
-        ...(await getTriplesForComplexPredicate(artistSubject, predicate, properties[propertyName]))
+        ...(await getTriplesForComplexPredicate(artistSubject, predicate, properties[propertyName], origin))
       );
     } else {
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
@@ -64,7 +63,7 @@ export const updateArtist = async (id: string, request: UpdateArtistRequest): Pr
   );
 
   const query: string = createUpdateQuery({
-    graph: prefix2graph(artistsPrefix),
+    graph: prefix2graph(originPrefix),
     triplesToInsert,
     subject: artistSubject,
     predicatesToUpdate,

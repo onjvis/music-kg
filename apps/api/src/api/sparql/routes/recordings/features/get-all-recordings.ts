@@ -1,17 +1,18 @@
 import axios from 'axios';
 import { IriTerm } from 'sparqljs';
 
-import { GetSparqlResponse, MUSIC_KG_RECORDINGS_PREFIX, prefix2graph, SCHEMA_TYPE } from '@music-kg/sparql-data';
+import { DataOrigin } from '@music-kg/data';
+import { GetSparqlResponse, prefix2graph, SCHEMA_TYPE } from '@music-kg/sparql-data';
 
 import { createGetAllQuery } from '../../../helpers/queries/create-get-all-query';
 import { getEntityIdsFromBindings } from '../../../helpers/get-entity-ids-from-bindings';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 
-export const getAllRecordings = async (): Promise<string[]> => {
-  const recordingsPrefix: string = replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX);
+export const getAllRecordings = async (origin: DataOrigin): Promise<string[]> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
   const musicRecordingType: IriTerm = SCHEMA_TYPE.MusicRecording.iri;
 
-  const query: string = createGetAllQuery({ graph: prefix2graph(recordingsPrefix), object: musicRecordingType });
+  const query: string = createGetAllQuery({ graph: prefix2graph(originPrefix), object: musicRecordingType });
 
   return axios
     .get<GetSparqlResponse>(process.env.MUSIC_KG_SPARQL_ENDPOINT, { params: { query } })

@@ -19,7 +19,7 @@ export const createGetByExternalUrlQuery = ({ graph, object }: GetByExternalUrlP
       {
         type: 'bgp',
         triples: [
-          { subject: subjectVariable, predicate: SCHEMA_PREDICATE.sameAs.iri, object },
+          { subject: subjectVariable, predicate: SCHEMA_PREDICATE.url.iri, object },
           { subject: subjectVariable, predicate: predicateVariable, object: objectVariable },
         ],
       },

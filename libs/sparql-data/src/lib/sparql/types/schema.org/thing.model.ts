@@ -7,4 +7,5 @@ export type Thing = SparqlEntity & {
   image?: string; // as IRI
   name: string;
   sameAs?: string[] | string; // as IRI
+  url?: string[] | string; // as IRI
 };

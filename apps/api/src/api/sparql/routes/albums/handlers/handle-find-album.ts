@@ -1,15 +1,16 @@
 import { Request, Response } from 'express';
 
-import { ErrorResponse } from '@music-kg/data';
+import { DataOrigin, ErrorResponse } from '@music-kg/data';
 import { MusicAlbum } from '@music-kg/sparql-data';
 
 import { getAlbumByExternalUrl } from '../features';
 
 export const handleFindAlbum = async (req: Request, res: Response<MusicAlbum | ErrorResponse>): Promise<void> => {
   const spotifyUrl: string = decodeURIComponent(req.query.spotifyUrl as string);
+  const origin: DataOrigin = req.query.origin as DataOrigin;
 
   try {
-    const album: MusicAlbum = await getAlbumByExternalUrl(spotifyUrl);
+    const album: MusicAlbum = await getAlbumByExternalUrl(spotifyUrl, origin);
 
     !album
       ? res

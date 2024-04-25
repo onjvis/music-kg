@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import {
+  DataOrigin,
   EntityData,
   ErrorResponse,
   ExternalUrls,
@@ -17,14 +18,10 @@ export const handleUpdateRecording = async (req: Request, res: Response<void | E
   let body: UpdateRecordingRequest = req.body as UpdateRecordingRequest;
   const id: string = req.params.id;
   const updateType: UpdateType = (req.query.updateType as UpdateType) ?? UpdateType.REPLACE;
-
-  if (!body) {
-    res.status(400).send({ message: 'The request body is empty.' });
-    return;
-  }
+  const origin: DataOrigin = req.query.origin as DataOrigin;
 
   try {
-    const recording: MusicRecording = await getRecording(id);
+    const recording: MusicRecording = await getRecording(id, origin);
 
     if (!recording) {
       res.status(400).send({ message: `The recording with id ${id} does not exist in the RDF database.` });
@@ -34,8 +31,8 @@ export const handleUpdateRecording = async (req: Request, res: Response<void | E
     if (updateType === UpdateType.APPEND) {
       const recordingArtists: EntityData[] = recording.byArtist
         ? Array.isArray(recording.byArtist)
-          ? recording.byArtist.map((artistId) => ({ id: artistId }))
-          : [{ id: recording.byArtist }]
+          ? recording.byArtist.map((artistId) => ({ id: artistId, type: 'artist' }))
+          : [{ id: recording.byArtist, type: 'artist' }]
         : [];
       const recordingExternalUrls: ExternalUrls = recording.sameAs
         ? Array.isArray(recording.sameAs)
@@ -56,7 +53,7 @@ export const handleUpdateRecording = async (req: Request, res: Response<void | E
       };
     }
 
-    await updateRecording(id, body);
+    await updateRecording(id, body, origin);
     res.sendStatus(204);
   } catch (error) {
     res.status(500).send({ message: error?.message });

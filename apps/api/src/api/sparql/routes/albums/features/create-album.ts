@@ -1,14 +1,11 @@
 import axios from 'axios';
 import { IriTerm, Triple } from 'sparqljs';
 
-import { CreateAlbumRequest } from '@music-kg/data';
+import { CreateAlbumRequest, DataOrigin } from '@music-kg/data';
 import {
   iri,
   iriWithPrefix,
   literal,
-  MUSIC_KG_ALBUMS_PREFIX,
-  MUSIC_KG_ARTISTS_PREFIX,
-  MUSIC_KG_RECORDINGS_PREFIX,
   prefix2graph,
   RDF_PREDICATE,
   SCHEMA_PREDICATE,
@@ -18,29 +15,31 @@ import {
 
 import { createInsertQuery } from '../../../helpers/queries/create-insert-query';
 import { getSecondaryEntityTriples } from '../../../helpers/get-secondary-entity-triples';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
+import { generateUniqueId } from '../../../features/generate-unique-id';
 
-export const createAlbum = async (request: CreateAlbumRequest): Promise<string> => {
-  const albumsPrefix: string = replaceBaseUri(MUSIC_KG_ALBUMS_PREFIX);
-  const artistsPrefix: string = replaceBaseUri(MUSIC_KG_ARTISTS_PREFIX);
-  const recordingsPrefix: string = replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX);
+export const createAlbum = async (request: CreateAlbumRequest, origin: DataOrigin): Promise<string> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
 
-  const albumSubject: IriTerm = iriWithPrefix(albumsPrefix, crypto.randomUUID());
+  const id: string = await generateUniqueId(origin);
+  const albumSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
   const albumsTriples: Triple[] = request.artists
     ? await getSecondaryEntityTriples(
         albumSubject,
         SCHEMA_PREDICATE.album.iri,
-        artistsPrefix,
-        Array.isArray(request.artists) ? request.artists : [request.artists]
+        originPrefix,
+        Array.isArray(request.artists) ? request.artists : [request.artists],
+        origin
       )
     : [];
   const tracksTriples: Triple[] = request.tracks
     ? await getSecondaryEntityTriples(
         albumSubject,
         SCHEMA_PREDICATE.track.iri,
-        recordingsPrefix,
-        Array.isArray(request.tracks) ? request.tracks : [request.tracks]
+        originPrefix,
+        Array.isArray(request.tracks) ? request.tracks : [request.tracks],
+        origin
       )
     : [];
 
@@ -98,14 +97,14 @@ export const createAlbum = async (request: CreateAlbumRequest): Promise<string> 
       ? Object.values(request.externalUrls).map(
           (externalUrl: string): Triple => ({
             subject: albumSubject,
-            predicate: SCHEMA_PREDICATE.sameAs.iri,
+            predicate: SCHEMA_PREDICATE.url.iri,
             object: iri(externalUrl),
           })
         )
       : []),
   ];
 
-  const query: string = createInsertQuery({ graph: prefix2graph(albumsPrefix), triples });
+  const query: string = createInsertQuery({ graph: prefix2graph(originPrefix), triples });
 
   return axios
     .post(process.env.MUSIC_KG_SPARQL_ENDPOINT, query, { headers: { 'Content-Type': 'application/sparql-update' } })

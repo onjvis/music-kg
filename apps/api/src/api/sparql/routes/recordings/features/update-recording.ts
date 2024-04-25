@@ -1,12 +1,11 @@
 import axios from 'axios';
 import { IriTerm, Triple } from 'sparqljs';
 
-import { UpdateRecordingRequest } from '@music-kg/data';
+import { DataOrigin, UpdateRecordingRequest } from '@music-kg/data';
 import {
   COMPLEX_PREDICATES,
   iriWithPrefix,
   literal,
-  MUSIC_KG_RECORDINGS_PREFIX,
   prefix2graph,
   SCHEMA_PREDICATE,
   SPARQL_DATATYPE_MAPPER,
@@ -14,13 +13,17 @@ import {
 } from '@music-kg/sparql-data';
 
 import { createUpdateQuery } from '../../../helpers/queries/create-update-query';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 import { getTriplesForComplexPredicate } from '../../../helpers/get-triples-for-complex-predicate';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
 import { ms2Duration } from '../recordings.helpers';
 
-export const updateRecording = async (id: string, request: UpdateRecordingRequest): Promise<void> => {
-  const recordingsPrefix: string = replaceBaseUri(MUSIC_KG_RECORDINGS_PREFIX);
-  const recordingSubject: IriTerm = iriWithPrefix(recordingsPrefix, id);
+export const updateRecording = async (
+  id: string,
+  request: UpdateRecordingRequest,
+  origin: DataOrigin
+): Promise<void> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
+  const recordingSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
   const properties = {
     ...(request?.album ? { inAlbum: request?.album } : {}),
@@ -38,7 +41,7 @@ export const updateRecording = async (id: string, request: UpdateRecordingReques
 
     if (COMPLEX_PREDICATES.includes(predicate)) {
       triplesToInsert.push(
-        ...(await getTriplesForComplexPredicate(recordingSubject, predicate, properties[propertyName]))
+        ...(await getTriplesForComplexPredicate(recordingSubject, predicate, properties[propertyName], origin))
       );
     } else {
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
@@ -68,7 +71,7 @@ export const updateRecording = async (id: string, request: UpdateRecordingReques
   );
 
   const query: string = createUpdateQuery({
-    graph: prefix2graph(recordingsPrefix),
+    graph: prefix2graph(originPrefix),
     triplesToInsert,
     subject: recordingSubject,
     predicatesToUpdate,

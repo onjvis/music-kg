@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { ErrorResponse } from '@music-kg/data';
+import { DataOrigin, ErrorResponse } from '@music-kg/data';
 import { MusicRecording } from '@music-kg/sparql-data';
 
 import { getRecording } from '../features';
@@ -10,9 +10,10 @@ export const handleGetRecording = async (
   res: Response<MusicRecording | ErrorResponse>
 ): Promise<void> => {
   const id: string = req.params.id;
+  const origin: DataOrigin = req.query.origin as DataOrigin;
 
   try {
-    const recording: MusicRecording = await getRecording(id);
+    const recording: MusicRecording = await getRecording(id, origin);
 
     !recording
       ? res.status(404).send({ message: `The recording with id ${id} does not exist in the RDF database.` })

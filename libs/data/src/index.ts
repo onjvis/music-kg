@@ -6,7 +6,9 @@ export * from './lib/auth/register.request';
 export * from './lib/auth/register.response';
 
 // Sparql types
+export * from './lib/sparql/data-origin.enum';
 export * from './lib/sparql/entity-data.model';
+export * from './lib/sparql/entity-type.model';
 export * from './lib/sparql/external-urls.model';
 export * from './lib/sparql/create-album.request';
 export * from './lib/sparql/create-artist.request';

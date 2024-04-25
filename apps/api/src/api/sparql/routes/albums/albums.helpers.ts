@@ -1,12 +1,15 @@
-import { CreateAlbumRequest, UpdateAlbumRequest } from '@music-kg/data';
+import { CreateAlbumRequest, DataOrigin, UpdateAlbumRequest } from '@music-kg/data';
 import { MusicAlbumProductionType, MusicAlbumReleaseType } from '@music-kg/sparql-data';
 
 import { albumExists } from './features';
 
-export const runAlbumCreationChecks = async (body: CreateAlbumRequest | UpdateAlbumRequest): Promise<string> => {
+export const runAlbumCreationChecks = async (
+  body: CreateAlbumRequest | UpdateAlbumRequest,
+  origin: DataOrigin
+): Promise<string> => {
   // Will not create a new entity if there is already the entity with the same external ID
   if (body?.externalUrls?.spotify || body?.externalUrls?.wikidata) {
-    if (await albumExists(body?.externalUrls)) {
+    if (await albumExists(body.externalUrls, origin)) {
       return 'The artist already exists in the RDF database.';
     }
   }

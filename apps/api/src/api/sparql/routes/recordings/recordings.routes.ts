@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { authenticateToken } from '../../../auth/auth.middleware';
+import { doCommonChecks, doCreateRequirementsCheck, doUpdateRequirementsCheck } from '../../sparql.middleware';
 import {
   handleCreateRecording,
   handleDeleteRecording,
@@ -11,11 +11,11 @@ import {
 } from './handlers';
 
 const recordingsRoutes: Router = Router();
-recordingsRoutes.get('/', authenticateToken, handleGetAllRecordings);
-recordingsRoutes.post('/', authenticateToken, handleCreateRecording);
-recordingsRoutes.get('/find', authenticateToken, handleFindRecording);
-recordingsRoutes.delete('/:id', authenticateToken, handleDeleteRecording);
-recordingsRoutes.get('/:id', authenticateToken, handleGetRecording);
-recordingsRoutes.put('/:id', authenticateToken, handleUpdateRecording);
+recordingsRoutes.get('/', doCommonChecks, handleGetAllRecordings);
+recordingsRoutes.post('/', doCommonChecks, doCreateRequirementsCheck, handleCreateRecording);
+recordingsRoutes.get('/find', doCommonChecks, handleFindRecording);
+recordingsRoutes.delete('/:id', doCommonChecks, handleDeleteRecording);
+recordingsRoutes.get('/:id', doCommonChecks, handleGetRecording);
+recordingsRoutes.put('/:id', doCommonChecks, doUpdateRequirementsCheck, handleUpdateRecording);
 
 export default recordingsRoutes;

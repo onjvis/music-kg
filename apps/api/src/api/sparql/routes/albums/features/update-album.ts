@@ -1,12 +1,11 @@
 import axios from 'axios';
 import { IriTerm, Triple } from 'sparqljs';
 
-import { UpdateAlbumRequest } from '@music-kg/data';
+import { DataOrigin, UpdateAlbumRequest } from '@music-kg/data';
 import {
   COMPLEX_PREDICATES,
   iriWithPrefix,
   literal,
-  MUSIC_KG_ALBUMS_PREFIX,
   prefix2graph,
   SCHEMA_PREDICATE,
   SPARQL_DATATYPE_MAPPER,
@@ -15,11 +14,11 @@ import {
 
 import { createUpdateQuery } from '../../../helpers/queries/create-update-query';
 import { getTriplesForComplexPredicate } from '../../../helpers/get-triples-for-complex-predicate';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 
-export const updateAlbum = async (id: string, request: UpdateAlbumRequest): Promise<void> => {
-  const albumsPrefix: string = replaceBaseUri(MUSIC_KG_ALBUMS_PREFIX);
-  const albumSubject: IriTerm = iriWithPrefix(albumsPrefix, id);
+export const updateAlbum = async (id: string, request: UpdateAlbumRequest, origin: DataOrigin): Promise<void> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
+  const albumSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
   const properties = {
     ...(request?.artists ? { byArtist: request?.artists } : {}),
@@ -38,7 +37,9 @@ export const updateAlbum = async (id: string, request: UpdateAlbumRequest): Prom
     const predicate: SparqlIri = SCHEMA_PREDICATE[propertyName];
 
     if (COMPLEX_PREDICATES.includes(predicate)) {
-      triplesToInsert.push(...(await getTriplesForComplexPredicate(albumSubject, predicate, properties[propertyName])));
+      triplesToInsert.push(
+        ...(await getTriplesForComplexPredicate(albumSubject, predicate, properties[propertyName], origin))
+      );
     } else {
       const objectDatatype: SparqlIri = SPARQL_DATATYPE_MAPPER.get(SCHEMA_PREDICATE[propertyName]);
 
@@ -67,7 +68,7 @@ export const updateAlbum = async (id: string, request: UpdateAlbumRequest): Prom
   );
 
   const query: string = createUpdateQuery({
-    graph: prefix2graph(albumsPrefix),
+    graph: prefix2graph(originPrefix),
     triplesToInsert,
     subject: albumSubject,
     predicatesToUpdate,

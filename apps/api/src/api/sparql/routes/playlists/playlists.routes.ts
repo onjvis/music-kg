@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { authenticateToken } from '../../../auth/auth.middleware';
+import { doCommonChecks, doCreateRequirementsCheck, doUpdateRequirementsCheck } from '../../sparql.middleware';
 import {
   handleCreatePlaylist,
   handleDeletePlaylist,
@@ -11,11 +11,11 @@ import {
 } from './handlers';
 
 const playlistsRoutes: Router = Router();
-playlistsRoutes.get('/', authenticateToken, handleGetAllPlaylists);
-playlistsRoutes.post('/', authenticateToken, handleCreatePlaylist);
-playlistsRoutes.get('/find', authenticateToken, handleFindPlaylist);
-playlistsRoutes.delete('/:id', authenticateToken, handleDeletePlaylist);
-playlistsRoutes.get('/:id', authenticateToken, handleGetPlaylist);
-playlistsRoutes.put('/:id', authenticateToken, handleUpdatePlaylist);
+playlistsRoutes.get('/', doCommonChecks, handleGetAllPlaylists);
+playlistsRoutes.post('/', doCommonChecks, doCreateRequirementsCheck, handleCreatePlaylist);
+playlistsRoutes.get('/find', doCommonChecks, handleFindPlaylist);
+playlistsRoutes.delete('/:id', doCommonChecks, handleDeletePlaylist);
+playlistsRoutes.get('/:id', doCommonChecks, handleGetPlaylist);
+playlistsRoutes.put('/:id', doCommonChecks, doUpdateRequirementsCheck, handleUpdatePlaylist);
 
 export default playlistsRoutes;

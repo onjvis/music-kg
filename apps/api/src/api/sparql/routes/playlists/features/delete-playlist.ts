@@ -1,16 +1,17 @@
 import axios from 'axios';
 import { IriTerm } from 'sparqljs';
 
-import { iriWithPrefix, MUSIC_KG_PLAYLISTS_PREFIX, prefix2graph } from '@music-kg/sparql-data';
+import { DataOrigin } from '@music-kg/data';
+import { iriWithPrefix, prefix2graph } from '@music-kg/sparql-data';
 
 import { createDeleteQuery } from '../../../helpers/queries/create-delete-query';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 
-export const deletePlaylist = async (id: string): Promise<void> => {
-  const playlistsPrefix: string = replaceBaseUri(MUSIC_KG_PLAYLISTS_PREFIX);
-  const playlistSubject: IriTerm = iriWithPrefix(playlistsPrefix, id);
+export const deletePlaylist = async (id: string, origin: DataOrigin): Promise<void> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
+  const playlistSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
-  const query: string = createDeleteQuery({ graph: prefix2graph(playlistsPrefix), subject: playlistSubject });
+  const query: string = createDeleteQuery({ graph: prefix2graph(originPrefix), subject: playlistSubject });
 
   return await axios.post(process.env.MUSIC_KG_SPARQL_ENDPOINT, query, {
     headers: { 'Content-Type': 'application/sparql-update' },

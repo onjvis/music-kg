@@ -1,23 +1,18 @@
 import axios from 'axios';
 import { IriTerm } from 'sparqljs';
 
-import {
-  GetSparqlResponse,
-  iriWithPrefix,
-  MUSIC_KG_PLAYLISTS_PREFIX,
-  MusicPlaylist,
-  prefix2graph,
-} from '@music-kg/sparql-data';
+import { DataOrigin } from '@music-kg/data';
+import { GetSparqlResponse, iriWithPrefix, MusicPlaylist, prefix2graph } from '@music-kg/sparql-data';
 
 import { createGetQuery } from '../../../helpers/queries/create-get-query';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 import { getPropertiesFromBindings } from '../../../helpers/get-properties-from-bindings';
-import { replaceBaseUri } from '../../../helpers/replace-base-uri';
 
-export const getPlaylist = async (id: string): Promise<MusicPlaylist> => {
-  const playlistPrefix: string = replaceBaseUri(MUSIC_KG_PLAYLISTS_PREFIX);
-  const playlistSubject: IriTerm = iriWithPrefix(playlistPrefix, id);
+export const getPlaylist = async (id: string, origin: DataOrigin): Promise<MusicPlaylist> => {
+  const originPrefix: string = getPrefixFromOrigin(origin);
+  const playlistSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
-  const query: string = createGetQuery({ graph: prefix2graph(playlistPrefix), subject: playlistSubject });
+  const query: string = createGetQuery({ graph: prefix2graph(originPrefix), subject: playlistSubject });
 
   return await axios
     .get<GetSparqlResponse>(process.env.MUSIC_KG_SPARQL_ENDPOINT, { params: { query } })
