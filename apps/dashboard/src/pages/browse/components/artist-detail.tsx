@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { mapExternalUrl2property } from '@music-kg/data';
 import { MusicGroup } from '@music-kg/sparql-data';
@@ -13,6 +13,7 @@ import { CustomLink } from './custom-link';
 
 export const ArtistDetail = () => {
   const artist: MusicGroup = (useLoaderData() as AxiosResponse)?.data;
+  const { origin } = useParams();
 
   const navigate = useNavigate();
 
@@ -48,12 +49,12 @@ export const ArtistDetail = () => {
                   <CustomLink
                     key={`${artist.id}:albumId:${albumId}`}
                     linkTitle={albumId}
-                    to={`${AppRoute.BROWSE_ALBUMS}/${albumId}`}
+                    to={`${AppRoute.BROWSE_ALBUMS}/${origin}/${albumId}`}
                   />
                 ))}
               </div>
             ) : (
-              <CustomLink linkTitle={artist.album} to={`${AppRoute.BROWSE_ALBUMS}/${artist.album}`} />
+              <CustomLink linkTitle={artist.album} to={`${AppRoute.BROWSE_ALBUMS}/${origin}/${artist.album}`} />
             )
           }
         />
@@ -65,7 +66,7 @@ export const ArtistDetail = () => {
             Array.isArray(artist.genre) ? (
               <div className="flex flex-col items-end gap-1">
                 {artist.genre.map((genre: string) => (
-                  <span>{genre}</span>
+                  <span key={`${artist.id}:genre:${genre}`}>{genre}</span>
                 ))}
               </div>
             ) : (
@@ -84,27 +85,28 @@ export const ArtistDetail = () => {
                   <CustomLink
                     key={`${artist.id}:trackId:${trackId}`}
                     linkTitle={trackId}
-                    to={`${AppRoute.BROWSE_TRACKS}/${trackId}`}
+                    to={`${AppRoute.BROWSE_TRACKS}/${origin}/${trackId}`}
                   />
                 ))}
               </div>
             ) : (
-              <CustomLink linkTitle={artist.track} to={`${AppRoute.BROWSE_TRACKS}/${artist.track}`} />
+              <CustomLink linkTitle={artist.track} to={`${AppRoute.BROWSE_TRACKS}/${origin}/${artist.track}`} />
             )
           }
         />
       )}
-      {artist?.sameAs && (
+      {artist?.url && (
         <FlexRow
-          label={Array.isArray(artist.sameAs) ? 'External URLs' : 'External URL'}
+          label={Array.isArray(artist.url) ? 'External URLs' : 'External URL'}
           element={
-            Array.isArray(artist.sameAs) ? (
+            Array.isArray(artist.url) ? (
               <div className="flex flex-col gap-1">
-                {artist.sameAs.map((externalUrl: string) => (
+                {artist.url.map((externalUrl: string) => (
                   <CustomLink
                     key={`${artist.id}:externalUrl:${externalUrl}`}
                     capitalize={true}
                     linkTitle={mapExternalUrl2property(externalUrl) ?? externalUrl}
+                    newTab={true}
                     to={externalUrl}
                   />
                 ))}
@@ -112,8 +114,9 @@ export const ArtistDetail = () => {
             ) : (
               <CustomLink
                 capitalize={true}
-                linkTitle={mapExternalUrl2property(artist.sameAs) ?? artist.sameAs}
-                to={artist.sameAs}
+                linkTitle={mapExternalUrl2property(artist.url) ?? artist.url}
+                newTab={true}
+                to={artist.url}
               />
             )
           }

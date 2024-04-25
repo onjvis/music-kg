@@ -21,11 +21,11 @@ export const BrowseRoutes: RouteObject = {
       ),
     },
     {
-      path: `${AppRoute.BROWSE_ALBUMS}/:albumId`,
+      path: `${AppRoute.BROWSE_ALBUMS}/:origin/:albumId`,
       element: <AlbumDetail />,
       loader: async ({ params }) => {
-        const { albumId } = params;
-        return httpClient.get(`${ApiUrl.SPARQL_ALBUMS}/${albumId}`);
+        const { albumId, origin } = params;
+        return httpClient.get(`${ApiUrl.SPARQL_ALBUMS}/${albumId}?origin=${origin}`);
       },
     },
     {
@@ -39,11 +39,11 @@ export const BrowseRoutes: RouteObject = {
       ),
     },
     {
-      path: `${AppRoute.BROWSE_ARTISTS}/:artistId`,
+      path: `${AppRoute.BROWSE_ARTISTS}/:origin/:artistId`,
       element: <ArtistDetail />,
       loader: async ({ params }) => {
-        const { artistId } = params;
-        return httpClient.get(`${ApiUrl.SPARQL_ARTISTS}/${artistId}`);
+        const { artistId, origin } = params;
+        return httpClient.get(`${ApiUrl.SPARQL_ARTISTS}/${artistId}?origin=${origin}`);
       },
     },
     {
@@ -57,11 +57,11 @@ export const BrowseRoutes: RouteObject = {
       ),
     },
     {
-      path: `${AppRoute.BROWSE_PLAYLISTS}/:playlistId`,
+      path: `${AppRoute.BROWSE_PLAYLISTS}/:origin/:playlistId`,
       element: <PlaylistDetail />,
       loader: async ({ params }) => {
-        const { playlistId } = params;
-        return httpClient.get(`${ApiUrl.SPARQL_PLAYLISTS}/${playlistId}`);
+        const { origin, playlistId } = params;
+        return httpClient.get(`${ApiUrl.SPARQL_PLAYLISTS}/${playlistId}?origin=${origin}`);
       },
     },
     {
@@ -75,11 +75,11 @@ export const BrowseRoutes: RouteObject = {
       ),
     },
     {
-      path: `${AppRoute.BROWSE_TRACKS}/:trackId`,
+      path: `${AppRoute.BROWSE_TRACKS}/:origin/:trackId`,
       element: <TrackDetail />,
       loader: async ({ params }) => {
-        const { trackId } = params;
-        return httpClient.get(`${ApiUrl.SPARQL_RECORDINGS}/${trackId}`);
+        const { origin, trackId } = params;
+        return httpClient.get(`${ApiUrl.SPARQL_RECORDINGS}/${trackId}?origin=${origin}`);
       },
     },
   ],

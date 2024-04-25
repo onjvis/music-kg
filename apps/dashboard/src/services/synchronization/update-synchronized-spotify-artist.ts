@@ -1,6 +1,6 @@
 import { SimplifiedArtist } from '@spotify/web-api-ts-sdk';
 
-import { EntityData, SpotifyArtist, UpdateArtistRequest } from '@music-kg/data';
+import { DataOrigin, EntityData, SpotifyArtist, UpdateArtistRequest, UpdateType } from '@music-kg/data';
 import { MusicGroup } from '@music-kg/sparql-data';
 
 import { ApiUrl } from '../../models/api-url.model';
@@ -11,11 +11,15 @@ export const updateSynchronizedSpotifyArtist = async (
   extras?: { albums?: EntityData[]; tracks?: EntityData[] }
 ): Promise<void> => {
   const musicKGArtist: MusicGroup = await httpClient
-    .get(`${ApiUrl.SPARQL_ARTISTS}/find?spotifyUrl=${encodeURIComponent(artist.external_urls?.spotify)}`)
+    .get(
+      `${ApiUrl.SPARQL_ARTISTS}/find?origin=${DataOrigin.SPOTIFY}&spotifyUrl=${encodeURIComponent(
+        artist.external_urls?.spotify
+      )}`
+    )
     .then((response) => response.data);
   let artistData: UpdateArtistRequest;
 
-  if (!isIncomplete(musicKGArtist)) {
+  if (isIncomplete(musicKGArtist)) {
     const spotifyArtistData: SpotifyArtist = await httpClient
       .get<SpotifyArtist>(`${ApiUrl.SPOTIFY_ARTISTS}/${artist.id}`)
       .then((response) => response.data);
@@ -28,7 +32,10 @@ export const updateSynchronizedSpotifyArtist = async (
     artistData = { ...extras };
   }
 
-  return await httpClient.put(`${ApiUrl.SPARQL_ARTISTS}/${musicKGArtist?.id}?updateType=append`, artistData);
+  return await httpClient.put(
+    `${ApiUrl.SPARQL_ARTISTS}/${musicKGArtist?.id}?origin=${DataOrigin.SPOTIFY}&updateType=${UpdateType.APPEND}`,
+    artistData
+  );
 };
 
 const isIncomplete = (artist: MusicGroup): boolean => {

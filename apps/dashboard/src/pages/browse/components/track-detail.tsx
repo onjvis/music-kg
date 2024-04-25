@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { mapExternalUrl2property } from '@music-kg/data';
 import { MusicRecording } from '@music-kg/sparql-data';
@@ -15,6 +15,7 @@ import { CustomLink } from './custom-link';
 
 export const TrackDetail = () => {
   const track: MusicRecording = (useLoaderData() as AxiosResponse)?.data;
+  const { origin } = useParams();
 
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ export const TrackDetail = () => {
       {track?.inAlbum && (
         <FlexRow
           label="Album"
-          element={<CustomLink linkTitle={track.inAlbum} to={`${AppRoute.BROWSE_ALBUMS}/${track.inAlbum}`} />}
+          element={<CustomLink linkTitle={track.inAlbum} to={`${AppRoute.BROWSE_ALBUMS}/${origin}/${track.inAlbum}`} />}
         />
       )}
       {track?.byArtist && (
@@ -46,7 +47,7 @@ export const TrackDetail = () => {
                 ))}
               </div>
             ) : (
-              <CustomLink linkTitle={track.byArtist} to={`${AppRoute.BROWSE_ARTISTS}/${track.byArtist}`} />
+              <CustomLink linkTitle={track.byArtist} to={`${AppRoute.BROWSE_ARTISTS}/${origin}/${track.byArtist}`} />
             )
           }
         />
@@ -56,17 +57,18 @@ export const TrackDetail = () => {
       )}
       {track?.duration && <FlexTextRow label="Duration" value={ms2timeStr(duration2ms(track?.duration))} />}
       {track?.isrcCode && <FlexTextRow labelClassName="italic" label="ISRC" value={track.isrcCode} />}
-      {track?.sameAs && (
+      {track?.url && (
         <FlexRow
-          label={Array.isArray(track.sameAs) ? 'External URLs' : 'External URL'}
+          label={Array.isArray(track.url) ? 'External URLs' : 'External URL'}
           element={
-            Array.isArray(track.sameAs) ? (
+            Array.isArray(track.url) ? (
               <div className="flex flex-col gap-1">
-                {track.sameAs.map((externalUrl: string) => (
+                {track.url.map((externalUrl: string) => (
                   <CustomLink
                     key={`${track.id}:externalUrl:${externalUrl}`}
                     capitalize={true}
                     linkTitle={mapExternalUrl2property(externalUrl) ?? externalUrl}
+                    newTab={true}
                     to={externalUrl}
                   />
                 ))}
@@ -74,8 +76,9 @@ export const TrackDetail = () => {
             ) : (
               <CustomLink
                 capitalize={true}
-                linkTitle={mapExternalUrl2property(track.sameAs) ?? track.sameAs}
-                to={track.sameAs}
+                linkTitle={mapExternalUrl2property(track.url) ?? track.url}
+                newTab={true}
+                to={track.url}
               />
             )
           }

@@ -1,6 +1,6 @@
 import { SimplifiedArtist, Track } from '@spotify/web-api-ts-sdk';
 
-import { CreateRecordingRequest, EntityData } from '@music-kg/data';
+import { CreateRecordingRequest, DataOrigin, EntityData } from '@music-kg/data';
 
 import { ApiUrl } from '../../models/api-url.model';
 import httpClient from '../http-client';
@@ -13,9 +13,10 @@ export const synchronizeSpotifyTrack = async (track: Track): Promise<void> => {
       (artist: SimplifiedArtist): EntityData => ({
         name: artist?.name,
         externalUrls: { spotify: artist?.external_urls?.spotify },
+        type: 'artist',
       })
     ),
-    album: { name: track.album?.name, externalUrls: { spotify: track?.album?.external_urls?.spotify } },
+    album: { name: track.album?.name, externalUrls: { spotify: track?.album?.external_urls?.spotify }, type: 'album' },
     name: track.name,
     datePublished: track.album?.release_date,
     duration: track.duration_ms,
@@ -23,23 +24,25 @@ export const synchronizeSpotifyTrack = async (track: Track): Promise<void> => {
     isrc: track.external_ids?.isrc,
   };
 
-  const trackId: string = await httpClient.post(ApiUrl.SPARQL_RECORDINGS, trackData).then((response) => {
-    const trackLocation = response?.headers?.location;
-    const locationSplit = trackLocation?.split('/');
+  const trackId: string = await httpClient
+    .post(`${ApiUrl.SPARQL_RECORDINGS}?origin=${DataOrigin.SPOTIFY}`, trackData)
+    .then((response) => {
+      const trackLocation = response?.headers?.location;
+      const locationSplit = trackLocation?.split('/');
 
-    return locationSplit[locationSplit.length - 1];
-  });
+      return locationSplit[locationSplit.length - 1];
+    });
 
   // Synchronize album metadata if available
   if (track.album?.external_urls?.spotify) {
-    await updateSynchronizedSpotifyAlbum(track.album, { tracks: [{ id: trackId }] });
+    await updateSynchronizedSpotifyAlbum(track.album, { tracks: [{ id: trackId, type: 'track' }] });
   }
 
   // Synchronize artists' metadata for the track
   await Promise.all(
     track.artists?.map(
       async (artist: SimplifiedArtist): Promise<void> =>
-        updateSynchronizedSpotifyArtist(artist, { tracks: [{ id: trackId }] })
+        updateSynchronizedSpotifyArtist(artist, { tracks: [{ id: trackId, type: 'track' }] })
     )
   );
 };

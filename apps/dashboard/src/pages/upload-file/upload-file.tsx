@@ -4,7 +4,7 @@ import { ChangeEvent, useState } from 'react';
 import { IconContext } from 'react-icons';
 import { FaRegTrashCan } from 'react-icons/fa6';
 
-import { CreateRecordingRequest } from '@music-kg/data';
+import { CreateRecordingRequest, DataOrigin } from '@music-kg/data';
 
 import { AlertData } from '../../components/alert/models/alert-data.model';
 import { ErrorAlert } from '../../components/alert/error-alert';
@@ -95,12 +95,14 @@ export const UploadFile = () => {
       const requestData: CreateRecordingRequest = {
         album: {
           name: metadata.albumName,
+          type: 'album',
           ...(metadata.album
             ? { externalUrls: { spotify: `${getSpotifyEntityPrefix('album')}/${metadata.album}` } }
             : {}),
         },
         artists: {
           name: metadata.artistName,
+          type: 'artist',
           ...(metadata.artist
             ? { externalUrls: { spotify: `${getSpotifyEntityPrefix('artist')}/${metadata.artist}` } }
             : {}),
@@ -118,10 +120,14 @@ export const UploadFile = () => {
     }
 
     try {
-      await Promise.all(
-        trackRequestsData.map((data: CreateRecordingRequest) => httpClient.post(ApiUrl.SPARQL_RECORDINGS, data))
-      );
-      setAlertData({ type: 'success', message: `${uploadedFiles?.length} tracks successfully synchronized.` });
+      for (const data of trackRequestsData) {
+        await httpClient.post(`${ApiUrl.SPARQL_RECORDINGS}?origin=${DataOrigin.LOCAL}`, data);
+      }
+
+      setAlertData({
+        type: 'success',
+        message: `${uploadedFiles?.length} track${uploadedFiles?.length !== 1 ? 's' : ''} successfully synchronized.`,
+      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setAlertData({ type: 'error', message: error?.response?.data.message });

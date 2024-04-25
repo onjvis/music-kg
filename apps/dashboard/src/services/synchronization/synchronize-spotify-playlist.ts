@@ -1,6 +1,6 @@
 import { Playlist, PlaylistedTrack, Track } from '@spotify/web-api-ts-sdk';
 
-import { CreatePlaylistRequest, EntityData } from '@music-kg/data';
+import { CreatePlaylistRequest, DataOrigin, EntityData } from '@music-kg/data';
 
 import { ApiUrl } from '../../models/api-url.model';
 import httpClient from '../http-client';
@@ -11,6 +11,7 @@ export const synchronizeSpotifyPlaylist = async (playlist: Playlist): Promise<vo
     creators: {
       name: playlist?.owner?.display_name,
       externalUrls: { spotify: playlist?.owner?.external_urls?.spotify },
+      type: 'user',
     },
     description: playlist?.description,
     externalUrls: { spotify: playlist?.external_urls?.spotify },
@@ -21,11 +22,12 @@ export const synchronizeSpotifyPlaylist = async (playlist: Playlist): Promise<vo
       (item: PlaylistedTrack): EntityData => ({
         name: item?.track?.name,
         externalUrls: { spotify: item?.track?.external_urls?.spotify },
+        type: 'track',
       })
     ),
   };
 
-  await httpClient.post(ApiUrl.SPARQL_PLAYLISTS, playlistData);
+  await httpClient.post(`${ApiUrl.SPARQL_PLAYLISTS}?origin=${DataOrigin.SPOTIFY}`, playlistData);
 
   // Synchronize all tracks from playlist
   if (playlist?.tracks?.items) {

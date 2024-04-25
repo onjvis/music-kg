@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { mapExternalUrl2property } from '@music-kg/data';
 import { MusicPlaylist } from '@music-kg/sparql-data';
@@ -13,6 +13,7 @@ import { CustomLink } from './custom-link';
 
 export const PlaylistDetail = () => {
   const playlist: MusicPlaylist = (useLoaderData() as AxiosResponse)?.data;
+  const { origin } = useParams();
 
   const navigate = useNavigate();
 
@@ -56,27 +57,28 @@ export const PlaylistDetail = () => {
                   <CustomLink
                     key={`${playlist.id}:trackId:${trackId}`}
                     linkTitle={trackId}
-                    to={`${AppRoute.BROWSE_TRACKS}/${trackId}`}
+                    to={`${AppRoute.BROWSE_TRACKS}/${origin}/${trackId}`}
                   />
                 ))}
               </div>
             ) : (
-              <CustomLink linkTitle={playlist.track} to={`${AppRoute.BROWSE_TRACKS}/${playlist.track}`} />
+              <CustomLink linkTitle={playlist.track} to={`${AppRoute.BROWSE_TRACKS}/${origin}/${playlist.track}`} />
             )
           }
         />
       )}
-      {playlist?.sameAs && (
+      {playlist?.url && (
         <FlexRow
-          label={Array.isArray(playlist.sameAs) ? 'External URLs' : 'External URL'}
+          label={Array.isArray(playlist.url) ? 'External URLs' : 'External URL'}
           element={
-            Array.isArray(playlist.sameAs) ? (
+            Array.isArray(playlist.url) ? (
               <div className="flex flex-col gap-1">
-                {playlist.sameAs.map((externalUrl: string) => (
+                {playlist.url.map((externalUrl: string) => (
                   <CustomLink
                     key={`${playlist.id}:externalUrl:${externalUrl}`}
                     capitalize={true}
                     linkTitle={mapExternalUrl2property(externalUrl) ?? externalUrl}
+                    newTab={true}
                     to={externalUrl}
                   />
                 ))}
@@ -84,8 +86,9 @@ export const PlaylistDetail = () => {
             ) : (
               <CustomLink
                 capitalize={true}
-                linkTitle={mapExternalUrl2property(playlist.sameAs) ?? playlist.sameAs}
-                to={playlist.sameAs}
+                linkTitle={mapExternalUrl2property(playlist.url) ?? playlist.url}
+                newTab={true}
+                to={playlist.url}
               />
             )
           }

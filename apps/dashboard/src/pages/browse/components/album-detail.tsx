@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import { mapExternalUrl2property } from '@music-kg/data';
 import { MusicAlbum } from '@music-kg/sparql-data';
@@ -13,6 +13,7 @@ import { CustomLink } from './custom-link';
 
 export const AlbumDetail = () => {
   const album: MusicAlbum = (useLoaderData() as AxiosResponse)?.data;
+  const { origin } = useParams();
 
   const navigate = useNavigate();
 
@@ -50,12 +51,12 @@ export const AlbumDetail = () => {
                   <CustomLink
                     key={`${album.id}:artistId:${artistId}`}
                     linkTitle={artistId}
-                    to={`${AppRoute.BROWSE_ARTISTS}/${artistId}`}
+                    to={`${AppRoute.BROWSE_ARTISTS}/${origin}/${artistId}`}
                   />
                 ))}
               </div>
             ) : (
-              <CustomLink linkTitle={album.byArtist} to={`${AppRoute.BROWSE_ARTISTS}/${album.byArtist}`} />
+              <CustomLink linkTitle={album.byArtist} to={`${AppRoute.BROWSE_ARTISTS}/${origin}/${album.byArtist}`} />
             )
           }
         />
@@ -74,27 +75,28 @@ export const AlbumDetail = () => {
                   <CustomLink
                     key={`${album.id}:trackId:${trackId}`}
                     linkTitle={trackId}
-                    to={`${AppRoute.BROWSE_TRACKS}/${trackId}`}
+                    to={`${AppRoute.BROWSE_TRACKS}/${origin}/${trackId}`}
                   />
                 ))}
               </div>
             ) : (
-              <CustomLink linkTitle={album.track} to={`${AppRoute.BROWSE_TRACKS}/${album.track}`} />
+              <CustomLink linkTitle={album.track} to={`${AppRoute.BROWSE_TRACKS}/${origin}/${album.track}`} />
             )
           }
         />
       )}
-      {album?.sameAs && (
+      {album?.url && (
         <FlexRow
-          label={Array.isArray(album.sameAs) ? 'External URLs' : 'External URL'}
+          label={Array.isArray(album.url) ? 'External URLs' : 'External URL'}
           element={
-            Array.isArray(album.sameAs) ? (
+            Array.isArray(album.url) ? (
               <div className="flex flex-col gap-1">
-                {album.sameAs.map((externalUrl: string) => (
+                {album.url.map((externalUrl: string) => (
                   <CustomLink
                     key={`${album.id}:externalUrl:${externalUrl}`}
                     capitalize={true}
                     linkTitle={mapExternalUrl2property(externalUrl) ?? externalUrl}
+                    newTab={true}
                     to={externalUrl}
                   />
                 ))}
@@ -102,8 +104,9 @@ export const AlbumDetail = () => {
             ) : (
               <CustomLink
                 capitalize={true}
-                linkTitle={mapExternalUrl2property(album.sameAs) ?? album.sameAs}
-                to={album.sameAs}
+                linkTitle={mapExternalUrl2property(album.url) ?? album.url}
+                newTab={true}
+                to={album.url}
               />
             )
           }

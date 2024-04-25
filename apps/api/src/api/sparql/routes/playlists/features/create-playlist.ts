@@ -16,6 +16,7 @@ import {
 
 import { generateUniqueId } from '../../../features/generate-unique-id';
 import { createInsertQuery } from '../../../helpers/queries/create-insert-query';
+import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 import { getSecondaryEntityTriples } from '../../../helpers/get-secondary-entity-triples';
 import { replaceBaseUri } from '../../../helpers/replace-base-uri';
 

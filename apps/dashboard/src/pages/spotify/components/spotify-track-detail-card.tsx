@@ -2,6 +2,8 @@ import { Track } from '@spotify/web-api-ts-sdk';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+import { DataOrigin } from '@music-kg/data';
+
 import { AlertData } from '../../../components/alert/models/alert-data.model';
 import { ErrorAlert } from '../../../components/alert/error-alert';
 import { SuccessAlert } from '../../../components/alert/success-alert';
@@ -23,7 +25,11 @@ export const SpotifyTrackDetailCard = ({ handleDetailClose, track }: SpotifyTrac
 
   useEffect(() => {
     httpClient
-      .get(`${ApiUrl.SPARQL_RECORDINGS}/find?spotifyUrl=${encodeURIComponent(track?.external_urls.spotify)}`)
+      .get(
+        `${ApiUrl.SPARQL_RECORDINGS}/find?origin=${DataOrigin.SPOTIFY}&spotifyUrl=${encodeURIComponent(
+          track?.external_urls.spotify
+        )}`
+      )
       .then(() => setSynchronized(true))
       .catch((error) => {
         if (axios.isAxiosError(error)) {
@@ -48,6 +54,8 @@ export const SpotifyTrackDetailCard = ({ handleDetailClose, track }: SpotifyTrac
       setSynchronized(true);
       setAlertData({ type: 'success', message: 'Track successfully synchronized.' });
     } catch (error) {
+      setSynchronizationPending(false);
+
       if (axios.isAxiosError(error)) {
         setAlertData({ type: 'error', message: error?.response?.data.message });
       }
