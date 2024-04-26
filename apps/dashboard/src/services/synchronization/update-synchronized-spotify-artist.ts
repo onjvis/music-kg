@@ -24,12 +24,16 @@ export const updateSynchronizedSpotifyArtist = async (
       .get<SpotifyArtist>(`${ApiUrl.SPOTIFY_ARTISTS}/${artist.id}`)
       .then((response) => response.data);
     artistData = {
+      externalUrls: { spotify: artist?.external_urls?.spotify },
       genres: spotifyArtistData?.genres,
       imageUrl: spotifyArtistData?.image,
       ...extras,
     };
   } else {
-    artistData = { ...extras };
+    artistData = {
+      externalUrls: { spotify: artist?.external_urls?.spotify },
+      ...extras,
+    };
   }
 
   return await httpClient.put(

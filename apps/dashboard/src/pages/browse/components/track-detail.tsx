@@ -1,25 +1,35 @@
 import { AxiosResponse } from 'axios';
+import { useEffect, useState } from 'react';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
-import { mapExternalUrl2property } from '@music-kg/data';
+import { DataOrigin, mapExternalUrl2property } from '@music-kg/data';
 import { MusicRecording } from '@music-kg/sparql-data';
 
 import { FlexRow } from '../../../components/flex-row';
 import { FlexTextRow } from '../../../components/flex-text-row';
 import { AppRoute } from '../../../models/enums/app-route.enum';
+import { getSparqlLinks } from '../../../services/get-sparql-links';
 import { duration2ms } from '../../../utils/duration2ms';
 import { ms2timeStr } from '../../../utils/ms2timeStr';
 import { CustomLink } from './custom-link';
+import { EntitySameAsLinks } from './entity-same-as-links';
 
 export const TrackDetail = () => {
+  const [links, setLinks] = useState<string[]>([]);
   const track: MusicRecording = (useLoaderData() as AxiosResponse)?.data;
   const { origin } = useParams();
 
   const navigate = useNavigate();
 
   const handleBack = (): void => navigate(-1);
+
+  useEffect(() => {
+    if (track.id && origin) {
+      getSparqlLinks(track.id, origin as DataOrigin).then((links) => setLinks(links));
+    }
+  }, [track.id, origin]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -84,6 +94,7 @@ export const TrackDetail = () => {
           }
         />
       )}
+      {links?.length > 0 && <EntitySameAsLinks entityRoutePrefix={AppRoute.BROWSE_TRACKS} links={links} />}
     </div>
   );
 };

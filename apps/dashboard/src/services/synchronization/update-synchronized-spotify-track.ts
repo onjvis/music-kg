@@ -17,8 +17,10 @@ export const updateSynchronizedSpotifyTrack = async (track: Track): Promise<void
     )
     .then((response) => response.data);
 
+  let trackData: UpdateRecordingRequest;
+
   if (isIncomplete(musicKGRecording)) {
-    const trackData: UpdateRecordingRequest = {
+    trackData = {
       artists: track.artists?.map(
         (artist: SimplifiedArtist): EntityData => ({
           name: artist?.name,
@@ -33,14 +35,17 @@ export const updateSynchronizedSpotifyTrack = async (track: Track): Promise<void
       },
       datePublished: track.album?.release_date,
       duration: track.duration_ms,
+      externalUrls: { spotify: track?.external_urls?.spotify },
       isrc: track.external_ids?.isrc,
     };
-
-    await httpClient.put(
-      `${ApiUrl.SPARQL_RECORDINGS}/${musicKGRecording.id}?origin=${DataOrigin.SPOTIFY}&updateType=${UpdateType.APPEND}`,
-      trackData
-    );
+  } else {
+    trackData = { externalUrls: { spotify: track?.external_urls?.spotify } };
   }
+
+  await httpClient.put(
+    `${ApiUrl.SPARQL_RECORDINGS}/${musicKGRecording.id}?origin=${DataOrigin.SPOTIFY}&updateType=${UpdateType.APPEND}`,
+    trackData
+  );
 
   // Synchronize album metadata if available
   if (track.album?.external_urls?.spotify) {

@@ -10,7 +10,7 @@ export const mapExternalUrl2property = (externalUrl: string): string | undefined
 
 const EXTERNAL_URL_PREFIX = {
   SpotifyUrlPrefix: 'https://open.spotify.com/',
-  WikidataUrlPrefix: 'https://www.wikidata.org/',
+  WikidataUrlPrefix: 'http://www.wikidata.org/',
 } as const;
 
 const EXTERNAL_URL_PROPERTY_MAPPER: Map<string, string> = new Map<string, string>([

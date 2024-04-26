@@ -32,11 +32,15 @@ export const updateSynchronizedSpotifyAlbum = async (
       datePublished: album?.release_date,
       imageUrl: album?.images?.[0]?.url,
       numTracks: album?.total_tracks,
+      externalUrls: { spotify: album?.external_urls?.spotify },
       ...extras,
       ...mapSpotifyAlbumType(album.album_type),
     };
   } else {
-    albumData = { ...extras };
+    albumData = {
+      externalUrls: { spotify: album?.external_urls?.spotify },
+      ...extras,
+    };
   }
 
   await httpClient.put(

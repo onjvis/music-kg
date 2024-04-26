@@ -3,21 +3,31 @@ import { FaAngleLeft } from 'react-icons/fa6';
 import { IconContext } from 'react-icons';
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
-import { mapExternalUrl2property } from '@music-kg/data';
+import { DataOrigin, mapExternalUrl2property } from '@music-kg/data';
 import { MusicGroup } from '@music-kg/sparql-data';
 
 import { FlexRow } from '../../../components/flex-row';
 import { FlexTextRow } from '../../../components/flex-text-row';
 import { AppRoute } from '../../../models/enums/app-route.enum';
 import { CustomLink } from './custom-link';
+import { useEffect, useState } from 'react';
+import { getSparqlLinks } from '../../../services/get-sparql-links';
+import { EntitySameAsLinks } from './entity-same-as-links';
 
 export const ArtistDetail = () => {
+  const [links, setLinks] = useState<string[]>([]);
   const artist: MusicGroup = (useLoaderData() as AxiosResponse)?.data;
   const { origin } = useParams();
 
   const navigate = useNavigate();
 
   const handleBack = (): void => navigate(-1);
+
+  useEffect(() => {
+    if (artist.id && origin) {
+      getSparqlLinks(artist.id, origin as DataOrigin).then((links) => setLinks(links));
+    }
+  }, [artist.id, origin]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -122,6 +132,7 @@ export const ArtistDetail = () => {
           }
         />
       )}
+      {links?.length > 0 && <EntitySameAsLinks entityRoutePrefix={AppRoute.BROWSE_ARTISTS} links={links} />}
     </div>
   );
 };

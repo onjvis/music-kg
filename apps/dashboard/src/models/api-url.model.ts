@@ -4,6 +4,7 @@ export const ApiUrl = {
   CURRENT_USER: '/auth/current',
   SPARQL_ALBUMS: '/sparql/albums',
   SPARQL_ARTISTS: '/sparql/artists',
+  SPARQL_LINKS: '/sparql/links',
   SPARQL_PLAYLISTS: '/sparql/playlists',
   SPARQL_RECORDINGS: '/sparql/recordings',
   SPARQL_USERS: '/sparql/users',
