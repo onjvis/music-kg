@@ -37,7 +37,7 @@ export const createExistsByExternalIdQuery = ({ graph, id }: ExistsQueryParams):
   const patterns: Pattern[] = [
     {
       type: 'bgp',
-      triples: [{ subject: subjectVariable, predicate: SCHEMA_PREDICATE.sameAs.iri, object: iri(id) }],
+      triples: [{ subject: subjectVariable, predicate: SCHEMA_PREDICATE.url.iri, object: iri(id) }],
     },
   ];
 
