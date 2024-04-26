@@ -21,7 +21,7 @@ export const updateRecording = async (
   id: string,
   request: UpdateRecordingRequest,
   origin: DataOrigin
-): Promise<void> => {
+): Promise<string> => {
   const originPrefix: string = getPrefixFromOrigin(origin);
   const recordingSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
@@ -77,7 +77,7 @@ export const updateRecording = async (
     predicatesToUpdate,
   });
 
-  return axios.post(process.env.MUSIC_KG_SPARQL_ENDPOINT, query, {
-    headers: { 'Content-Type': 'application/sparql-update' },
-  });
+  return axios
+    .post(process.env.MUSIC_KG_SPARQL_ENDPOINT, query, { headers: { 'Content-Type': 'application/sparql-update' } })
+    .then(() => recordingSubject?.value);
 };

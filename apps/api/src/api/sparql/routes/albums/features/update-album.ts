@@ -16,7 +16,7 @@ import { createUpdateQuery } from '../../../helpers/queries/create-update-query'
 import { getTriplesForComplexPredicate } from '../../../helpers/get-triples-for-complex-predicate';
 import { getPrefixFromOrigin } from '../../../helpers/get-prefix-from-origin';
 
-export const updateAlbum = async (id: string, request: UpdateAlbumRequest, origin: DataOrigin): Promise<void> => {
+export const updateAlbum = async (id: string, request: UpdateAlbumRequest, origin: DataOrigin): Promise<string> => {
   const originPrefix: string = getPrefixFromOrigin(origin);
   const albumSubject: IriTerm = iriWithPrefix(originPrefix, id);
 
@@ -74,7 +74,9 @@ export const updateAlbum = async (id: string, request: UpdateAlbumRequest, origi
     predicatesToUpdate,
   });
 
-  return axios.post(process.env.MUSIC_KG_SPARQL_ENDPOINT, query, {
-    headers: { 'Content-Type': 'application/sparql-update' },
-  });
+  return axios
+    .post(process.env.MUSIC_KG_SPARQL_ENDPOINT, query, {
+      headers: { 'Content-Type': 'application/sparql-update' },
+    })
+    .then(() => albumSubject?.value);
 };

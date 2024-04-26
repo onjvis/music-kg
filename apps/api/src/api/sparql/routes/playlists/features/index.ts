@@ -1,4 +1,5 @@
 export * from './create-playlist';
+export * from './create-playlist-links';
 export * from './delete-playlist';
 export * from './get-all-playlists';
 export * from './get-playlist';

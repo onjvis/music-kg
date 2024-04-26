@@ -9,6 +9,7 @@ export * from './lib/http/sparql-subject.type';
 // SPARQL predicates
 export * from './lib/sparql/predicates/rdf-predicate.model';
 export * from './lib/sparql/predicates/schema-predicate.model';
+export * from './lib/sparql/predicates/wikidata-predicate.model';
 
 // SPARQL types
 export * from './lib/sparql/types/entity-id.type';

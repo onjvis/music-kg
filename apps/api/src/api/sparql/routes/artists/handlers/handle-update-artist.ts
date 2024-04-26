@@ -12,7 +12,7 @@ import {
 import { MusicGroup } from '@music-kg/sparql-data';
 
 import { arrayUnion } from '../../../../../utils/array-union';
-import { getArtist, updateArtist } from '../features';
+import { createArtistLinks, getArtist, updateArtist } from '../features';
 
 export const handleUpdateArtist = async (req: Request, res: Response<void | ErrorResponse>): Promise<void> => {
   let body: UpdateArtistRequest = req.body as UpdateArtistRequest;
@@ -69,7 +69,13 @@ export const handleUpdateArtist = async (req: Request, res: Response<void | Erro
       };
     }
 
-    await updateArtist(id, body, origin);
+    const updatedIri: string = await updateArtist(id, body, origin);
+
+    // Will create a link in the links graph to link the created entity between all graphs based on the external url
+    if (body.externalUrls?.spotify || body.externalUrls?.wikidata) {
+      await createArtistLinks({ externalUrls: body.externalUrls, iri: updatedIri, type: 'artist', origin });
+    }
+
     res.sendStatus(204);
   } catch (error) {
     res.status(500).send({ message: error?.message });

@@ -1,8 +1,15 @@
-import { SCHEMA_PREDICATE, SparqlBinding, SparqlEntity, SparqlObject, XSD_DATATYPE } from '@music-kg/sparql-data';
+import {
+  SCHEMA_PREDICATE,
+  SparqlBinding,
+  SparqlEntity,
+  SparqlIri,
+  SparqlObject,
+  XSD_DATATYPE,
+} from '@music-kg/sparql-data';
 
 export const getPropertiesFromBindings = <T extends SparqlEntity>(
   bindings: SparqlBinding[],
-  predicates = SCHEMA_PREDICATE
+  predicates: { [predicateName: string]: SparqlIri } = SCHEMA_PREDICATE
 ): T => {
   const bindingsObject: SparqlEntity = {} as SparqlEntity;
 
