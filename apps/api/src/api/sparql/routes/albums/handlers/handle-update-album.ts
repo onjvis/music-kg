@@ -39,12 +39,12 @@ export const handleUpdateAlbum = async (req: Request, res: Response<void | Error
           ? album.track.map((trackId: string): EntityData => ({ id: trackId, type: 'track' }))
           : [{ id: album.track, type: 'track' }]
         : [];
-      const albumExternalUrls: ExternalUrls = album.sameAs
-        ? Array.isArray(album.sameAs)
-          ? album.sameAs
+      const albumExternalUrls: ExternalUrls = album.url
+        ? Array.isArray(album.url)
+          ? album.url
               .map((externalUrl: string): ExternalUrls => ({ [mapExternalUrl2property(externalUrl)]: externalUrl }))
               .reduce((result: ExternalUrls, obj: ExternalUrls): ExternalUrls => ({ ...result, ...obj }), {})
-          : { [mapExternalUrl2property(album.sameAs)]: album.sameAs }
+          : { [mapExternalUrl2property(album.url)]: album.url }
         : {};
 
       body = {

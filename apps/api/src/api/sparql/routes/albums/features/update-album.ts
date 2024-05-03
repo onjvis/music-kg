@@ -25,11 +25,11 @@ export const updateAlbum = async (id: string, request: UpdateAlbumRequest, origi
     ...(request?.albumProductionType ? { albumProductionType: request?.albumProductionType } : {}),
     ...(request?.albumReleaseType ? { albumReleaseType: request?.albumReleaseType } : {}),
     ...(request?.datePublished ? { datePublished: request?.datePublished } : {}),
-    ...(request?.externalUrls ? { sameAs: request?.externalUrls } : {}),
     ...(request?.imageUrl ? { image: request?.imageUrl } : {}),
     ...(request?.name ? { name: request?.name } : {}),
     ...(request?.numTracks ? { numTracks: request?.numTracks } : {}),
     ...(request?.tracks ? { track: request?.tracks } : {}),
+    ...(request?.externalUrls ? { url: request?.externalUrls } : {}),
   };
 
   const triplesToInsert: Triple[] = [];

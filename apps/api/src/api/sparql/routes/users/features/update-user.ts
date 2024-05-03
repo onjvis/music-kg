@@ -23,8 +23,8 @@ export const updateUser = async (id: string, request: UpdateUserRequest): Promis
 
   const properties = {
     ...(request?.email ? { email: request?.email } : {}),
-    ...(request?.externalUrls ? { sameAs: request?.externalUrls } : {}),
     ...(request?.name ? { name: request?.name } : {}),
+    ...(request?.externalUrls ? { url: request?.externalUrls } : {}),
   };
 
   const triplesToInsert: Triple[] = [];

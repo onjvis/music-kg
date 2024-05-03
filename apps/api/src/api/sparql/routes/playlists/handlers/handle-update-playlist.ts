@@ -39,12 +39,12 @@ export const handleUpdatePlaylist = async (req: Request, res: Response<void | Er
           ? playlist.track.map((trackId: string): EntityData => ({ id: trackId, type: 'track' }))
           : [{ id: playlist.track, type: 'track' }]
         : [];
-      const playlistExternalUrls: ExternalUrls = playlist.sameAs
-        ? Array.isArray(playlist.sameAs)
-          ? playlist.sameAs
+      const playlistExternalUrls: ExternalUrls = playlist.url
+        ? Array.isArray(playlist.url)
+          ? playlist.url
               .map((externalUrl: string): ExternalUrls => ({ [mapExternalUrl2property(externalUrl)]: externalUrl }))
               .reduce((result: ExternalUrls, obj: ExternalUrls): ExternalUrls => ({ ...result, ...obj }), {})
-          : { [mapExternalUrl2property(playlist.sameAs)]: playlist.sameAs }
+          : { [mapExternalUrl2property(playlist.url)]: playlist.url }
         : {};
 
       body = {

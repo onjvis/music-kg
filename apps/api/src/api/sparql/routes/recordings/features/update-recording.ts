@@ -28,11 +28,11 @@ export const updateRecording = async (
   const properties = {
     ...(request?.album ? { inAlbum: request?.album } : {}),
     ...(request?.artists ? { byArtist: request?.artists } : {}),
-    ...(request?.externalUrls ? { sameAs: request?.externalUrls } : {}),
     ...(request?.datePublished ? { datePublished: request?.datePublished } : {}),
     ...(request?.duration ? { duration: ms2Duration(request?.duration) } : {}),
     ...(request?.isrc ? { isrcCode: request?.isrc } : {}),
     ...(request?.name ? { name: request?.name } : {}),
+    ...(request?.externalUrls ? { url: request?.externalUrls } : {}),
   };
 
   const triplesToInsert: Triple[] = [];

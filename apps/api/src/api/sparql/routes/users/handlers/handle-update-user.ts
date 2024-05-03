@@ -24,12 +24,12 @@ export const handleUpdateUser = async (req: Request, res: Response<void | ErrorR
     }
 
     if (updateType === UpdateType.APPEND) {
-      const artistExternalUrls: ExternalUrls = user.sameAs
-        ? Array.isArray(user.sameAs)
-          ? user.sameAs
+      const artistExternalUrls: ExternalUrls = user.url
+        ? Array.isArray(user.url)
+          ? user.url
               .map((externalUrl: string): ExternalUrls => ({ [mapExternalUrl2property(externalUrl)]: externalUrl }))
               .reduce((result: ExternalUrls, obj: ExternalUrls): ExternalUrls => ({ ...result, ...obj }), {})
-          : { [mapExternalUrl2property(user.sameAs)]: user.sameAs }
+          : { [mapExternalUrl2property(user.url)]: user.url }
         : {};
 
       body = {

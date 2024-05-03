@@ -34,12 +34,12 @@ export const handleUpdateRecording = async (req: Request, res: Response<void | E
           ? recording.byArtist.map((artistId) => ({ id: artistId, type: 'artist' }))
           : [{ id: recording.byArtist, type: 'artist' }]
         : [];
-      const recordingExternalUrls: ExternalUrls = recording.sameAs
-        ? Array.isArray(recording.sameAs)
-          ? recording.sameAs
+      const recordingExternalUrls: ExternalUrls = recording.url
+        ? Array.isArray(recording.url)
+          ? recording.url
               .map((externalUrl) => ({ [mapExternalUrl2property(externalUrl)]: externalUrl }))
               .reduce((result: ExternalUrls, obj: ExternalUrls): ExternalUrls => ({ ...result, ...obj }), {})
-          : { [mapExternalUrl2property(recording.sameAs)]: recording.sameAs }
+          : { [mapExternalUrl2property(recording.url)]: recording.url }
         : {};
 
       body = {

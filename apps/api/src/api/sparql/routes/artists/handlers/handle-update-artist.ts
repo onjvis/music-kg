@@ -40,12 +40,12 @@ export const handleUpdateArtist = async (req: Request, res: Response<void | Erro
           : [{ id: artist.track, type: 'track' }]
         : [];
       const artistGenres: string[] = artist.genre ? (Array.isArray(artist.genre) ? artist.genre : [artist.genre]) : [];
-      const artistExternalUrls: ExternalUrls = artist.sameAs
-        ? Array.isArray(artist.sameAs)
-          ? artist.sameAs
+      const artistExternalUrls: ExternalUrls = artist.url
+        ? Array.isArray(artist.url)
+          ? artist.url
               .map((externalUrl: string): ExternalUrls => ({ [mapExternalUrl2property(externalUrl)]: externalUrl }))
               .reduce((result: ExternalUrls, obj: ExternalUrls): ExternalUrls => ({ ...result, ...obj }), {})
-          : { [mapExternalUrl2property(artist.sameAs)]: artist.sameAs }
+          : { [mapExternalUrl2property(artist.url)]: artist.url }
         : {};
 
       body = {

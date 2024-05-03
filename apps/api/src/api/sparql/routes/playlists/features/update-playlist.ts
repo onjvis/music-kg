@@ -28,11 +28,11 @@ export const updatePlaylist = async (
   const properties = {
     ...(request?.creators ? { creator: request?.creators } : {}),
     ...(request?.description ? { description: request?.description } : {}),
-    ...(request?.externalUrls ? { sameAs: request?.externalUrls } : {}),
     ...(request?.imageUrl ? { image: request?.imageUrl } : {}),
     ...(request?.name ? { name: request?.name } : {}),
     ...(request?.numTracks ? { numTracks: request?.numTracks } : {}),
     ...(request?.tracks ? { track: request?.tracks } : {}),
+    ...(request?.externalUrls ? { url: request?.externalUrls } : {}),
   };
 
   const triplesToInsert: Triple[] = [];

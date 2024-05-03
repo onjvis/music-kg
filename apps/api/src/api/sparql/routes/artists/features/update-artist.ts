@@ -22,11 +22,11 @@ export const updateArtist = async (id: string, request: UpdateArtistRequest, ori
 
   const properties = {
     ...(request?.albums ? { album: request?.albums } : {}),
-    ...(request?.externalUrls ? { sameAs: request?.externalUrls } : {}),
     ...(request?.genres ? { genre: request?.genres } : {}),
     ...(request?.imageUrl ? { image: request?.imageUrl } : {}),
     ...(request?.name ? { name: request?.name } : {}),
     ...(request?.tracks ? { track: request?.tracks } : {}),
+    ...(request?.externalUrls ? { url: request?.externalUrls } : {}),
   };
 
   const triplesToInsert: Triple[] = [];

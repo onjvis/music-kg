@@ -26,11 +26,11 @@ export const createUser = async (
   const triples: Triple[] = [
     { subject: userSubject, predicate: RDF_PREDICATE.type.iri, object: SCHEMA_TYPE.Person.iri },
     { subject: userSubject, predicate: SCHEMA_PREDICATE.name.iri, object: literal(request.name, XSD_DATATYPE.string) },
-    {
+    ...(request.email ? [{
       subject: userSubject,
       predicate: SCHEMA_PREDICATE.email.iri,
       object: literal(request.email, XSD_DATATYPE.string),
-    },
+    }]: []),
     ...(request.externalUrls
       ? Object.values(request.externalUrls).map(
           (externalUrl: string): Triple => ({

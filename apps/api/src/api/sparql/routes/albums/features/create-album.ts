@@ -27,7 +27,7 @@ export const createAlbum = async (request: CreateAlbumRequest, origin: DataOrigi
   const albumsTriples: Triple[] = request.artists
     ? await getSecondaryEntityTriples(
         albumSubject,
-        SCHEMA_PREDICATE.album.iri,
+        SCHEMA_PREDICATE.byArtist.iri,
         originPrefix,
         Array.isArray(request.artists) ? request.artists : [request.artists],
         origin
