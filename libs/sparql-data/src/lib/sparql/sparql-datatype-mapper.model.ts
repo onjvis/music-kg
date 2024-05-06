@@ -25,4 +25,5 @@ export const COMPLEX_PREDICATES: SparqlIri[] = [
   SCHEMA_PREDICATE.image,
   SCHEMA_PREDICATE.sameAs,
   SCHEMA_PREDICATE.track,
+  SCHEMA_PREDICATE.url,
 ];
