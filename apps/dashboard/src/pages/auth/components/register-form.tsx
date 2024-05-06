@@ -9,6 +9,7 @@ import { ErrorAlert } from '../../../components/alert/error-alert';
 import { FormErrorAlert } from '../../../components/alert/form-error-alert';
 import { SuccessAlert } from '../../../components/alert/success-alert';
 import { ApiUrl } from '../../../models/api-url.model';
+import { ALERT_DISPLAY_TIMEOUT } from '../../../models/app.constants';
 import httpClient from '../../../services/http-client';
 
 type RegisterFormProps = {
@@ -27,7 +28,10 @@ export const RegisterForm = ({ handleAfterRegister }: RegisterFormProps) => {
   const onSubmit: SubmitHandler<RegisterRequest> = async (requestData: RegisterRequest): Promise<void> => {
     try {
       const { data } = await httpClient.post<RegisterResponse>(ApiUrl.AUTH_REGISTER, requestData);
-      setAlertData({ type: 'success', message: `User ${data?.email} successfully registered.` });
+      setAlertData({
+        type: 'success',
+        message: `User ${data?.email} successfully registered. Will redirect to login shortly.`,
+      });
       handleAfterRegister();
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -36,7 +40,7 @@ export const RegisterForm = ({ handleAfterRegister }: RegisterFormProps) => {
     }
 
     reset();
-    setTimeout(() => setAlertData(undefined), 3000);
+    setTimeout(() => setAlertData(undefined), ALERT_DISPLAY_TIMEOUT);
   };
 
   return (

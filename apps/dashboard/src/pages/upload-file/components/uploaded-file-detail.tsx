@@ -15,6 +15,7 @@ import { UploadedFile } from '../models/uploaded-file.model';
 import { UploadedFileMetadata } from '../models/uploaded-file-metadata.model';
 import { SpotifyAutoLookupButton } from './spotify-auto-lookup-button';
 import { SpotifyLookupDialog } from './spotify-lookup-dialog';
+import { ALERT_DISPLAY_TIMEOUT } from '../../../models/app.constants';
 
 type UploadedFileDetailProps = {
   file: UploadedFile;
@@ -36,9 +37,9 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
       artistName: file?.parsedMetadata?.artistName,
       albumName: file?.parsedMetadata?.albumName,
       isrc: file?.parsedMetadata?.isrc,
-      track: file?.parsedMetadata?.track,
-      artist: file?.parsedMetadata?.artist,
-      album: file?.parsedMetadata?.album,
+      track: file?.parsedMetadata?.track ?? '',
+      artist: file?.parsedMetadata?.artist ?? '',
+      album: file?.parsedMetadata?.album ?? '',
     },
   });
 
@@ -50,7 +51,7 @@ export const UploadedFileDetail = ({ file, updateFileMetadata }: UploadedFileDet
       setEditMode(false);
 
       setAlertData({ type: 'success', message: 'Metadata successfully saved.' });
-      setTimeout(() => setAlertData(undefined), 3000);
+      setTimeout(() => setAlertData(undefined), ALERT_DISPLAY_TIMEOUT);
     }
   };
 

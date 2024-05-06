@@ -2,6 +2,7 @@ import { ChangeEvent, Fragment, useState } from 'react';
 
 import { SpotifySearchResult } from '@music-kg/data';
 
+import { Loader } from '../../../components/loader';
 import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
 import { SpotifyLookupDialogSelectionResult } from '../models/spotify-lookup-dialog-selection-result.model';
@@ -16,6 +17,7 @@ type SpotifyLookupDialogProps = {
 export const SpotifyLookupDialog = ({ handleClose, handleSelect, searchParams }: SpotifyLookupDialogProps) => {
   const [includedParameters, setIncludedParameters] = useState<string[]>([]);
   const [data, setData] = useState<SpotifySearchResult[]>();
+  const [isPending, setPending] = useState<boolean>(false);
 
   const handleIncludeParametersChanged = (event: ChangeEvent<HTMLInputElement>): void => {
     const parameter: string = event.target.name;
@@ -27,6 +29,8 @@ export const SpotifyLookupDialog = ({ handleClose, handleSelect, searchParams }:
   };
 
   const handleSearch = async (): Promise<void> => {
+    setPending(true);
+
     const { type, ...rest } = searchParams;
     const q: string = Object.entries(rest)
       .filter(([property, _]) => includedParameters.includes(property))
@@ -34,7 +38,10 @@ export const SpotifyLookupDialog = ({ handleClose, handleSelect, searchParams }:
       .join(' ');
     const url = `${ApiUrl.SPOTIFY_SEARCH}?q=${q}&type=${type}`;
 
-    httpClient.get(url).then((response) => setData(response?.data));
+    httpClient.get(url).then((response) => {
+      setData(response?.data);
+      setPending(false);
+    });
   };
 
   const handleItemClicked = ({ id, name }: SpotifySearchResult): void =>
@@ -76,7 +83,12 @@ export const SpotifyLookupDialog = ({ handleClose, handleSelect, searchParams }:
               </div>
             )}
           </div>
-          <button className="btn-primary" disabled={includedParameters?.length < 1} onClick={handleSearch}>
+          <button
+            className="btn-primary flex flex-row items-center gap-4"
+            disabled={includedParameters?.length < 1 || isPending}
+            onClick={handleSearch}
+          >
+            {isPending && <Loader />}
             Search
           </button>
         </div>

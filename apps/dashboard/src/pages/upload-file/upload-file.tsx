@@ -10,6 +10,7 @@ import { AlertData } from '../../components/alert/models/alert-data.model';
 import { ErrorAlert } from '../../components/alert/error-alert';
 import { SuccessAlert } from '../../components/alert/success-alert';
 import { ApiUrl } from '../../models/api-url.model';
+import { ALERT_DISPLAY_TIMEOUT } from '../../models/app.constants';
 import httpClient from '../../services/http-client';
 import { UploadedFileDetail } from './components/uploaded-file-detail';
 import { UploadedFileItem } from './components/uploaded-file-item';
@@ -44,7 +45,8 @@ export const UploadFile = () => {
 
         filesMetadata.push(parsedMetadata);
       } catch (error) {
-        console.error(error);
+        setAlertData({ type: 'error', message: `Cannot parse the file! Error: ${error}.` });
+        setTimeout(() => setAlertData(undefined), ALERT_DISPLAY_TIMEOUT);
       }
     }
 
@@ -88,7 +90,7 @@ export const UploadFile = () => {
           message:
             'Some files have missing required properties: the track title, the name of the artist or the name of the album!',
         });
-        setTimeout(() => setAlertData(undefined), 3000);
+        setTimeout(() => setAlertData(undefined), ALERT_DISPLAY_TIMEOUT);
         return;
       }
 
@@ -134,7 +136,7 @@ export const UploadFile = () => {
       }
     }
 
-    setTimeout(() => setAlertData(undefined), 3000);
+    setTimeout(() => setAlertData(undefined), ALERT_DISPLAY_TIMEOUT);
   };
 
   return (

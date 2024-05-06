@@ -13,6 +13,7 @@ import { SuccessAlert } from '../../../../components/alert/success-alert';
 import { FlexTextRow } from '../../../../components/flex-text-row';
 import { SynchronizationStatus } from '../../../../components/synchronization-status';
 import { ApiUrl } from '../../../../models/api-url.model';
+import { ALERT_DISPLAY_TIMEOUT } from '../../../../models/app.constants';
 import httpClient from '../../../../services/http-client';
 import { synchronizeSpotifyPlaylist } from '../../../../services/synchronization/synchronize-spotify-playlist';
 import { ms2timeStr } from '../../../../utils/ms2timeStr';
@@ -75,7 +76,7 @@ export const SpotifyPlaylistDetail = () => {
       }
     }
 
-    setTimeout(() => setAlertData(undefined), 3000);
+    setTimeout(() => setAlertData(undefined), ALERT_DISPLAY_TIMEOUT);
   };
 
   return (

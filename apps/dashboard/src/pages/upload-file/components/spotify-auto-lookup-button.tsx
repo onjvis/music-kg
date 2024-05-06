@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { UseFormGetValues } from 'react-hook-form';
+
 import { SpotifyIcon } from '../../../components/icons/spotify-icon';
+import { Loader } from '../../../components/loader';
 import { ApiUrl } from '../../../models/api-url.model';
 import httpClient from '../../../services/http-client';
 import { SpotifyAutoLookupResults } from '../models/spotify-auto-lookup-results';
@@ -13,7 +16,11 @@ type SpotifyAutoLookupButtonProps = {
 };
 
 export const SpotifyAutoLookupButton = ({ getValues, handleResults }: SpotifyAutoLookupButtonProps) => {
+  const [isPending, setPending] = useState<boolean>(false);
+
   const handleSpotifyAutoLookup = async (): Promise<void> => {
+    setPending(true);
+
     const formValues: UploadedFileMetadata = getValues();
 
     const includedParameters: Partial<SpotifySearchParams> = {
@@ -33,6 +40,8 @@ export const SpotifyAutoLookupButton = ({ getValues, handleResults }: SpotifyAut
     delete includedParameters['album'];
 
     const artist: SpotifyLookupDialogSelectionResult = await handleArtistLookup(includedParameters);
+
+    setPending(false);
 
     handleResults({ artist, album, track });
   };
@@ -77,8 +86,12 @@ export const SpotifyAutoLookupButton = ({ getValues, handleResults }: SpotifyAut
   };
 
   return (
-    <button className="btn-secondary flex flex-row items-center gap-2" onClick={handleSpotifyAutoLookup}>
-      <SpotifyIcon />
+    <button
+      className="btn-secondary flex flex-row items-center gap-2"
+      onClick={handleSpotifyAutoLookup}
+      disabled={isPending}
+    >
+      {isPending ? <Loader /> : <SpotifyIcon />}
       <span>Automatic lookup</span>
     </button>
   );

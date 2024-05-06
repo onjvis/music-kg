@@ -12,6 +12,7 @@ import { useCurrentUser } from '../../../contexts/current-user.context';
 import { useToken } from '../../../hooks/use-token';
 import { AppRoute } from '../../../models/enums/app-route.enum';
 import { ApiUrl } from '../../../models/api-url.model';
+import { ALERT_DISPLAY_TIMEOUT } from '../../../models/app.constants';
 import httpClient from '../../../services/http-client';
 
 export const LoginForm = () => {
@@ -42,7 +43,7 @@ export const LoginForm = () => {
     }
 
     reset();
-    setTimeout(() => setAlertData(undefined), 3000);
+    setTimeout(() => setAlertData(undefined), ALERT_DISPLAY_TIMEOUT);
   };
 
   return (

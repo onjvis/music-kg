@@ -10,6 +10,7 @@ import { SuccessAlert } from '../../../components/alert/success-alert';
 import { SynchronizationStatus } from '../../../components/synchronization-status';
 import { synchronizeSpotifyTrack } from '../../../services/synchronization/synchronize-spotify-track';
 import { ApiUrl } from '../../../models/api-url.model';
+import { ALERT_DISPLAY_TIMEOUT } from '../../../models/app.constants';
 import httpClient from '../../../services/http-client';
 import { SpotifyTrackDetail } from './spotify-track-detail';
 
@@ -61,7 +62,7 @@ export const SpotifyTrackDetailCard = ({ handleDetailClose, track }: SpotifyTrac
       }
     }
 
-    setTimeout(() => setAlertData(undefined), 3000);
+    setTimeout(() => setAlertData(undefined), ALERT_DISPLAY_TIMEOUT);
   };
 
   return (
