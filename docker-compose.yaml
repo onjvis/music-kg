@@ -1,0 +1,15 @@
+version: '3'
+services:
+  music-kg-dashboard:
+    image: music-kg-dashboard:latest
+    env_file:
+      - ./apps/dashboard/.env.local
+    ports:
+      - '4200:4200'
+  music-kg-api:
+    image: music-kg-api:latest
+    network_mode: 'host' # to be able to connect to the local RDF store running on localhost
+    env_file:
+      - ./apps/api/.env
+    ports:
+      - '8000:8000'
