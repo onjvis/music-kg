@@ -5,154 +5,154 @@
 
 mkgsh:AlbumClassPropertyShape a sh:PropertyShape ;
 	sh:path schema:album ;
-    sh:class schema:MusicAlbum ;
-    sh:nodeKind sh:IRI ;
-    sh:name "album class"@en ;
-    sh:message "album must be an instance of the MusicAlbum class."@en ;
-    sh:severity sh:Violation .
+  sh:class schema:MusicAlbum ;
+  sh:nodeKind sh:IRI ;
+  sh:name "album class"@en ;
+  sh:message "album must be an instance of the MusicAlbum class."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:AlbumProductionTypeEnumValuePropertyShape a sh:PropertyShape ;
 	sh:path schema:albumProductionType ;
-    sh:in (
-      schema:CompilationAlbum
-      schema:DJMixAlbum
-      schema:DemoAlbum
-      schema:LiveAlbum
-      schema:MixtapeAlbum
-      schema:RemixAlbum
-      schema:SoundtrackAlbum
-      schema:SpokenWordAlbum
-      schema:StudioAlbum
-    ) ;
-    sh:name "albumProductionType enum value"@en ;
-    sh:message "albumProductionType must be one these values: (schema:CompilationAlbum, schema:DJMixAlbum, schema:DemoAlbum, schema:LiveAlbum, schema:MixtapeAlbum, schema:RemixAlbum, schema:SoundtrackAlbum, schema:SpokenWordAlbum, or schema:StudioAlbum)."@en ;
-    sh:severity sh:Violation .
+  sh:in (
+    schema:CompilationAlbum
+    schema:DJMixAlbum
+    schema:DemoAlbum
+    schema:LiveAlbum
+    schema:MixtapeAlbum
+    schema:RemixAlbum
+    schema:SoundtrackAlbum
+    schema:SpokenWordAlbum
+    schema:StudioAlbum
+  ) ;
+  sh:name "albumProductionType enum value"@en ;
+  sh:message "albumProductionType must be one of these values: (schema:CompilationAlbum, schema:DJMixAlbum, schema:DemoAlbum, schema:LiveAlbum, schema:MixtapeAlbum, schema:RemixAlbum, schema:SoundtrackAlbum, schema:SpokenWordAlbum, or schema:StudioAlbum)."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:AlbumProductionTypeQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:albumProductionType ;
-    sh:maxCount 1 ;
-    sh:name "albumProductionType quantity"@en ;
-    sh:message "Entity can have at most one albumProductionType."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "albumProductionType quantity"@en ;
+  sh:message "Entity can have at most one albumProductionType."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:AlbumReleaseTypeEnumValuePropertyShape a sh:PropertyShape ;
 	sh:path schema:albumReleaseType ;
-    sh:in (
-      schema:AlbumRelease
-      schema:BroadcastRelease
-      schema:EPRelease
-      schema:SingleRelease
-    ) ;
-    sh:name "albumReleaseType enum value"@en ;
-    sh:message "albumReleaseType must be one these values: (schema:CompilationAlbum, schema:DJMixAlbum, schema:DemoAlbum, schema:LiveAlbum, schema:MixtapeAlbum, schema:RemixAlbum, schema:SoundtrackAlbum, schema:SpokenWordAlbum, or schema:StudioAlbum)."@en ;
-    sh:severity sh:Violation .
+  sh:in (
+    schema:AlbumRelease
+    schema:BroadcastRelease
+    schema:EPRelease
+    schema:SingleRelease
+  ) ;
+  sh:name "albumReleaseType enum value"@en ;
+  sh:message "albumReleaseType must be one of these values: (schema:CompilationAlbum, schema:DJMixAlbum, schema:DemoAlbum, schema:LiveAlbum, schema:MixtapeAlbum, schema:RemixAlbum, schema:SoundtrackAlbum, schema:SpokenWordAlbum, or schema:StudioAlbum)."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:AlbumReleaseTypeQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:albumReleaseType ;
-    sh:maxCount 1 ;
-    sh:name "albumReleaseType quantity"@en ;
-    sh:message "Entity can have at most one albumReleaseType."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "albumReleaseType quantity"@en ;
+  sh:message "Entity can have at most one albumReleaseType."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:ByArtistClassPropertyShape a sh:PropertyShape ;
 	sh:path schema:byArtist ;
-    sh:class schema:MusicGroup ;
-    sh:nodeKind sh:IRI ;
-    sh:name "byArtist class"@en ;
-    sh:message "byArtist must be an instance of the MusicGroup class."@en ;
-    sh:severity sh:Violation .
+  sh:class schema:MusicGroup ;
+  sh:nodeKind sh:IRI ;
+  sh:name "byArtist class"@en ;
+  sh:message "byArtist must be an instance of the MusicGroup class."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:CreatorClassPropertyShape a sh:PropertyShape ;
 	sh:path schema:creator ;
-    sh:class schema:Person ;
-    sh:nodeKind sh:IRI ;
-    sh:name "creator class"@en ;
-    sh:message "creator must be an instance of the Person class."@en ;
-    sh:severity sh:Violation .
+  sh:class schema:Person ;
+  sh:nodeKind sh:IRI ;
+  sh:name "creator class"@en ;
+  sh:message "creator must be an instance of the Person class."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:DateCreatedDatatypePropertyShape a sh:PropertyShape ;
 	sh:path schema:dateCreated ;
-    sh:datatype xsd:dateTime ;
-    sh:name "dateCreated datatype"@en ;
-    sh:message "dateCreated should use datatype xsd:dateTime."@en ;
-    sh:severity sh:Warning .
+  sh:datatype xsd:dateTime ;
+  sh:name "dateCreated datatype"@en ;
+  sh:message "dateCreated should use datatype xsd:dateTime."@en ;
+  sh:severity sh:Warning .
 
 mkgsh:DateCreatedQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:dateCreated ;
-    sh:maxCount 1 ;
-    sh:name "dateCreated quantity"@en ;
-    sh:message "Entity can have at most one dateCreated."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "dateCreated quantity"@en ;
+  sh:message "Entity can have at most one dateCreated."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:DateModifiedDatatypePropertyShape a sh:PropertyShape ;
 	sh:path schema:dateModified ;
-    sh:datatype xsd:dateTime ;
-    sh:name "dateModified datatype"@en ;
-    sh:message "dateModified should use datatype xsd:dateTime."@en ;
-    sh:severity sh:Warning .
+  sh:datatype xsd:dateTime ;
+  sh:name "dateModified datatype"@en ;
+  sh:message "dateModified should use datatype xsd:dateTime."@en ;
+  sh:severity sh:Warning .
 
 mkgsh:DateModifiedQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:dateModified ;
-    sh:maxCount 1 ;
-    sh:name "dateModified quantity"@en ;
-    sh:message "Entity can have at most one dateModified."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "dateModified quantity"@en ;
+  sh:message "Entity can have at most one dateModified."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:DateCreatedLessThanOrEqualsDateModifiedPropertyShape a sh:PropertyShape ;
 	sh:path schema:dateCreated ;
-    sh:lessThanOrEquals schema:dateModified ;
-    sh:name "dateCreated-dateModified chronological sequence"@en ;
-    sh:message "dateModified is earlier than dateCreated"@en ;
-    sh:severity sh:Violation .
+  sh:lessThanOrEquals schema:dateModified ;
+  sh:name "dateCreated-dateModified chronological sequence"@en ;
+  sh:message "dateModified is earlier than dateCreated"@en ;
+  sh:severity sh:Violation .
 
 mkgsh:DatePublishedDatatypePropertyShape a sh:PropertyShape ;
 	sh:path schema:datePublished ;
-    sh:datatype xsd:date ;
-    sh:name "datePublished datatype"@en ;
-    sh:message "datePublished should use datatype xsd:date."@en ;
-    sh:severity sh:Warning .
+  sh:datatype xsd:date ;
+  sh:name "datePublished datatype"@en ;
+  sh:message "datePublished should use datatype xsd:date."@en ;
+  sh:severity sh:Warning .
 
 mkgsh:DatePublishedQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:datePublished ;
-    sh:maxCount 1 ;
-    sh:name "datePublished quantity"@en ;
-    sh:message "Entity can have at most one datePublished."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "datePublished quantity"@en ;
+  sh:message "Entity can have at most one datePublished."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:DescriptionQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:description ;
-    sh:maxCount 1 ;
-    sh:name "description quantity"@en ;
-    sh:message "Entity can have at most one description."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "description quantity"@en ;
+  sh:message "Entity can have at most one description."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:DurationDatatypePropertyShape a sh:PropertyShape ;
 	sh:path schema:duration ;
-    sh:datatype xsd:duration ;
-    sh:name "duration datatype"@en ;
-    sh:message "duration should use datatype xsd:duration."@en ;
-    sh:severity sh:Warning .
+  sh:datatype xsd:duration ;
+  sh:name "duration datatype"@en ;
+  sh:message "duration should use datatype xsd:duration."@en ;
+  sh:severity sh:Warning .
 
 mkgsh:DurationQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:duration ;
-    sh:maxCount 1 ;
-    sh:name "duration quantity"@en ;
-    sh:message "Entity can have at most one duration."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "duration quantity"@en ;
+  sh:message "Entity can have at most one duration."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:EmailPatternPropertyShape a sh:PropertyShape ;
 	sh:path schema:email ;
-    sh:datatype xsd:string ;
-    sh:pattern "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$" ;
+  sh:datatype xsd:string ;
+  sh:pattern "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$" ;
 	sh:name "email pattern"@en ;
-    sh:message "Invalid email format."@en ;
+  sh:message "Invalid email format."@en ;
 	sh:severity sh:Violation .
 
 mkgsh:GenreDatatypePropertyShape a sh:PropertyShape ;
 	sh:path schema:genre ;
-    sh:datatype xsd:string ;
+  sh:datatype xsd:string ;
 	sh:name "genre datatype"@en ;
-    sh:message "genre should use datatype xsd:string."@en ;
+  sh:message "genre should use datatype xsd:string."@en ;
 	sh:severity sh:Warning .
 
 mkgsh:ImagePropertyShape a sh:PropertyShape ;
@@ -165,64 +165,64 @@ mkgsh:ImagePropertyShape a sh:PropertyShape ;
 mkgsh:InAlbumClassPropertyShape a sh:PropertyShape ;
 	sh:path schema:inAlbum ;
 	sh:class schema:MusicAlbum ;
-    sh:nodeKind sh:IRI ;
-    sh:name "inAlbum class"@en ;
-    sh:message "inAlbum must be an instance of the MusicAlbum class."@en ;
-    sh:severity sh:Violation .
+  sh:nodeKind sh:IRI ;
+  sh:name "inAlbum class"@en ;
+  sh:message "inAlbum must be an instance of the MusicAlbum class."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:InAlbumQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:inAlbum ;
-    sh:maxCount 1 ;
-    sh:name "inAlbum quantity"@en ;
-    sh:message "Entity can have at most one inAlbum."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "inAlbum quantity"@en ;
+  sh:message "Entity can have at most one inAlbum."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:ISRCCodePatternPropertyShape a sh:PropertyShape ;
 	sh:path schema:isrcCode ;
-    sh:datatype xsd:string ;
-    sh:pattern "^[A-Z]{2}[A-Z0-9]{3}\\d{7}$" ;
+  sh:datatype xsd:string ;
+  sh:pattern "^[A-Z]{2}[A-Z0-9]{3}\\d{7}$" ;
 	sh:name "isrcCode pattern"@en ;
-    sh:message "Invalid ISRC code format."@en ;
+  sh:message "Invalid ISRC code format."@en ;
 	sh:severity sh:Violation .
 
 mkgsh:ISRCCodeQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:isrcCode ;
-    sh:maxCount 1 ;
-    sh:name "isrcCode quantity"@en ;
-    sh:message "Entity can have at most one isrcCode."@en ;
-    sh:severity sh:Violation .
+  sh:maxCount 1 ;
+  sh:name "isrcCode quantity"@en ;
+  sh:message "Entity can have at most one isrcCode."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:NameQuantityPropertyShape a sh:PropertyShape ;
 	sh:path schema:name ;
 	sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:name "name quantity"@en ;
-    sh:message "Entity must have exactly one name."@en ;
-    sh:severity sh:Violation .
+  sh:minCount 1 ;
+  sh:maxCount 1 ;
+  sh:name "name quantity"@en ;
+  sh:message "Entity must have exactly one name."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:NumTracksPropertyShape a sh:PropertyShape ;
 	sh:path schema:numTracks ;
-    sh:minExclusive 0 ;
-    sh:datatype xsd:integer ;
-    sh:name "numTracks validation"@en ;
-    sh:message "numTracks must be positive integer."@en ;
-    sh:severity sh:Violation .
+  sh:minExclusive 0 ;
+  sh:datatype xsd:integer ;
+  sh:name "numTracks validation"@en ;
+  sh:message "numTracks must be positive integer."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:TrackClassPropertyShape a sh:PropertyShape ;
 	sh:path schema:track ;
 	sh:class schema:MusicRecording ;
-    sh:nodeKind sh:IRI ;
-    sh:name "track class"@en ;
-    sh:message "track must be an instance of the MusicRecording class."@en ;
-    sh:severity sh:Violation .
+  sh:nodeKind sh:IRI ;
+  sh:name "track class"@en ;
+  sh:message "track must be an instance of the MusicRecording class."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:URLPropertyShape a sh:PropertyShape ;
 	sh:path schema:url ;
-    sh:nodeKind sh:IRI ;
-    sh:name "Entity URL"@en ;
-    sh:message "url must be an IRI."@en ;
-    sh:severity sh:Violation .
+  sh:nodeKind sh:IRI ;
+  sh:name "Entity URL"@en ;
+  sh:message "url must be an IRI."@en ;
+  sh:severity sh:Violation .
 
 mkgsh:EntityShape a sh:NodeShape ;
 	sh:targetClass
